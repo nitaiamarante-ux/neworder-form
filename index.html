@@ -1,0 +1,255 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Order — Preços e Contas a pagar</title>
+<style>
+  :root {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --sug: #9a6b00; --sug-soft: #fbf1da;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+      --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+      --border: #2b323c; --border-strong: #3a424e;
+      --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+      --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+      --sug: #e0b45f; --sug-soft: #33291340;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --sug: #9a6b00; --sug-soft: #fbf1da;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  :root[data-theme="dark"] {
+    --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+    --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+    --border: #2b323c; --border-strong: #3a424e;
+    --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+    --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+    --sug: #e0b45f; --sug-soft: #33291340;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.45; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 20px 16px 140px; }
+  header { padding: 8px 2px 18px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(22px, 5vw, 30px); margin: 6px 0 8px; letter-spacing: -.02em; text-wrap: balance; }
+  .lede { color: var(--muted); font-size: 15px; max-width: 60ch; margin: 0; }
+  .lede b { color: var(--ink); }
+  section { margin-top: 26px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+  h2 { font-size: 18px; margin: 0; letter-spacing: -.01em; }
+  .sec-sub { color: var(--muted); font-size: 13px; margin: 2px 0 12px; }
+  .count { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .count b { color: var(--accent); }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; padding: 13px 15px; border-top: 1px solid var(--border); align-items: center; }
+  .row:first-child { border-top: none; }
+  .row .name { font-size: 14.5px; font-weight: 600; letter-spacing: -.005em; }
+  .row .meta { grid-column: 1; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 12px; margin-top: 1px; font-variant-numeric: tabular-nums; }
+  .cod { color: var(--faint); font-weight: 700; }
+  .custo { }
+  .sug-tag { color: var(--sug); }
+
+  .price { grid-column: 2; grid-row: 1 / span 2; display: flex; align-items: center; gap: 6px; }
+  .price .cur { color: var(--faint); font-size: 13px; }
+  input[type="text"], input[type="tel"] {
+    width: 104px; padding: 9px 10px; text-align: right; font-size: 15px; font-weight: 600;
+    border: 1px solid var(--border-strong); border-radius: 9px; background: var(--surface-2); color: var(--ink);
+    font-variant-numeric: tabular-nums; font-family: inherit;
+  }
+  input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; border-color: var(--accent); }
+  input.touched { border-color: var(--accent); background: var(--accent-soft); }
+
+  /* contas a pagar */
+  .brow { grid-template-columns: 1fr auto; }
+  .brow .val { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .venc { }
+  .venc.late { color: var(--bad); font-weight: 600; }
+  .toggle { grid-column: 2; grid-row: 1 / span 2; display: inline-flex; border: 1px solid var(--border-strong); border-radius: 9px; overflow: hidden; }
+  .toggle button {
+    appearance: none; border: none; background: var(--surface-2); color: var(--muted);
+    font: inherit; font-size: 13px; font-weight: 700; padding: 9px 14px; cursor: pointer; letter-spacing: .02em;
+  }
+  .toggle button + button { border-left: 1px solid var(--border); }
+  .toggle button[aria-pressed="true"][data-v="sim"] { background: var(--good); color: #fff; }
+  .toggle button[aria-pressed="true"][data-v="nao"] { background: var(--bad); color: #fff; }
+  .toggle button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  details.uso { margin-top: 14px; }
+  details.uso summary { cursor: pointer; font-size: 13px; color: var(--muted); padding: 8px 2px; list-style: none; font-weight: 600; }
+  details.uso summary::-webkit-details-marker { display: none; }
+  details.uso summary::before { content: "▸ "; color: var(--accent); }
+  details.uso[open] summary::before { content: "▾ "; }
+
+  .footer {
+    position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface);
+    border-top: 1px solid var(--border-strong); box-shadow: 0 -4px 20px rgba(20,30,45,.08);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); z-index: 10;
+  }
+  .footer-in { max-width: 780px; margin: 0 auto; display: flex; align-items: center; gap: 14px; justify-content: space-between; }
+  .fstat { font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .fstat b { color: var(--ink); }
+  .btn {
+    appearance: none; border: none; background: var(--accent); color: var(--accent-ink);
+    font: inherit; font-weight: 700; font-size: 15px; padding: 12px 20px; border-radius: 10px; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .btn.done { background: var(--good); }
+
+  .out { margin-top: 14px; }
+  .out textarea {
+    width: 100%; min-height: 150px; border: 1px solid var(--border-strong); border-radius: 10px;
+    background: var(--surface-2); color: var(--ink); padding: 12px; font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12.5px; line-height: 1.5; resize: vertical;
+  }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 6px 2px 0; }
+  @media (max-width: 460px) {
+    input[type="text"], input[type="tel"] { width: 92px; }
+    .toggle button { padding: 9px 11px; }
+  }
+</style>
+<style>
+  .toggle input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+  .toggle label { background: var(--surface-2); color: var(--muted); font: inherit;
+    font-size: 13px; font-weight: 700; padding: 10px 15px; cursor: pointer; letter-spacing: .02em; user-select: none; display: inline-block; }
+  .toggle label.lb-nao { border-left: 1px solid var(--border); }
+  .toggle input:checked + label.lb-sim { background: var(--good); color: #fff; }
+  .toggle input:checked + label.lb-nao { background: var(--bad); color: #fff; }
+  .browser-note { margin: 12px 2px 0; padding: 10px 13px; border-radius: 9px; background: var(--sug-soft);
+    color: var(--sug); font-size: 12.5px; font-weight: 600; border: 1px solid var(--border); }
+  a.btn { text-decoration: none; }
+  .btn.send { background: #25D366; color: #06301c; }
+  .copy-alt { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+  .copy-alt button { background: none; border: 1px solid var(--border-strong); color: var(--muted);
+    font: inherit; font-size: 12.5px; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">New Order · oficina</div>
+    <h1>Preços de venda e contas a pagar</h1>
+    <p class="lede">Pedro: <b>(1)</b> confira/ajuste o preço de venda de cada produto (já vem sugestão) e <b>(2)</b> marque quais contas você <b>já pagou</b>. No fim, toque em <b>Enviar pro Nitai</b> — abre o WhatsApp já com tudo escrito, é só mandar.</p>
+    <p class="browser-note">Não precisa copiar nada. O botão verde lá embaixo abre o WhatsApp com as respostas prontas.</p>
+  </header>
+  <section>
+    <div class="sec-head"><h2>1. Preço de venda dos produtos</h2><span class="count"><b>33</b> produtos</span></div>
+    <p class="sec-sub">O <b>custo</b> é o de compra real (com imposto). A <b>sugestão</b> é custo × 1,92 (seu markup médio) — ajuste à vontade.</p>
+    <div class="card" id="list-prod">
+<div class="row"><div class="name">CABO JAGWIRE SPORT PARA CAMBIO 1.1MM ULTRA SLICK 2300MM SRAM/SHIMANO</div><div class="meta"><span class="cod">#1996</span><span class="custo">custo R$ 11,98</span><span class="sug-tag">sugerido R$ 22,97</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="1996" data-uso="0" value="22,97" aria-label="Preço CABO JAGWIRE SPORT PARA CAMBIO 1.1MM ULTRA SLICK 2300MM SRAM/SHIMANO"></div></div>
+<div class="row"><div class="name">CUBA ULTRASSONICA ABSOLUTE PARA LIMPEZA</div><div class="meta"><span class="cod">#2438</span><span class="custo">custo R$ 179,29</span><span class="sug-tag">sugerido R$ 343,90</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="2438" data-uso="0" value="343,90" aria-label="Preço CUBA ULTRASSONICA ABSOLUTE PARA LIMPEZA"></div></div>
+<div class="row"><div class="name">KIT REPARO BUCHA/ROLAMENTO RENTHAL REVO-TRC</div><div class="meta"><span class="cod">#3715</span><span class="custo">custo R$ 93,33</span><span class="sug-tag">sugerido R$ 179,02</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3715" data-uso="0" value="179,02" aria-label="Preço KIT REPARO BUCHA/ROLAMENTO RENTHAL REVO-TRC"></div></div>
+<div class="row"><div class="name">TACO (CLEAT) RENTHAL REVO PARA PEDAL CLIP MTB</div><div class="meta"><span class="cod">#3716</span><span class="custo">custo R$ 93,32</span><span class="sug-tag">sugerido R$ 179,00</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3716" data-uso="0" value="179,00" aria-label="Preço TACO (CLEAT) RENTHAL REVO PARA PEDAL CLIP MTB"></div></div>
+<div class="row"><div class="name">KIT REPARO BUCHA/ROLAMENTO RENTHAL REVO-F</div><div class="meta"><span class="cod">#3717</span><span class="custo">custo R$ 93,32</span><span class="sug-tag">sugerido R$ 179,00</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3717" data-uso="0" value="179,00" aria-label="Preço KIT REPARO BUCHA/ROLAMENTO RENTHAL REVO-F"></div></div>
+<div class="row"><div class="name">PEDAL RENTHAL REVO-TRC CLIP 63.5X81MM PRETO</div><div class="meta"><span class="cod">#3718</span><span class="custo">custo R$ 1.031,21</span><span class="sug-tag">sugerido R$ 1.977,96</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3718" data-uso="0" value="1.977,96" aria-label="Preço PEDAL RENTHAL REVO-TRC CLIP 63.5X81MM PRETO"></div></div>
+<div class="row"><div class="name">PEDAL RENTHAL REVO-DHC CLIP 104X111MM PRETO</div><div class="meta"><span class="cod">#3719</span><span class="custo">custo R$ 1.171,89</span><span class="sug-tag">sugerido R$ 2.247,80</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3719" data-uso="0" value="2.247,80" aria-label="Preço PEDAL RENTHAL REVO-DHC CLIP 104X111MM PRETO"></div></div>
+<div class="row"><div class="name">GUIDAO RENTHAL FATBAR 35 V3 RISE 40 800MM ALUMINIO DOURADO</div><div class="meta"><span class="cod">#3720</span><span class="custo">custo R$ 609,58</span><span class="sug-tag">sugerido R$ 1.169,23</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3720" data-uso="0" value="1.169,23" aria-label="Preço GUIDAO RENTHAL FATBAR 35 V3 RISE 40 800MM ALUMINIO DOURADO"></div></div>
+<div class="row"><div class="name">GUIDAO RENTHAL FATBAR 35 V3 RISE 30 800MM ALUMINIO DOURADO</div><div class="meta"><span class="cod">#3721</span><span class="custo">custo R$ 609,58</span><span class="sug-tag">sugerido R$ 1.169,23</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3721" data-uso="0" value="1.169,23" aria-label="Preço GUIDAO RENTHAL FATBAR 35 V3 RISE 30 800MM ALUMINIO DOURADO"></div></div>
+<div class="row"><div class="name">MESA LEATT GRAVITY DM 6.0 INTEGRADA (DIRECT MOUNT) PRETO</div><div class="meta"><span class="cod">#3722</span><span class="custo">custo R$ 829,28</span><span class="sug-tag">sugerido R$ 1.590,64</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3722" data-uso="0" value="1.590,64" aria-label="Preço MESA LEATT GRAVITY DM 6.0 INTEGRADA (DIRECT MOUNT) PRETO"></div></div>
+<div class="row"><div class="name">KIT RETENTOR DE GARFO DUAL SKF FOX AIR 36MM (15-23) 36,0X46,0X8,0</div><div class="meta"><span class="cod">#3723</span><span class="custo">custo R$ 153,37</span><span class="sug-tag">sugerido R$ 294,18</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3723" data-uso="0" value="294,18" aria-label="Preço KIT RETENTOR DE GARFO DUAL SKF FOX AIR 36MM (15-23) 36,0X46,0X8,0"></div></div>
+<div class="row"><div class="name">KIT RETENTOR DE GARFO DUAL SKF FOX 34MM (16-23) 34,0X44,0X8,0</div><div class="meta"><span class="cod">#3724</span><span class="custo">custo R$ 153,38</span><span class="sug-tag">sugerido R$ 294,20</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3724" data-uso="0" value="294,20" aria-label="Preço KIT RETENTOR DE GARFO DUAL SKF FOX 34MM (16-23) 34,0X44,0X8,0"></div></div>
+<div class="row"><div class="name">GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 38 800MM PRETO (BLAST BLACK)</div><div class="meta"><span class="cod">#3725</span><span class="custo">custo R$ 536,41</span><span class="sug-tag">sugerido R$ 1.028,89</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3725" data-uso="0" value="1.028,89" aria-label="Preço GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 38 800MM PRETO (BLAST BLACK)"></div></div>
+<div class="row"><div class="name">GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 23 800MM PRETO (BLAST BLACK)</div><div class="meta"><span class="cod">#3726</span><span class="custo">custo R$ 536,42</span><span class="sug-tag">sugerido R$ 1.028,91</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3726" data-uso="0" value="1.028,91" aria-label="Preço GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 23 800MM PRETO (BLAST BLACK)"></div></div>
+<div class="row"><div class="name">CAMISETA LEATT PROMO PRETO TAM. M</div><div class="meta"><span class="cod">#3727</span><span class="custo">custo R$ 0,01</span><span class="sug-tag">sugerido R$ 0,01</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3727" data-uso="0" value="0,01" aria-label="Preço CAMISETA LEATT PROMO PRETO TAM. M"></div></div>
+<div class="row"><div class="name">Kit do Ar RockShox Deluxe C1 (amortecedor, geração 2022+)</div><div class="meta"><span class="cod">#3728</span><span class="custo">custo R$ 141,69</span><span class="sug-tag">sugerido R$ 271,78</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3728" data-uso="0" value="271,78" aria-label="Preço Kit do Ar RockShox Deluxe C1 (amortecedor, geração 2022+)"></div></div>
+<div class="row"><div class="name">Kit do Ar RockShox SIDLuxe Solo Air (amortecedor)</div><div class="meta"><span class="cod">#3729</span><span class="custo">custo R$ 175,89</span><span class="sug-tag">sugerido R$ 337,38</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3729" data-uso="0" value="337,38" aria-label="Preço Kit do Ar RockShox SIDLuxe Solo Air (amortecedor)"></div></div>
+<div class="row"><div class="name">Cartucho de Reparo para Canote Telescópico X-Fusion - 170mm</div><div class="meta"><span class="cod">#3730</span><span class="custo">custo R$ 487,61</span><span class="sug-tag">sugerido R$ 935,29</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3730" data-uso="0" value="935,29" aria-label="Preço Cartucho de Reparo para Canote Telescópico X-Fusion - 170mm"></div></div>
+<div class="row"><div class="name">Kit de Reparo Cane Creek Double Barrel (amortecedor)</div><div class="meta"><span class="cod">#3731</span><span class="custo">custo R$ 161,23</span><span class="sug-tag">sugerido R$ 309,26</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3731" data-uso="0" value="309,26" aria-label="Preço Kit de Reparo Cane Creek Double Barrel (amortecedor)"></div></div>
+<div class="row"><div class="name">Kit Diafragma Cane Creek (amortecedor Double Barrel)</div><div class="meta"><span class="cod">#3732</span><span class="custo">custo R$ 34,20</span><span class="sug-tag">sugerido R$ 65,60</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3732" data-uso="0" value="65,60" aria-label="Preço Kit Diafragma Cane Creek (amortecedor Double Barrel)"></div></div>
+<div class="row"><div class="name">Kit Seal Head Cane Creek (amortecedor Double Barrel)</div><div class="meta"><span class="cod">#3733</span><span class="custo">custo R$ 107,49</span><span class="sug-tag">sugerido R$ 206,18</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3733" data-uso="0" value="206,18" aria-label="Preço Kit Seal Head Cane Creek (amortecedor Double Barrel)"></div></div>
+<div class="row"><div class="name">Bexiga RockShox Boxxer (amortecedor/garfo, padrão)</div><div class="meta"><span class="cod">#3734</span><span class="custo">custo R$ 92,83</span><span class="sug-tag">sugerido R$ 178,06</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3734" data-uso="0" value="178,06" aria-label="Preço Bexiga RockShox Boxxer (amortecedor/garfo, padrão)"></div></div>
+<div class="row"><div class="name">Adaptador Zero Loss para Válvula Schrader (ferramenta de carregamento de suspensão)</div><div class="meta"><span class="cod">#3735</span><span class="custo">custo R$ 488,59</span><span class="sug-tag">sugerido R$ 937,16</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3735" data-uso="0" value="937,16" aria-label="Preço Adaptador Zero Loss para Válvula Schrader (ferramenta de carregamento de suspensão)"></div></div>
+<div class="row"><div class="name">Aro VZAN VPlus P95 Disc 29&quot; 32F preto fosco (para freio a disco)</div><div class="meta"><span class="cod">#3736</span><span class="custo">custo R$ 59,56</span><span class="sug-tag">sugerido R$ 114,24</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3736" data-uso="0" value="114,24" aria-label="Preço Aro VZAN VPlus P95 Disc 29&quot; 32F preto fosco (para freio a disco)"></div></div>
+<div class="row"><div class="name">Aro VZAN VPlus Disc 29&quot; 28F preto (para freio a disco)</div><div class="meta"><span class="cod">#3737</span><span class="custo">custo R$ 59,56</span><span class="sug-tag">sugerido R$ 114,24</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3737" data-uso="0" value="114,24" aria-label="Preço Aro VZAN VPlus Disc 29&quot; 28F preto (para freio a disco)"></div></div>
+<div class="row"><div class="name">Cubo Traseiro Absolute Prime Boost 148mm 28F aluminio HG preto</div><div class="meta"><span class="cod">#3738</span><span class="custo">custo R$ 242,07</span><span class="sug-tag">sugerido R$ 464,31</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3738" data-uso="0" value="464,31" aria-label="Preço Cubo Traseiro Absolute Prime Boost 148mm 28F aluminio HG preto"></div></div>
+<div class="row"><div class="name">Cubo Traseiro Absolute Prime Boost 148mm 32F aluminio HG preto</div><div class="meta"><span class="cod">#3739</span><span class="custo">custo R$ 237,22</span><span class="sug-tag">sugerido R$ 455,01</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3739" data-uso="0" value="455,01" aria-label="Preço Cubo Traseiro Absolute Prime Boost 148mm 32F aluminio HG preto"></div></div>
+<div class="row"><div class="name">Espatula de Pneu Park Tool TL-4.2 (kit 2 unidades)</div><div class="meta"><span class="cod">#3740</span><span class="custo">custo R$ 23,12</span><span class="sug-tag">sugerido R$ 44,35</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3740" data-uso="0" value="44,35" aria-label="Preço Espatula de Pneu Park Tool TL-4.2 (kit 2 unidades)"></div></div>
+<div class="row"><div class="name">Porta-Objetos Zefal Z Box S 0,5L preto (formato garrafa, encaixa em porta-caramanhola)</div><div class="meta"><span class="cod">#3741</span><span class="custo">custo R$ 24,06</span><span class="sug-tag">sugerido R$ 46,14</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3741" data-uso="0" value="46,14" aria-label="Preço Porta-Objetos Zefal Z Box S 0,5L preto (formato garrafa, encaixa em porta-caramanhola)"></div></div>
+<div class="row"><div class="name">Óleo Mineral SRAM Maxima 500ml - para Freios DB, Maven e Motive</div><div class="meta"><span class="cod">#3748</span><span class="custo">custo R$ 295,21</span><span class="sug-tag">sugerido R$ 566,24</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3748" data-uso="0" value="566,24" aria-label="Preço Óleo Mineral SRAM Maxima 500ml - para Freios DB, Maven e Motive"></div></div>
+<div class="row"><div class="name">Kit Alavanca (Manete) SRAM Maven A1 - Alumínio Preto, com Regulador de Alcance, Came e Mola</div><div class="meta"><span class="cod">#3749</span><span class="custo">custo R$ 286,24</span><span class="sug-tag">sugerido R$ 549,04</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3749" data-uso="0" value="549,04" aria-label="Preço Kit Alavanca (Manete) SRAM Maven A1 - Alumínio Preto, com Regulador de Alcance, Came e Mola"></div></div>
+<div class="row"><div class="name">Taco Crankbrothers Premium para Sapatilha - 6° Flutuação, Liberação 15/20° (Bronze + Aço)</div><div class="meta"><span class="cod">#3750</span><span class="custo">custo R$ 140,80</span><span class="sug-tag">sugerido R$ 270,08</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3750" data-uso="0" value="270,08" aria-label="Preço Taco Crankbrothers Premium para Sapatilha - 6° Flutuação, Liberação 15/20° (Bronze + Aço)"></div></div>
+<div class="row"><div class="name">Gancheira (câmbio) Scott Boost TA12-SW carbono - Scale RC/Spark RC 2017-2020, ref. 254090-222</div><div class="meta"><span class="cod">#3751</span><span class="custo">custo R$ 296,00</span><span class="sug-tag">sugerido R$ 567,76</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3751" data-uso="0" value="567,76" aria-label="Preço Gancheira (câmbio) Scott Boost TA12-SW carbono - Scale RC/Spark RC 2017-2020, ref. 254090-222"></div></div>
+    </div>
+    <details class="uso">
+      <summary>Uso/consumo da oficina (9 itens) — não precisa preço</summary>
+      <div class="card" style="margin-top:10px">
+<div class="row"><div class="name">SILICONE SPRAY 300ML MUNDIAL PRIME  -  REF AE03000018</div><div class="meta"><span class="cod">#1387</span><span class="custo">custo R$ 124,47</span><span class="sug-tag">sugerido R$ 238,75</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="1387" data-uso="1" value="238,75" aria-label="Preço SILICONE SPRAY 300ML MUNDIAL PRIME  -  REF AE03000018"></div></div>
+<div class="row"><div class="name">PAPEL A4 210X297MM C/500 CHAMEX</div><div class="meta"><span class="cod">#1977</span><span class="custo">custo R$ 27,17</span><span class="sug-tag">sugerido R$ 52,11</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="1977" data-uso="1" value="52,11" aria-label="Preço PAPEL A4 210X297MM C/500 CHAMEX"></div></div>
+<div class="row"><div class="name">ABRACADEIRA NYLON 200X3,5MM C/100 PTA FOXLUX  -  REF 18.15</div><div class="meta"><span class="cod">#2267</span><span class="custo">custo R$ 7,64</span><span class="sug-tag">sugerido R$ 14,65</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="2267" data-uso="1" value="14,65" aria-label="Preço ABRACADEIRA NYLON 200X3,5MM C/100 PTA FOXLUX  -  REF 18.15"></div></div>
+<div class="row"><div class="name">ABRAÇADEIRA NYLON 100X2,5MM PRETA C/100 FOXLUX</div><div class="meta"><span class="cod">#3742</span><span class="custo">custo R$ 2,69</span><span class="sug-tag">sugerido R$ 5,16</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3742" data-uso="1" value="5,16" aria-label="Preço ABRAÇADEIRA NYLON 100X2,5MM PRETA C/100 FOXLUX"></div></div>
+<div class="row"><div class="name">ABRAÇADEIRA NYLON 150X2,5MM PRETA BARTOFIL</div><div class="meta"><span class="cod">#3743</span><span class="custo">custo R$ 2,98</span><span class="sug-tag">sugerido R$ 5,72</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3743" data-uso="1" value="5,72" aria-label="Preço ABRAÇADEIRA NYLON 150X2,5MM PRETA BARTOFIL"></div></div>
+<div class="row"><div class="name">BALANÇA SUSPENSA 100KG ANALÓGICA TIPO RELÓGIO BARTOFIL</div><div class="meta"><span class="cod">#3744</span><span class="custo">custo R$ 46,67</span><span class="sug-tag">sugerido R$ 89,52</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3744" data-uso="1" value="89,52" aria-label="Preço BALANÇA SUSPENSA 100KG ANALÓGICA TIPO RELÓGIO BARTOFIL"></div></div>
+<div class="row"><div class="name">LIMPA CONTATO SPRAY 300ML BARTOFIL</div><div class="meta"><span class="cod">#3745</span><span class="custo">custo R$ 8,85</span><span class="sug-tag">sugerido R$ 16,98</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3745" data-uso="1" value="16,98" aria-label="Preço LIMPA CONTATO SPRAY 300ML BARTOFIL"></div></div>
+<div class="row"><div class="name">ESGUICHO REVÓLVER PLÁSTICO 1/2&quot; ENGATE RÁPIDO HERC</div><div class="meta"><span class="cod">#3746</span><span class="custo">custo R$ 10,55</span><span class="sug-tag">sugerido R$ 20,24</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3746" data-uso="1" value="20,24" aria-label="Preço ESGUICHO REVÓLVER PLÁSTICO 1/2&quot; ENGATE RÁPIDO HERC"></div></div>
+<div class="row"><div class="name">CADEADO LATÃO 40MM PADO</div><div class="meta"><span class="cod">#3747</span><span class="custo">custo R$ 23,99</span><span class="sug-tag">sugerido R$ 46,02</span></div><div class="price"><span class="cur">R$</span><input type="tel" inputmode="decimal" class="price-in" data-cod="3747" data-uso="1" value="46,02" aria-label="Preço CADEADO LATÃO 40MM PADO"></div></div>
+      </div>
+    </details>
+  </section>
+  <section>
+    <div class="sec-head"><h2>2. Contas já vencidas — quais você pagou?</h2><span class="count"><b>9</b> contas</span></div>
+    <p class="sec-sub">Parcelas dessas NFs com vencimento já passado. Marque <b>Paguei</b> ou <b>Não</b> em cada uma.</p>
+    <div class="card">
+<div class="row brow"><div class="name">ISAPA <span class="cod">· NF 646069/1</span></div><div class="meta"><span class="venc late">venceu 28/05</span><span class="val">R$ 1.275,96</span></div><div class="toggle" data-key="ISAPA 646069/1"><input type="radio" id="pg_646069_1_s" name="pg_646069_1" value="sim"><label for="pg_646069_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_646069_1_n" name="pg_646069_1" value="nao"><label for="pg_646069_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">PROPARTS <span class="cod">· NF 124883/1</span></div><div class="meta"><span class="venc late">venceu 01/06</span><span class="val">R$ 1.459,16</span></div><div class="toggle" data-key="PROPARTS 124883/1"><input type="radio" id="pg_124883_1_s" name="pg_124883_1" value="sim"><label for="pg_124883_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_124883_1_n" name="pg_124883_1" value="nao"><label for="pg_124883_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">SESSION <span class="cod">· NF 21574/1</span></div><div class="meta"><span class="venc late">venceu 07/06</span><span class="val">R$ 2.247,00</span></div><div class="toggle" data-key="SESSION 21574/1"><input type="radio" id="pg_21574_1_s" name="pg_21574_1" value="sim"><label for="pg_21574_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_21574_1_n" name="pg_21574_1" value="nao"><label for="pg_21574_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">BARTOFIL <span class="cod">· NF 8257586/1</span></div><div class="meta"><span class="venc late">venceu 07/06</span><span class="val">R$ 490,94</span></div><div class="toggle" data-key="BARTOFIL 8257586/1"><input type="radio" id="pg_8257586_1_s" name="pg_8257586_1" value="sim"><label for="pg_8257586_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_8257586_1_n" name="pg_8257586_1" value="nao"><label for="pg_8257586_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">SPAL <span class="cod">· NF 10925486/1</span></div><div class="meta"><span class="venc late">venceu 22/06</span><span class="val">R$ 518,55</span></div><div class="toggle" data-key="SPAL 10925486/1"><input type="radio" id="pg_10925486_1_s" name="pg_10925486_1" value="sim"><label for="pg_10925486_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_10925486_1_n" name="pg_10925486_1" value="nao"><label for="pg_10925486_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">SPORTECH <span class="cod">· NF 9400/1</span></div><div class="meta"><span class="venc late">venceu 27/06</span><span class="val">R$ 3.842,46</span></div><div class="toggle" data-key="SPORTECH 9400/1"><input type="radio" id="pg_9400_1_s" name="pg_9400_1" value="sim"><label for="pg_9400_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_9400_1_n" name="pg_9400_1" value="nao"><label for="pg_9400_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">SODERINI <span class="cod">· NF 16841/1</span></div><div class="meta"><span class="venc late">venceu 27/06</span><span class="val">R$ 980,00</span></div><div class="toggle" data-key="SODERINI 16841/1"><input type="radio" id="pg_16841_1_s" name="pg_16841_1" value="sim"><label for="pg_16841_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_16841_1_n" name="pg_16841_1" value="nao"><label for="pg_16841_1_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">ISAPA <span class="cod">· NF 646069/2</span></div><div class="meta"><span class="venc late">venceu 27/06</span><span class="val">R$ 1.274,00</span></div><div class="toggle" data-key="ISAPA 646069/2"><input type="radio" id="pg_646069_2_s" name="pg_646069_2" value="sim"><label for="pg_646069_2_s" class="lb-sim">Paguei</label><input type="radio" id="pg_646069_2_n" name="pg_646069_2" value="nao"><label for="pg_646069_2_n" class="lb-nao">Não</label></div></div>
+<div class="row brow"><div class="name">Royal <span class="cod">· NF 204070/1</span></div><div class="meta"><span class="venc late">venceu 01/07</span><span class="val">R$ 1.703,70</span></div><div class="toggle" data-key="Royal 204070/1"><input type="radio" id="pg_204070_1_s" name="pg_204070_1" value="sim"><label for="pg_204070_1_s" class="lb-sim">Paguei</label><input type="radio" id="pg_204070_1_n" name="pg_204070_1" value="nao"><label for="pg_204070_1_n" class="lb-nao">Não</label></div></div>
+    </div>
+  </section>
+</div>
+<div class="footer"><div class="footer-in">
+  <span class="fstat" id="fstat"></span>
+  <a class="btn send" id="sendbtn" href="https://wa.me/5531982976006?text=Respostas%20New%20Order%20%28Pedro%29%3A%0A%0A%3D%3D%3D%20PRECOS%20%3D%3D%3D%0A%231996%20%3D%20R%24%2022%2C97%0A%232438%20%3D%20R%24%20343%2C90%0A%233715%20%3D%20R%24%20179%2C02%0A%233716%20%3D%20R%24%20179%2C00%0A%233717%20%3D%20R%24%20179%2C00%0A%233718%20%3D%20R%24%201.977%2C96%0A%233719%20%3D%20R%24%202.247%2C80%0A%233720%20%3D%20R%24%201.169%2C23%0A%233721%20%3D%20R%24%201.169%2C23%0A%233722%20%3D%20R%24%201.590%2C64%0A%233723%20%3D%20R%24%20294%2C18%0A%233724%20%3D%20R%24%20294%2C20%0A%233725%20%3D%20R%24%201.028%2C89%0A%233726%20%3D%20R%24%201.028%2C91%0A%233727%20%3D%20R%24%200%2C01%0A%233728%20%3D%20R%24%20271%2C78%0A%233729%20%3D%20R%24%20337%2C38%0A%233730%20%3D%20R%24%20935%2C29%0A%233731%20%3D%20R%24%20309%2C26%0A%233732%20%3D%20R%24%2065%2C60%0A%233733%20%3D%20R%24%20206%2C18%0A%233734%20%3D%20R%24%20178%2C06%0A%233735%20%3D%20R%24%20937%2C16%0A%233736%20%3D%20R%24%20114%2C24%0A%233737%20%3D%20R%24%20114%2C24%0A%233738%20%3D%20R%24%20464%2C31%0A%233739%20%3D%20R%24%20455%2C01%0A%233740%20%3D%20R%24%2044%2C35%0A%233741%20%3D%20R%24%2046%2C14%0A%233748%20%3D%20R%24%20566%2C24%0A%233749%20%3D%20R%24%20549%2C04%0A%233750%20%3D%20R%24%20270%2C08%0A%233751%20%3D%20R%24%20567%2C76%0A%0A%3D%3D%3D%20CONTAS%20%28paguei%3F%29%20%3D%3D%3D%0AISAPA%20646069/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0APROPARTS%20124883/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ASESSION%2021574/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ABARTOFIL%208257586/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ASPAL%2010925486/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ASPORTECH%209400/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ASODERINI%2016841/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0AISAPA%20646069/2%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0ARoyal%20204070/1%20%3A%20%28responder%20PAGO%20ou%20NAO%29%0A">📲 Enviar pro Nitai</a>
+</div></div>
+
+<script>
+  function build(){
+    var out = 'Respostas New Order (Pedro):\n\n=== PRECOS ===\n';
+    document.querySelectorAll('.price-in').forEach(function(inp){
+      if (inp.dataset.uso === '1' && !inp.classList.contains('touched')) return;
+      out += '#' + inp.dataset.cod + ' = R$ ' + (inp.value.trim() || '?') + '\n';
+    });
+    out += '\n=== CONTAS (paguei?) ===\n';
+    document.querySelectorAll('.toggle').forEach(function(tg){
+      var on = tg.querySelector('input:checked');
+      var v = on ? (on.value === 'sim' ? 'PAGO' : 'NAO PAGO') : '(responder PAGO ou NAO)';
+      out += tg.dataset.key + ' : ' + v + '\n';
+    });
+    return out;
+  }
+  function refresh(){
+    var done = document.querySelectorAll('.toggle input:checked').length;
+    var total = document.querySelectorAll('.toggle').length;
+    document.getElementById('fstat').innerHTML = 'Contas marcadas <b>'+done+'/'+total+'</b>';
+    document.getElementById('sendbtn').href = 'https://wa.me/5531982976006?text=' + encodeURIComponent(build());
+  }
+  document.querySelectorAll('.price-in').forEach(function(inp){
+    inp.addEventListener('focus', function(){ inp.select(); });
+    inp.addEventListener('input', function(){ inp.classList.add('touched'); refresh(); });
+  });
+  document.querySelectorAll('.toggle input').forEach(function(r){ r.addEventListener('change', refresh); });
+  refresh();
+</script>
