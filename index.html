@@ -1,5 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
 <title>New Order — Preços e Contas a pagar</title>
 <style>
   :root {
@@ -252,4 +253,24 @@
   });
   document.querySelectorAll('.toggle input').forEach(function(r){ r.addEventListener('change', refresh); });
   refresh();
+
+  // --- captura direta: POST silencioso pro receptor (JARVIS) + wa.me segue como backup/confirmação ---
+  var CAPTURE_URL = 'https://status.nitailab.com.br/captura/8cf86f3f8e8e7abc2c16bd889a332fd6';
+  function buildJSON(){
+    var precos = {};
+    document.querySelectorAll('.price-in').forEach(function(inp){
+      precos[inp.dataset.cod] = { valor: inp.value.trim(), uso: inp.dataset.uso === '1', touched: inp.classList.contains('touched') };
+    });
+    var contas = {};
+    document.querySelectorAll('.toggle').forEach(function(tg){
+      var on = tg.querySelector('input:checked');
+      contas[tg.dataset.key] = on ? (on.value === 'sim' ? 'PAGO' : 'NAO_PAGO') : null;
+    });
+    return { form: 'neworder_pedro', enviado_em: new Date().toISOString(), precos: precos, contas: contas, texto: build() };
+  }
+  document.getElementById('sendbtn').addEventListener('click', function(){
+    // sendBeacon não dispara preflight CORS e sobrevive à navegação p/ o WhatsApp
+    try { navigator.sendBeacon(CAPTURE_URL, new Blob([JSON.stringify(buildJSON())], { type: 'text/plain' })); } catch(e){}
+    // o href do <a> (wa.me) segue normalmente — retorno redundante garantido
+  });
 </script>
