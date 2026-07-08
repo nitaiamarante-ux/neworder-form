@@ -43,8 +43,7 @@
     border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; -webkit-appearance: none; }
   .toggle button.on-ok { background: var(--good-soft); border-color: var(--good); color: var(--good); }
   .toggle button.on-bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
-  .qty { margin-top: 10px; display: none; }
-  .qty.show { display: block; }
+  .qty { margin-top: 10px; }
   .qty label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 5px; }
   .qty input { width: 100%; padding: 11px 12px; font-size: 16px; border: 1px solid var(--border-strong);
     border-radius: 10px; background: var(--surface-2); color: var(--ink); }
@@ -116,23 +115,27 @@
         <button type="button" data-a="dif">${zero ? "Tenho sim" : "✗ Diferente"}</button>
       </div>
       <div class="qty">
-        <label>Quantas você tem de verdade?</label>
-        <input type="number" inputmode="numeric" min="0" step="1" placeholder="ex: ${item.q}">
+        <label>Se estiver diferente, quantas você tem de verdade?</label>
+        <input type="number" inputmode="numeric" min="0" step="1" placeholder="deixe em branco se conferir">
       </div>`;
     const [bOk, bDif] = el.querySelectorAll(".toggle button");
-    const qty = el.querySelector(".qty");
     const inp = el.querySelector("input");
     bOk.onclick = () => {
       state[id] = { status:"ok", real:item.q };
       bOk.classList.add("on-ok"); bDif.classList.remove("on-bad");
-      qty.classList.remove("show"); refresh();
+      inp.value = ""; refresh();
     };
     bDif.onclick = () => {
       state[id] = { status:"dif", real: inp.value===""?null:Number(inp.value) };
       bDif.classList.add("on-bad"); bOk.classList.remove("on-ok");
-      qty.classList.add("show"); inp.focus(); refresh();
+      inp.focus(); refresh();
     };
-    inp.oninput = () => { state[id].real = inp.value===""?null:Number(inp.value); refresh(); };
+    // digitar quantidade já marca como divergência automaticamente
+    inp.oninput = () => {
+      state[id] = { status:"dif", real: inp.value===""?null:Number(inp.value) };
+      bDif.classList.add("on-bad"); bOk.classList.remove("on-ok");
+      refresh();
+    };
     return el;
   }
 
