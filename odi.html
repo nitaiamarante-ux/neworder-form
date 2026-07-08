@@ -1,0 +1,169 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>New Order — Conferir estoque das manoplas ODI</title>
+<style>
+  :root {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+      --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+      --border: #2b323c; --border-strong: #3a424e;
+      --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+      --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 150px; }
+  header { padding: 8px 2px 14px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(21px, 5vw, 28px); margin: 6px 0 8px; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0; }
+  .lede b { color: var(--ink); }
+  section { margin-top: 24px; }
+  h2 { font-size: 16px; margin: 0 0 3px; letter-spacing: -.01em; }
+  .sec-sub { color: var(--muted); font-size: 13px; margin: 0 0 12px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 14px 12px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .prod { font-weight: 600; font-size: 15px; }
+  .meta { color: var(--faint); font-size: 12.5px; margin-top: 1px; }
+  .bling { display: inline-block; margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .bling b { color: var(--ink); font-variant-numeric: tabular-nums; }
+  .toggle { display: flex; gap: 8px; margin-top: 11px; }
+  .toggle button { flex: 1; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--muted);
+    border-radius: 10px; padding: 10px; font-size: 14px; font-weight: 600; cursor: pointer; -webkit-appearance: none; }
+  .toggle button.on-ok { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .toggle button.on-bad { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .qty { margin-top: 10px; display: none; }
+  .qty.show { display: block; }
+  .qty label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 5px; }
+  .qty input { width: 100%; padding: 11px 12px; font-size: 16px; border: 1px solid var(--border-strong);
+    border-radius: 10px; background: var(--surface-2); color: var(--ink); }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--border);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -4px 18px rgba(20,30,45,.08); }
+  .bar-in { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .prog { font-size: 12.5px; color: var(--muted); flex: 1; }
+  .prog b { color: var(--ink); }
+  .send { display: inline-flex; align-items: center; gap: 8px; background: #25d366; color: #062b17;
+    text-decoration: none; font-weight: 700; font-size: 15px; padding: 13px 20px; border-radius: 12px; white-space: nowrap; }
+  .send.disabled { opacity: .45; pointer-events: none; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">New Order · Estoque</div>
+    <h1>Conferir as manoplas ODI</h1>
+    <p class="lede">Pedro, arrumamos o estoque das ODI: agora vale <b>só o que entrou pelas notas</b> — o resto foi zerado. Dá uma olhada física em cada uma e diz se <b>bate</b> com o que o Bling mostra. Se estiver diferente, é só colocar quanto você tem de verdade. No fim, um toque no botão verde manda tudo pro Nitai.</p>
+  </header>
+
+  <section>
+    <h2>Com estoque no Bling</h2>
+    <p class="sec-sub">São as manoplas que entraram pelas notas da BR Sports (BRSG). Total: 17 unidades.</p>
+    <div id="grp-com"></div>
+  </section>
+
+  <section>
+    <h2>Zeradas no Bling</h2>
+    <p class="sec-sub">Essas o Bling está mostrando <b>zero</b>. Confirma se você realmente não tem nenhuma — se tiver, diz quantas.</p>
+    <div id="grp-zero"></div>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="bar-in">
+    <div class="prog" id="prog">Confira as <b>9</b> manoplas</div>
+    <a class="send disabled" id="sendbtn" href="#">📲 Enviar pro Nitai</a>
+  </div>
+</div>
+
+<script>
+  const WA = "5531982976006";
+  const COM = [
+    { c:"2427", n:"Manopla ODI Elite Pro Lock-on 130mm — Black", q:10 },
+    { c:"2428", n:"Manopla ODI Rogue V2.1 Lock-on 135mm — Black", q:2 },
+    { c:"3358", n:"Manopla ODI Tangent Contour V2.1 Lock-on 135mm — Black", q:2 },
+    { c:"2426", n:"Manopla ODI Elite Motion Lock-on 130mm — Black", q:1 },
+    { c:"2552", n:"Manopla ODI Elite Pro Lock-on 130mm — Graphite", q:1 },
+    { c:"2553", n:"Manopla ODI Ruffian V2.1 Lock-on 135mm — Black", q:1 },
+  ];
+  const ZERO = [
+    { c:"2425", n:"Manopla ODI Elite Flow Lock-on 130mm — Black", q:0 },
+    { c:"2429", n:"Manopla ODI Ruffian V2.1 Lock-on 135mm — Grey", q:0 },
+    { c:"3063", n:"Manopla ODI Rogue V2.1 Lock-on 135mm — Red", q:0 },
+  ];
+  const state = {}; // codigo -> {status:'ok'|'dif'|null, real:number}
+
+  function card(item, zero) {
+    const id = item.c;
+    state[id] = { status:null, real:null };
+    const el = document.createElement("div");
+    el.className = "card";
+    el.innerHTML = `
+      <div class="prod">${item.n}</div>
+      <div class="meta">Código ${item.c}</div>
+      <div class="bling">Bling diz: <b>${item.q}</b> ${item.q===1?"unidade":"unidades"}</div>
+      <div class="toggle">
+        <button type="button" data-a="ok">${zero ? "✓ Não tenho" : "✓ Confere"}</button>
+        <button type="button" data-a="dif">${zero ? "Tenho sim" : "✗ Diferente"}</button>
+      </div>
+      <div class="qty">
+        <label>Quantas você tem de verdade?</label>
+        <input type="number" inputmode="numeric" min="0" step="1" placeholder="ex: ${item.q}">
+      </div>`;
+    const [bOk, bDif] = el.querySelectorAll(".toggle button");
+    const qty = el.querySelector(".qty");
+    const inp = el.querySelector("input");
+    bOk.onclick = () => {
+      state[id] = { status:"ok", real:item.q };
+      bOk.classList.add("on-ok"); bDif.classList.remove("on-bad");
+      qty.classList.remove("show"); refresh();
+    };
+    bDif.onclick = () => {
+      state[id] = { status:"dif", real: inp.value===""?null:Number(inp.value) };
+      bDif.classList.add("on-bad"); bOk.classList.remove("on-ok");
+      qty.classList.add("show"); inp.focus(); refresh();
+    };
+    inp.oninput = () => { state[id].real = inp.value===""?null:Number(inp.value); refresh(); };
+    return el;
+  }
+
+  COM.forEach(it => document.getElementById("grp-com").appendChild(card(it, false)));
+  ZERO.forEach(it => document.getElementById("grp-zero").appendChild(card(it, true)));
+
+  const ALL = [...COM, ...ZERO];
+  function build() {
+    let t = "Conferencia estoque ODI (Pedro):\n\n";
+    ALL.forEach(it => {
+      const s = state[it.c];
+      let linha;
+      if (!s.status) linha = "(nao respondido)";
+      else if (s.status === "ok") linha = it.q===0 ? "OK, nao tenho" : `OK, confere (${it.q})`;
+      else linha = s.real==null ? "DIFERENTE (nao informou qtd)" : `DIFERENTE: tenho ${s.real}`;
+      t += `#${it.c} ${it.n}\n   Bling: ${it.q}  ->  ${linha}\n\n`;
+    });
+    return t;
+  }
+  function done() { return ALL.filter(it => {
+    const s = state[it.c];
+    return s.status === "ok" || (s.status === "dif" && s.real != null);
+  }).length; }
+  function refresh() {
+    const d = done(), tot = ALL.length;
+    const prog = document.getElementById("prog");
+    const btn = document.getElementById("sendbtn");
+    prog.innerHTML = `<b>${d}</b> de <b>${tot}</b> conferidas`;
+    btn.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(build());
+    if (d === tot) btn.classList.remove("disabled");
+    else btn.classList.add("disabled");
+  }
+  refresh();
+</script>
