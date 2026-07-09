@@ -64,7 +64,7 @@
   <header>
     <div class="kicker">New Order · Notas fiscais</div>
     <h1>Confere estas 46 notas</h1>
-    <p class="lede">Pedro, chegaram 46 notas fiscais no CNPJ da loja que ainda não entraram no sistema, R$ 26.356,20 no total. Pra cada uma, me diz duas coisas: se a mercadoria chegou mesmo, e o que ela é. Comece pelas de cima, que são as que mais pesam. No fim, um toque no botão verde manda tudo pro Nitai.</p>
+    <p class="lede">Pedro, chegaram 46 notas fiscais no CNPJ da loja que ainda não entraram no sistema, R$ 26.356,20 no total. Pra cada uma, me diz duas coisas: se a mercadoria chegou mesmo, e o que ela é. Comece pelas de cima, que são as que mais pesam. Não precisa fazer tudo de uma vez: responda o que der e toque no botão verde, que ele manda o que você já marcou. Depois é só voltar e mandar o resto.</p>
   </header>
 
   <section>
@@ -704,20 +704,30 @@
       partes.push(`NAO RESPONDIDAS (${grupos.naorespondida.length}):\n` + quebrarNumeros(grupos.naorespondida.map(n => n.numero)));
     }
 
-    return "Conferencia das 46 NFs (Pedro):\n\n" + partes.join("\n\n");
+    const d = done(), tot = NOTAS.length;
+    const cabecalho = d === tot
+      ? `Conferencia das ${tot} NFs (Pedro):`
+      : `Conferencia das NFs (Pedro) - PARCIAL, ${d} de ${tot}:`;
+    return cabecalho + "\n\n" + partes.join("\n\n");
   }
 
   function done() {
     return NOTAS.filter(n => state[n.numero]).length;
   }
 
+  // Envio PARCIAL liberado: o Pedro manda o que ja respondeu e volta depois.
+  // O que falta viaja no grupo NAO RESPONDIDAS, entao nenhuma nota some da mensagem.
   function refresh() {
     const d = done(), tot = NOTAS.length;
     const prog = document.getElementById("prog");
     const btn = document.getElementById("sendbtn");
-    prog.innerHTML = `<b>${d}</b> de <b>${tot}</b> respondidas`;
+    prog.innerHTML = d === 0
+      ? `Responda ao menos <b>1</b> das <b>${tot}</b> pra enviar`
+      : (d === tot
+          ? `<b>${tot}</b> de <b>${tot}</b>. Pode mandar!`
+          : `<b>${d}</b> de <b>${tot}</b> respondidas. Pode mandar o que já tem`);
     btn.href = "https://wa.me/" + WA + "?text=" + encodeURIComponent(build());
-    if (d === tot) btn.classList.remove("disabled");
+    if (d > 0) btn.classList.remove("disabled");
     else btn.classList.add("disabled");
   }
   refresh();
