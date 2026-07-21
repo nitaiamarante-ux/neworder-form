@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>New Order · Conferência de estoque Fox</title>
+<style>
+  :root {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+      --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+      --border: #2b323c; --border-strong: #3a424e;
+      --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+      --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 180px; }
+  header { padding: 8px 2px 14px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(21px, 5vw, 28px); margin: 6px 0 8px; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0; }
+  .lede b { color: var(--ink); }
+  .nota-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 14px 6px; margin-top: 16px; box-shadow: var(--shadow); }
+  .nota-head { margin-bottom: 6px; }
+  .nota-forn { font-weight: 700; font-size: 15.5px; }
+  .nota-meta { color: var(--faint); font-size: 12.5px; margin-top: 1px; }
+  .item { border-top: 1px solid var(--border); padding: 13px 0; }
+  .item:first-of-type { border-top: none; }
+  .item-desc { font-weight: 600; font-size: 14.5px; }
+  .item-meta { color: var(--faint); font-size: 12.5px; margin-top: 3px; font-variant-numeric: tabular-nums; }
+  .item-meta b { color: var(--muted); }
+  .row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .btn-ok { flex: 1 1 auto; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--muted);
+    border-radius: 10px; padding: 11px 8px; font-size: 13.5px; font-weight: 700; cursor: pointer; -webkit-appearance: none; }
+  .btn-ok.on { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .qtd-wrap { flex: 0 0 118px; position: relative; }
+  .qtd-wrap span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--faint); font-size: 12px; pointer-events: none; }
+  .qtd-wrap input { width: 100%; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface-2);
+    color: var(--ink); font-size: 16px; padding: 10px 10px 10px 42px; font-variant-numeric: tabular-nums; text-align: right; }
+  .qtd-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .qtd-wrap input.dif { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); font-weight: 700; }
+  .barra { position: fixed; left: 0; right: 0; bottom: 0; background: var(--surface); border-top: 1px solid var(--border);
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom)); box-shadow: 0 -6px 20px rgba(20,30,45,.07); }
+  .barra-in { max-width: 720px; margin: 0 auto; }
+  .status { font-size: 13px; color: var(--muted); margin-bottom: 9px; text-align: center; }
+  .status b { color: var(--ink); }
+  .enviar { display: block; width: 100%; text-align: center; text-decoration: none;
+    background: var(--accent); color: var(--accent-ink); border: none; border-radius: 12px;
+    padding: 15px 12px; font-size: 16px; font-weight: 700; cursor: pointer; }
+  .enviar[aria-disabled="true"] { opacity: .45; pointer-events: none; }
+  .nota-rodape { color: var(--faint); font-size: 12.5px; margin: 22px 2px 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">New Order · 21 de julho</div>
+    <h1>Conferência de estoque — itens Fox</h1>
+    <p class="lede">Pedrão, são os <b>3 itens</b> da última nota da Corsa com os kits da Fox. Para cada um está escrito <b>quanto veio na nota</b> e <b>quanto o Bling diz que tem hoje</b>. Você só confirma o que tem na prateleira: se bater, toca em <b>Confere</b>; se não bater, digita o número certo.</p>
+  </header>
+
+  <div class="nota-card" data-nota="19187">
+    <div class="nota-head">
+      <div class="nota-forn">Corsa Bike Parts · NF 19187</div>
+      <div class="nota-meta">Emitida 08/07/2026 · R$ 1.875,80 · 3 itens</div>
+    </div>
+    <div class="itens"></div>
+  </div>
+
+  <p class="nota-rodape">Se algum item não estiver mais na loja porque já foi usado ou vendido, digita a quantidade que sobrou (pode ser 0).</p>
+</div>
+
+<div class="barra">
+  <div class="barra-in">
+    <div class="status" id="status">Faltam <b>3</b> itens</div>
+    <a class="enviar" id="enviar" aria-disabled="true" href="#">Enviar pro Nitai no WhatsApp</a>
+  </div>
+</div>
+
+<script>
+const WA = "5531982976006";
+const ITENS = [
+  {nota:"19187", cod:"3762", desc:"Raspador Fox Podium low friction Gen2", qtdNota:2, bling:3},
+  {nota:"19187", cod:"3793", desc:"Seal Kit Float DPX2 rebuild Gen2", qtdNota:3, bling:3},
+  {nota:"19187", cod:"3794", desc:"Core Service Kit NEW", qtdNota:1, bling:1}
+];
+
+const resp = {};
+
+function render() {
+  document.querySelectorAll('.nota-card').forEach(card => {
+    const nota = card.dataset.nota;
+    const box = card.querySelector('.itens');
+    ITENS.filter(i => i.nota === nota).forEach(it => {
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML =
+        '<div class="item-desc">' + it.desc + '</div>' +
+        '<div class="item-meta">cód ' + it.cod + ' · veio na nota: <b>' + it.qtdNota + '</b> · Bling hoje: <b>' + it.bling + '</b></div>' +
+        '<div class="row">' +
+          '<button class="btn-ok" type="button">Confere (' + it.bling + ')</button>' +
+          '<div class="qtd-wrap"><span>tenho</span><input type="number" inputmode="numeric" min="0" step="1" placeholder="—"></div>' +
+        '</div>';
+      const btn = el.querySelector('.btn-ok');
+      const inp = el.querySelector('input');
+      btn.addEventListener('click', () => {
+        const ja = btn.classList.contains('on');
+        if (ja) { btn.classList.remove('on'); delete resp[it.cod]; }
+        else { btn.classList.add('on'); inp.value = ''; inp.classList.remove('dif'); resp[it.cod] = it.bling; }
+        atualiza();
+      });
+      inp.addEventListener('input', () => {
+        btn.classList.remove('on');
+        if (inp.value === '') { delete resp[it.cod]; inp.classList.remove('dif'); }
+        else { const v = parseInt(inp.value, 10); resp[it.cod] = isNaN(v) ? 0 : v; inp.classList.toggle('dif', resp[it.cod] !== it.bling); }
+        atualiza();
+      });
+      box.appendChild(el);
+    });
+  });
+}
+
+function atualiza() {
+  const feitos = Object.keys(resp).length;
+  const falta = ITENS.length - feitos;
+  const st = document.getElementById('status');
+  const bt = document.getElementById('enviar');
+  if (falta > 0) {
+    st.innerHTML = 'Faltam <b>' + falta + '</b> ' + (falta === 1 ? 'item' : 'itens');
+    bt.setAttribute('aria-disabled', 'true');
+    bt.removeAttribute('href');
+  } else {
+    const dif = ITENS.filter(i => resp[i.cod] !== i.bling).length;
+    st.innerHTML = dif === 0 ? 'Tudo conferido, <b>nenhuma diferença</b>' : '<b>' + dif + '</b> ' + (dif === 1 ? 'item diferente' : 'itens diferentes') + ' do Bling';
+    bt.setAttribute('aria-disabled', 'false');
+    bt.setAttribute('href', 'https://wa.me/' + WA + '?text=' + encodeURIComponent(monta()));
+  }
+}
+
+function monta() {
+  let t = 'Conferência de estoque Fox (21/07)\n';
+  const dif = ITENS.filter(i => resp[i.cod] !== i.bling);
+  if (dif.length === 0) {
+    t += '\nConferi os 3 itens, está tudo batendo com o Bling.';
+    return t;
+  }
+  t += '\nDIFERENTE do Bling (' + dif.length + '):\n';
+  dif.forEach(i => { t += '- ' + i.cod + ' ' + i.desc + ': tenho ' + resp[i.cod] + ' (Bling diz ' + i.bling + ')\n'; });
+  const ok = ITENS.length - dif.length;
+  t += '\nOs outros ' + ok + ' itens conferem.';
+  return t;
+}
+
+render();
+atualiza();
+</script>
+</body>
+</html>
