@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>New Order · Contagem física 27/07</title>
+<style>
+  :root {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --note: #8a6d1f; --note-soft: #fbf1d9; --note-border: #e3c878;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+      --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+      --border: #2b323c; --border-strong: #3a424e;
+      --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+      --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+      --note: #e3c878; --note-soft: #332c1440; --note-border: #6b5a26;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 100px; }
+  header { padding: 8px 2px 14px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(21px, 5vw, 28px); margin: 6px 0 8px; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0 0 10px; }
+  .aviso { background: var(--accent-soft); border: 1px solid var(--accent); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-top: 10px; }
+  .aviso b { color: var(--accent); }
+  .prog-topo { font-size: 14px; color: var(--muted); margin-top: 10px; font-weight: 600; }
+  .prog-topo b { color: var(--ink); }
+  .limpar { display: block; margin: 14px auto 0; background: none; border: none;
+    color: var(--faint); font-size: 12.5px; text-decoration: underline; cursor: pointer; padding: 6px; }
+  .secao-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 14px 14px; margin-top: 18px; box-shadow: var(--shadow); }
+  .secao-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .secao-titulo { font-weight: 700; font-size: 17px; }
+  .secao-prog { font-size: 12.5px; color: var(--muted); }
+  .secao-prog b { color: var(--ink); }
+  .item { border-top: 1px solid var(--border); padding: 12px 0; display: flex; align-items: center; gap: 10px; }
+  .item:first-of-type { border-top: none; }
+  .item-info { flex: 1; min-width: 0; }
+  .item-cod { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--faint); }
+  .item-nome { font-weight: 600; font-size: 14px; margin-top: 1px; }
+  .item-marca { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--surface-2);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 1px 6px; }
+  .item-dup { margin-top: 6px; font-size: 12px; color: var(--note); background: var(--note-soft);
+    border: 1px solid var(--note-border); border-radius: 8px; padding: 5px 8px; }
+  .item-dup .dup-nota { display: block; font-weight: 600; margin-top: 1px; }
+  .item input { width: 74px; flex: 0 0 auto; border: 1px solid var(--border-strong); border-radius: 10px;
+    background: var(--surface-2); color: var(--ink); font-size: 18px; text-align: center; padding: 12px 6px;
+    min-height: 44px; font-variant-numeric: tabular-nums; }
+  .item input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .item input.tocado { border-color: var(--good); background: var(--good-soft); }
+  .send-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .send { flex: 1 1 auto; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 12px 10px; border-radius: 12px;
+    white-space: nowrap; background: #25d366; color: #062b17; }
+  .send.disabled { opacity: .4; pointer-events: none; }
+  .todo { margin-top: 22px; }
+  .send.todo-btn { background: var(--accent); color: var(--accent-ink); width: 100%; font-size: 15px; }
+  details.secao-inativados { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 4px 14px 14px; margin-top: 18px; box-shadow: var(--shadow); }
+  details.secao-inativados summary { cursor: pointer; padding: 12px 0; font-weight: 700; font-size: 15px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.secao-inativados summary::-webkit-details-marker { display: none; }
+  details.secao-inativados summary .seta { color: var(--faint); font-size: 13px; font-weight: 600; }
+  .aviso-inativados { background: var(--bad-soft); border: 1px solid var(--bad); color: var(--ink);
+    border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 6px; }
+  .aviso-inativados b { color: var(--bad); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">New Order · Contagem física 27/07</div>
+    <h1>Contagem de pneus e guidões</h1>
+    <p class="lede">Matheus, confere na prateleira quantos tem de cada item e digita a quantidade. Manda seção por seção ou tudo de uma vez.</p>
+    <div class="aviso"><b>Importante:</b> campo vazio = "ainda não contei". Digitar <b>0</b> = "contei e não tem nenhum". Não deixa vazio o que você já conferiu.</div>
+    <div class="prog-topo" id="prog-topo">carregando...</div>
+    <button type="button" class="limpar" id="btn-limpar">limpar tudo</button>
+  </header>
+
+  <div id="secoes"></div>
+
+  <div class="todo">
+    <a class="send todo-btn disabled" id="btn-todo" href="#">Enviar tudo</a>
+  </div>
+</div>
+
+<script>
+  const WA = "5531982976006";
+  const DATA_CONTAGEM_LABEL = "27/07";
+  const SECOES = [{"id": "guidao", "titulo": "Guidão", "itens": [{"codigo": "3726", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 23 800MM PRETO (BLAST BLACK)"}, {"codigo": "3725", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 38 800MM PRETO (BLAST BLACK)"}, {"codigo": "2611", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 20MM - FATBAR 31.8MM -"}, {"codigo": "2610", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 30MM - FATBAR 31.8MM -"}, {"codigo": "3641", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 30MM - FATBAR 35MM -"}, {"codigo": "3642", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 40MM - FATBAR 35MM -"}, {"codigo": "3721", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 30 800MM ALUMINIO DOURADO"}, {"codigo": "3720", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 40 800MM ALUMINIO DOURADO"}, {"codigo": "2093", "nome": "GUIDAO ENDURO ALUM 35X800X30MM RS TRAIL PTO", "marca": "SENTEC"}, {"codigo": "2198", "nome": "GUIDAO TITLE AH1 PRETO 35 RISE:25mm"}]}, {"id": "correlatos_guidao", "titulo": "Correlatos de guidão", "itens": [{"codigo": "1398", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL PTO FOSCO"}, {"codigo": "2836", "nome": "FITA DE GUIDAO EASTON PINLINE LOGO BLACK"}, {"codigo": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS"}, {"codigo": "3062", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE 10MM - FATBAR 35MM -"}, {"codigo": "3244", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE ZERO - FATBAR 35MM -"}, {"codigo": "3359", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 50MM - RISE ZERO - FATBAR 35MM -"}, {"codigo": "1309", "nome": "SAFE PLUG - KIT DE FERRAMENTAS TUBELESS COM ENCAIXE NO GUIDAO DE BICICLETA - S-TRES SAFE PLUG L S"}, {"codigo": "3017", "nome": "Plugs Token para Guidão - Black TK267R"}]}, {"id": "pneu", "titulo": "Pneu", "itens": [{"codigo": "2813", "nome": "PNEU 20X2.10 K1016, PTO, KINIPTION"}, {"codigo": "3273", "nome": "PNEU ARAME 29X2.5 SCORPION RACE DH M"}, {"codigo": "2889", "nome": "PNEU 27,5X2,40 ENDURO PERSUADER DRY 120TPI 3C-MTB TR KEVLAR", "marca": "CHAOYANG"}, {"codigo": "2890", "nome": "PNEU 29X2,40 ENDURO PERSUADER WET 60TPI 3C-AM TR KEVLAR PTO", "marca": "CHAOYANG"}, {"codigo": "2589", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS FX-CREME", "marca": "CHAOYANG"}, {"codigo": "2521", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS PTO", "marca": "CHAOYANG"}, {"codigo": "2675", "nome": "PNEU CONTINENTAL CROSS KING 27,5 2 3 PERFORMANCE PRETO DOBRAVEL"}, {"codigo": "2673", "nome": "PNEU CONTINENTAL CROSS KING SHIELDWALL 29 29X2 6 PRETO DOBRAVEL"}, {"codigo": "2674", "nome": "PNEU CONTINENTAL RUBAN SHIELDWALL 29 29X2 6 PRETO DOBRAVEL"}, {"codigo": "3292", "nome": "PNEU HUTCHINSON GRIFFUS TUBELESS 27,5X2,50"}, {"codigo": "3294", "nome": "PNEU HUTCHINSON KRAKEN TUBELESS SIDESKIN 29X2"}, {"codigo": "3293", "nome": "PNEU MTB HUTCHINSON PYTHON 3 TUBELESS 29X4 PR"}, {"codigo": "1075", "nome": "PNEU 26X2.35 KENDA SMALL BLOCK"}, {"codigo": "3102", "nome": "PNEU MOTO CG 125 90/90-18 MATRIX LEVORIN"}, {"codigo": "2743", "nome": "PNEU MAXXIS 27.5X2.5 MINION DHF M301RU"}, {"codigo": "2413", "nome": "PNEU MAXXIS 27.5X2.50WT ASSEGAI M356RU"}, {"codigo": "2894", "nome": "PNEU MAXXIS 29X2.40 REKON RACE M355RU"}, {"codigo": "2742", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU"}, {"codigo": "2411", "nome": "PNEU MAXXIS 29X2.50 ASSEGAI M356RU"}, {"codigo": "2741", "nome": "PNEU MAXXIS 29X2.50 WETSCREAM M137RU"}, {"codigo": "2412", "nome": "PNEU MAXXIS 29X2.50WT MINION DHF"}, {"codigo": "2545", "nome": "Pneu Michelin Wild Am2 29 X 2.40 Mixed/soft"}, {"codigo": "3362", "nome": "PNEU 275X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "marca": "MICHELIN FR", "duplicados": ["3369"]}, {"codigo": "2342", "nome": "PNEU 275X260 WILD ENDURO RACING LINE 3X60TPI DIANT KVLR TLR", "marca": "MICHELIN FR"}, {"codigo": "3621", "nome": "PNEU 29X2.60 FORCE AM2 COMPETITION 3X60TPI KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "3622", "nome": "PNEU 29X2.60 WILD AM2 COMPETITION 3X60TPI KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "3363", "nome": "PNEU 29X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "marca": "MICHELIN FR", "duplicados": ["3494"]}, {"codigo": "3364", "nome": "PNEU 29X240 DH22 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "marca": "MICHELIN FR", "duplicados": ["3495"]}, {"codigo": "2282", "nome": "PNEU 29X240 WILD AM2 COMPETITION KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "2283", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X33TPI TRAS KVLR TLR", "marca": "MICHELIN FR", "duplicados": ["3482"]}, {"codigo": "2284", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X60TPI DIANT KVLR TLR", "marca": "MICHELIN FR", "duplicados": ["3481"]}, {"codigo": "2285", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI DIANT KEVLAR TLR", "marca": "MICHELIN FR", "duplicados": ["3480"]}, {"codigo": "2391", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "3620", "nome": "PNEU 29X250 WILD ENDURO MH RACING LINE 2X55TPI KEVLAR TLR AM", "marca": "MICHELIN FR"}, {"codigo": "3291", "nome": "PV529822 - PNEU TUBELESS DE ALTA PERFORMANCE"}]}, {"id": "correlatos_pneu", "titulo": "Correlatos de pneu", "itens": [{"codigo": "1180", "nome": "REPARO P/ PNEUS TUBELESS BLACKBURN C/10"}, {"codigo": "2522", "nome": "KIT REPARO PNEU TUBELESS MACARRAO 3.5MM/1.5MM", "marca": "HIGH ONE"}, {"codigo": "1179", "nome": "REMENDO PNEU - MACARRAOZINHO"}, {"codigo": "3789", "nome": "DEFENDER MTB - PROTETOR DE ARO E PNEU DE BICICLETA M"}, {"codigo": "2380", "nome": "CARTUCHO INFLADOR E REPARADOR DE PNEUS B.A.M. - 125ML - MUC-OFF"}, {"codigo": "3438", "nome": "ESPATULA DE NYLON PARA PNEUS - COR PRETA - MUC-OFF"}, {"codigo": "3439", "nome": "ESPATULA DE NYLON PARA PNEUS - COR ROSA - MUC-OFF"}, {"codigo": "3440", "nome": "ESPATULA DE NYLON PARA PNEUS - COR VERDE - MUC-OFF"}, {"codigo": "3740", "nome": "ESPATULA DE PNEU PARK TOOL TL-4.2 KIT 2 UNIDADES"}, {"codigo": "3175", "nome": "REFIL CONSERTO DE PNEU SEM CAMARA PASSEIO CAIXA COM 60 PECAS - R769062 - SCHEBOR"}, {"codigo": "2223", "nome": "TUBO PARA REPARO DE PNEU TOPEAK"}, {"codigo": "3582", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR LINER LIGHT XC TRAIL MTB TAMANHO, P/PNEUS 29 X 2.1 A 2.40"}, {"codigo": "3326", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT DOWNHILL 29 X 2.4/2.6"}, {"codigo": "3585", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 27.5X 2.4/2.6"}, {"codigo": "3584", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 29 X 2.4/2.6"}, {"codigo": "3583", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 27.5 X 2.4/2.6"}, {"codigo": "3505", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 29 X 2.4/2.6"}]}];
+  const SECAO_INATIVADOS = {"id": "inativados", "titulo": "Inativados (23/07)", "itens": [{"codigo": "3272", "nome": "PNEU 27.5X2.50 SCORPION RACE DH T"}, {"codigo": "3649", "nome": "SUPORTE GUIDAO 31.8X50MM ALM WILD EX 2 P"}, {"codigo": "3647", "nome": "GUIDAO ALM MTB NERO 31.8X720X60MM PTO"}, {"codigo": "2969", "nome": "SUPORTE GUIDAO, ALM, AHEAD, D601, 31,8X5"}, {"codigo": "1406", "nome": "SUPORTE GUIDAO, ALM, PROTAPER, PTO 35X35"}, {"codigo": "1407", "nome": "SUPORTE GUIDAO, ALM, PTO 31.8X35MM .5."}, {"codigo": "3097", "nome": "Pneu Continental Cross King Shieldwall 29 29 X 2.6 Dobravel"}, {"codigo": "1079", "nome": "Pneu Levorin Praieiro 700x32"}, {"codigo": "2924", "nome": "PNEU MAXXIS 27.5 X2.50 ASSEGAI USADO"}, {"codigo": "1115", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU"}, {"codigo": "3321", "nome": "PNEU MAXXIS SHORTY GEN 2 29X2.40 WT DH CASING"}, {"codigo": "2655", "nome": "Pneu Maxxis Minion DHF 29 x 2.50 DH CASING"}, {"codigo": "2996", "nome": "Pneu Maxxis Minion DHR 27.5 x 2.40 Usado"}, {"codigo": "3360", "nome": "PAR DE PNEUS MICHELIN RACING LINE DH 34 MULLET 29X2.40 / 27.5X2.40"}, {"codigo": "3614", "nome": "PNEU MICHELIN WILD ENDURO FRONT COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3598", "nome": "PNEU MICHELIN WILD ENDURO REAR COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3368", "nome": "Pneu Michelin Racing Line Dh 16 29 X 2.40 Preto"}, {"codigo": "3544", "nome": "Pneu Michelin Wild Enduro Competition Line 29x2.40 Traseiro - Preto"}, {"codigo": "2526", "nome": "Pneu Michelin Wild Enduro Competition Line Front 27.5 X 2.60"}, {"codigo": "2422", "nome": "Pneu Michelin Wild Enduro Competition Line Front 29 X 2.40"}, {"codigo": "3542", "nome": "Pneu Michelin Wild Enduro Front 29 X 2.40 Preto", "duplicados": ["3543"]}, {"codigo": "2574", "nome": "Pneu Michelin Wild Enduro Front Racing Line 29 X 2.40 E-bike", "duplicados": ["2596", "3061"]}, {"codigo": "2531", "nome": "Pneu Michelin Wild Enduro Rear Racing Line 29 X 2.40", "duplicados": ["2575"]}, {"codigo": "2286", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "2912", "nome": "PNEU MOTO TORNADO 120/80-18 VIPER MAGGION"}, {"codigo": "1774", "nome": "KIT REPARADOR DE PNEUS TUBELESS PUNCTURE PLUG - MUC-OFF"}, {"codigo": "2888", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 10 Macarrões", "duplicados": ["2919"]}, {"codigo": "2711", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 15 Macarrão"}, {"codigo": "1586", "nome": "Fita P/ Kit Reparo Pneu Bicicleta - Nomad"}, {"codigo": "1138", "nome": "PRE SELANTE S-VULCAN PARA PNEU TUBELESS - S-TRES 30ML"}, {"codigo": "3243", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR CARBON35 800MM - RISE 30MM - FATBAR 35M"}, {"codigo": "2930", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 30MM - FATBAR 35MM - ALU"}, {"codigo": "2914", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 40MM - FATBAR 35MM - ALU"}, {"codigo": "1699", "nome": "Guidão Renthal Fatbar 35mm - rise 20mm - al - Black"}, {"codigo": "1694", "nome": "Guidão Renthal Fatbar 35mm - rise 30mm - al - Black"}, {"codigo": "3153", "nome": "Guidão Renthal Fatbar 35mm Clamprise 20mm Preto"}, {"codigo": "3150", "nome": "Guidão Renthal Fatnar V2 Aluminium Black 800mm X 35mm X 30mm"}, {"codigo": "2929", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 33MM - FATBAR 35MM - 136 GRAMAS"}, {"codigo": "2138", "nome": "Espatula Para Pneus Sentec - 3unidades"}, {"codigo": "2097", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL FACTORY PTO BRI", "marca": "SENTEC"}, {"codigo": "1", "nome": "GUIDAO TITLE AH1 CROMADO 31.8X25mm"}, {"codigo": "1704", "nome": "GUIDAO TITLE AH1 CROMADO 35X25", "duplicados": ["1706"]}, {"codigo": "1705", "nome": "GUIDAO TITLE AH1 PRETO 31.8x50"}, {"codigo": "2", "nome": "GUIDAO TITLE AH1 PRETO 35X25mm"}, {"codigo": "67", "nome": "GUIDÃO TITLE AH1 BLACK 31.8x25"}, {"codigo": "68", "nome": "GUIDÃO TITLEA AH1BLACK 35x25"}]};
+  const STORAGE_KEY = "no_contagem_fisica_2026-07-27_v2";
+  const LIMITE_CHARS = 1200;
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveState() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+  const state = loadState(); // codigo -> string digitada ("0", "5", ...). Ausente = nao contado.
+
+  function contarPreenchidos(itens) {
+    return itens.filter(it => state[it.codigo] !== undefined && state[it.codigo] !== "").length;
+  }
+
+  function limiteExcedido(str) {
+    return encodeURIComponent(str).length > LIMITE_CHARS;
+  }
+
+  function montarMensagens(titulo, itensPreenchidos) {
+    const cabecalhoBase = `CONTAGEM FÍSICA 27/07 — ${titulo}`;
+    const linhas = itensPreenchidos.map(it => `${it.codigo} ${it.qtd}`);
+    const textoUnico = cabecalhoBase + "\n\n" + linhas.join("\n");
+    if (!limiteExcedido(textoUnico)) {
+      return [{ texto: textoUnico, count: linhas.length }];
+    }
+    const grupos = [[]];
+    linhas.forEach(linha => {
+      const tentativo = [...grupos[grupos.length - 1], linha];
+      const cabTeste = `${cabecalhoBase} (parte ${grupos.length})`;
+      const textoTeste = cabTeste + "\n\n" + tentativo.join("\n");
+      if (limiteExcedido(textoTeste) && grupos[grupos.length - 1].length > 0) {
+        grupos.push([linha]);
+      } else {
+        grupos[grupos.length - 1] = tentativo;
+      }
+    });
+    const totalPartes = grupos.length;
+    return grupos.map((g, i) => ({
+      texto: `${cabecalhoBase} (parte ${i + 1}/${totalPartes})\n\n${g.join("\n")}`,
+      count: g.length,
+    }));
+  }
+
+  function itensPreenchidosDe(itens) {
+    return itens
+      .filter(it => state[it.codigo] !== undefined && state[it.codigo] !== "")
+      .map(it => ({ codigo: it.codigo, qtd: state[it.codigo] }));
+  }
+
+  function waHref(texto) {
+    return "https://wa.me/" + WA + "?text=" + encodeURIComponent(texto);
+  }
+
+  const secoesEl = document.getElementById("secoes");
+
+  function renderSecao(secao, opcoes) {
+    const isInativados = (opcoes && opcoes.isInativados) || false;
+    const card = document.createElement(isInativados ? "details" : "div");
+    card.className = isInativados ? "secao-inativados" : "secao-card";
+
+    if (isInativados) {
+      const summary = document.createElement("summary");
+      summary.innerHTML = `<span>${secao.titulo}</span><span class="seta">▸ abrir</span>`;
+      card.appendChild(summary);
+      const aviso = document.createElement("div");
+      aviso.className = "aviso-inativados";
+      aviso.innerHTML = "<b>Atenção:</b> esses produtos foram desativados no sistema em 23/07 por estarem sem giro. Se você ACHAR algum fisicamente, anote a quantidade — a gente reativa.";
+      card.appendChild(aviso);
+    } else {
+      const head = document.createElement("div");
+      head.className = "secao-head";
+      head.innerHTML = `<div class="secao-titulo">${secao.titulo}</div><div class="secao-prog" data-prog="${secao.id}"></div>`;
+      card.appendChild(head);
+    }
+
+    secao.itens.forEach(it => {
+      const row = document.createElement("div");
+      row.className = "item";
+      const marcaHtml = it.marca ? `<div class="item-marca">${it.marca}</div>` : "";
+      const dupHtml = (it.duplicados && it.duplicados.length)
+        ? `<div class="item-dup">também cadastrado como: ${it.duplicados.join(", ")}<span class="dup-nota">conte o total UMA vez</span></div>`
+        : "";
+      row.innerHTML = `
+        <div class="item-info">
+          <div class="item-cod">${it.codigo}</div>
+          <div class="item-nome">${it.nome}</div>
+          ${marcaHtml}
+          ${dupHtml}
+        </div>
+        <input type="number" inputmode="numeric" min="0" step="1" data-codigo="${it.codigo}" placeholder="—">
+      `;
+      const input = row.querySelector("input");
+      if (state[it.codigo] !== undefined) {
+        input.value = state[it.codigo];
+        if (state[it.codigo] !== "") input.classList.add("tocado");
+      }
+      input.addEventListener("input", () => {
+        if (input.value === "") {
+          delete state[it.codigo];
+          input.classList.remove("tocado");
+        } else {
+          const n = Math.max(0, parseInt(input.value, 10) || 0);
+          state[it.codigo] = String(n);
+          input.classList.add("tocado");
+        }
+        saveState();
+        refresh();
+      });
+      card.appendChild(row);
+    });
+
+    const sendRow = document.createElement("div");
+    sendRow.className = "send-row";
+    sendRow.dataset.sendrow = secao.id;
+    card.appendChild(sendRow);
+
+    secoesEl.appendChild(card);
+  }
+
+  SECOES.forEach(s => renderSecao(s));
+  renderSecao(SECAO_INATIVADOS, { isInativados: true });
+
+  function refreshSecaoBotoes(secao) {
+    const preenchidos = itensPreenchidosDe(secao.itens);
+    const wrap = document.querySelector(`[data-sendrow="${secao.id}"]`);
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    if (preenchidos.length === 0) {
+      const a = document.createElement("a");
+      a.className = "send disabled";
+      a.href = "#";
+      a.textContent = `Enviar ${secao.titulo} (0)`;
+      wrap.appendChild(a);
+      return;
+    }
+    const mensagens = montarMensagens(secao.titulo, preenchidos);
+    mensagens.forEach((m, i) => {
+      const a = document.createElement("a");
+      a.className = "send";
+      a.href = waHref(m.texto);
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = mensagens.length > 1
+        ? `Enviar ${secao.titulo} parte ${i + 1}/${mensagens.length} (${m.count})`
+        : `Enviar ${secao.titulo} (${m.count})`;
+      wrap.appendChild(a);
+    });
+  }
+
+  function refreshProgTopo() {
+    const obrigatorios = SECOES.map(s => s.itens).flat();
+    const total = obrigatorios.length;
+    const contados = obrigatorios.filter(it => state[it.codigo] !== undefined && state[it.codigo] !== "").length;
+    document.getElementById("prog-topo").innerHTML = `<b>${contados}</b> de <b>${total}</b> contados`;
+  }
+
+  function refreshSecaoProg(secao) {
+    const el = document.querySelector(`[data-prog="${secao.id}"]`);
+    if (!el) return;
+    const contados = contarPreenchidos(secao.itens);
+    el.innerHTML = `<b>${contados}</b> de <b>${secao.itens.length}</b> contados`;
+  }
+
+  function refreshTodoBtn() {
+    const btn = document.getElementById("btn-todo");
+    const linhasTotais = [];
+    [...SECOES, SECAO_INATIVADOS].forEach(secao => {
+      const preenchidos = itensPreenchidosDe(secao.itens);
+      if (preenchidos.length === 0) return;
+      linhasTotais.push(`— ${secao.titulo} —`);
+      preenchidos.forEach(it => linhasTotais.push(`${it.codigo} ${it.qtd}`));
+    });
+    if (linhasTotais.length === 0) {
+      btn.href = "#";
+      btn.textContent = "Enviar tudo (0)";
+      btn.classList.add("disabled");
+      return;
+    }
+    const totalItens = [...SECOES, SECAO_INATIVADOS]
+      .reduce((s, secao) => s + itensPreenchidosDe(secao.itens).length, 0);
+    const cabecalhoBase = `CONTAGEM FÍSICA 27/07 — COMPLETA`;
+    const textoUnico = cabecalhoBase + "\n\n" + linhasTotais.join("\n");
+    btn.classList.remove("disabled");
+    if (!limiteExcedido(textoUnico)) {
+      btn.href = waHref(textoUnico);
+      btn.textContent = `Enviar tudo (${totalItens})`;
+      btn.target = "_blank";
+      btn.rel = "noopener";
+      return;
+    }
+    // se estourar o limite geral, manda so o cabecalho pedindo pra usar os botoes de secao
+    btn.href = waHref(`${cabecalhoBase}\n\nMuito grande pra mandar tudo junto — usa os botões de cada seção, por favor.`);
+    btn.textContent = `Enviar tudo (${totalItens} — grande, use as seções)`;
+    btn.target = "_blank";
+    btn.rel = "noopener";
+  }
+
+  function refresh() {
+    SECOES.forEach(refreshSecaoProg);
+    SECOES.forEach(refreshSecaoBotoes);
+    refreshSecaoBotoes(SECAO_INATIVADOS);
+    refreshProgTopo();
+    refreshTodoBtn();
+  }
+
+  document.getElementById("btn-limpar").addEventListener("click", () => {
+    if (!confirm("Limpar tudo que foi contado até agora nesta página? Essa ação não pode ser desfeita.")) return;
+    Object.keys(state).forEach(k => delete state[k]);
+    saveState();
+    document.querySelectorAll("input[data-codigo]").forEach(input => {
+      input.value = "";
+      input.classList.remove("tocado");
+    });
+    refresh();
+  });
+
+  refresh();
+</script>
+</body>
+</html>
