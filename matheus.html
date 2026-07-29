@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:,">
+<title>New Order — pendências com o Matheus</title>
+<style>
+  :root {
+    --bg: #eef1f5; --surface: #ffffff; --surface-2: #f5f7fa;
+    --ink: #191f2a; --muted: #5c6675; --faint: #8b95a4;
+    --border: #dfe4eb; --border-strong: #c6cdd7;
+    --accent: #14657f; --accent-ink: #ffffff; --accent-soft: #e2eef2;
+    --good: #147d55; --good-soft: #dff2e8; --bad: #b23a4c; --bad-soft: #fbe6ea;
+    --note: #8a6d1f; --note-soft: #fbf1d9; --note-border: #e3c878;
+    --warn: #b8860b;
+    --shadow: 0 1px 2px rgba(20,30,45,.06), 0 6px 20px rgba(20,30,45,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12161c; --surface: #1a1f27; --surface-2: #20262f;
+      --ink: #e8ecf2; --muted: #9aa4b2; --faint: #6d7887;
+      --border: #2b323c; --border-strong: #3a424e;
+      --accent: #4fb3d0; --accent-ink: #06222b; --accent-soft: #16323b;
+      --good: #4fc38c; --good-soft: #16302440; --bad: #f0788a; --bad-soft: #3a1e2440;
+      --note: #e3c878; --note-soft: #332c1440; --note-border: #6b5a26;
+      --warn: #e3c878;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.28);
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45; -webkit-text-size-adjust: 100%; }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
+  header { padding: 8px 2px 14px; }
+  .kicker { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+  h1 { font-size: clamp(21px, 5vw, 28px); margin: 6px 0 8px; letter-spacing: -.02em; }
+  .lede { color: var(--muted); font-size: 15px; margin: 0 0 10px; }
+  .lede b { color: var(--ink); }
+  .aviso { background: var(--accent-soft); border: 1px solid var(--accent); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px; font-size: 14px; margin-top: 10px; }
+  .aviso b { color: var(--accent); }
+  .aviso-markup { background: var(--note-soft); border: 1px solid var(--note-border); color: var(--ink);
+    border-radius: 12px; padding: 12px 14px; font-size: 13.5px; margin-top: 10px; }
+  .aviso-markup b { color: var(--note); }
+  .aviso-secao { background: var(--note-soft); border: 1px solid var(--note-border); color: var(--ink);
+    border-radius: 10px; padding: 8px 12px; font-size: 12.5px; margin-top: 8px; }
+
+  .progresso-geral { margin-top: 16px; background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }
+  .progresso-txt { font-size: 13.5px; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .progresso-txt b { color: var(--ink); font-size: 16px; }
+  .progresso-barra { height: 8px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+  .progresso-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .2s ease; }
+
+  .busca-wrap { margin-top: 14px; }
+  .busca-wrap input { width: 100%; border: 1px solid var(--border-strong); border-radius: 12px;
+    background: var(--surface); color: var(--ink); font-size: 15px; padding: 12px 14px;
+    min-height: 44px; -webkit-appearance: none; }
+  .busca-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .chips { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--border-strong); background: var(--surface); color: var(--muted);
+    border-radius: 999px; padding: 9px 15px; font-size: 13px; font-weight: 700; cursor: pointer;
+    min-height: 38px; -webkit-appearance: none; }
+  .chip.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+  details.secao { background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    padding: 4px 14px 14px; margin-top: 18px; box-shadow: var(--shadow); }
+  details.secao summary { cursor: pointer; padding: 12px 0; list-style: none; display: flex;
+    justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  details.secao summary::-webkit-details-marker { display: none; }
+  .secao-titulo-wrap { display: flex; align-items: baseline; gap: 8px; }
+  .secao-titulo { font-weight: 700; font-size: 17px; }
+  .secao-seta { color: var(--faint); font-size: 12px; font-weight: 600; }
+  .secao-sub { color: var(--muted); font-size: 13px; margin: -4px 0 10px; }
+  .secao-prog { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .secao-prog b { color: var(--ink); }
+
+  .grupo-titulo { font-weight: 700; font-size: 14.5px; color: var(--accent); margin: 16px 0 4px; }
+  .grupo-titulo:first-of-type { margin-top: 4px; }
+
+  .item { border-top: 1px solid var(--border); padding: 13px 4px; }
+  .item:first-of-type { border-top: none; }
+  .item.faltando { background: var(--note-soft); border-radius: 10px; margin: 3px -4px; padding: 12px 8px; border-top: none; }
+  .item-cod { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; color: var(--faint); }
+  .item-nome { font-weight: 600; font-size: 14.5px; margin-top: 1px; }
+  .item-marca { display: inline-block; margin-top: 4px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--surface-2);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 1px 6px; }
+  .item-dup { margin-top: 6px; font-size: 12px; color: var(--note); background: var(--note-soft);
+    border: 1px solid var(--note-border); border-radius: 8px; padding: 5px 8px; }
+  .item-dup .dup-nota { display: block; font-weight: 600; margin-top: 1px; }
+  .item-meta { color: var(--muted); font-size: 13px; margin-top: 6px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .item-meta b { color: var(--ink); }
+  .item-meta b.saldo-neg { color: var(--bad); }
+  .nota-negativo { font-size: 12px; color: var(--bad); margin-top: 2px; font-weight: 600; }
+  .sem-custo { margin-top: 6px; font-size: 12px; color: var(--warn); background: var(--note-soft);
+    border: 1px solid var(--note-border); border-radius: 8px; padding: 5px 8px; display: inline-block; }
+  .sugestao-chip { background: var(--accent-soft); color: var(--accent); border-radius: 999px;
+    padding: 2px 9px; font-weight: 700; }
+  .sugestao-chip b { color: var(--accent); }
+
+  .row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+  .preco-wrap { flex: 1 1 auto; position: relative; }
+  .preco-wrap span { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--faint); font-size: 13px; pointer-events: none; }
+  .preco-wrap input { width: 100%; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface-2);
+    color: var(--ink); font-size: 16px; padding: 10px 10px 10px 34px; min-height: 44px;
+    font-variant-numeric: tabular-nums; -webkit-appearance: none; }
+  .preco-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .btn-aceitar { flex: 0 0 auto; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--muted);
+    border-radius: 10px; padding: 11px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    min-height: 44px; white-space: nowrap; -webkit-appearance: none; }
+  .margem-badge { flex: 0 0 auto; min-width: 62px; text-align: center; border-radius: 10px; padding: 11px 8px;
+    font-size: 13px; font-weight: 800; min-height: 44px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2); color: var(--faint); }
+  .margem-badge.vermelho { background: var(--bad-soft); color: var(--bad); }
+  .margem-badge.amarelo { background: var(--note-soft); color: var(--note); }
+  .margem-badge.verde { background: var(--good-soft); color: var(--good); }
+  .margem-badge.neutro { background: var(--surface-2); color: var(--muted); font-size: 11px; }
+
+  .btn-ok { flex: 0 0 auto; border: 1px solid var(--border-strong); background: var(--surface-2); color: var(--muted);
+    border-radius: 10px; padding: 11px 10px; font-size: 12.5px; font-weight: 700; cursor: pointer;
+    min-height: 44px; white-space: nowrap; -webkit-appearance: none; }
+  .btn-ok.on { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .qtd-wrap { flex: 0 0 96px; position: relative; }
+  .qtd-wrap input { width: 100%; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface-2);
+    color: var(--ink); font-size: 16px; padding: 10px; min-height: 44px;
+    font-variant-numeric: tabular-nums; text-align: right; -webkit-appearance: none; }
+  .qtd-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .qtd-wrap input.dif { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); font-weight: 700; }
+  .diverg-badge { flex: 0 0 auto; min-width: 54px; text-align: center; border-radius: 10px; padding: 11px 6px;
+    font-size: 12px; font-weight: 800; min-height: 44px; display: flex; align-items: center; justify-content: center;
+    background: var(--surface-2); color: var(--faint); }
+  .diverg-badge.vermelho { background: var(--bad-soft); color: var(--bad); }
+  .diverg-badge.verde { background: var(--good-soft); color: var(--good); }
+
+  .send-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .send { flex: 1 1 auto; min-height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    gap: 6px; text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 12px 10px; border-radius: 12px;
+    white-space: nowrap; background: #25d366; color: #062b17; }
+  .send.disabled { opacity: .4; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">New Order · pendências com o Matheus</div>
+    <h1>Tudo que está pendente, numa página só</h1>
+    <p class="lede">Matheus, isto substitui as 3 páginas separadas — agora é <b>uma só</b>, com as 3 frentes que faltam responder. Cada seção manda a resposta pro WhatsApp separadamente, na hora que você terminar ela.</p>
+    <div class="aviso"><b>Importante:</b> campo vazio = "ainda não respondi". Preencher com <b>0</b> é uma resposta válida (diferente de vazio) — não deixa vazio o que você já decidiu ou já contou.</div>
+
+    <div class="progresso-geral">
+      <div class="progresso-txt"><span>Progresso geral</span><span><b id="prog-geral-num">0</b> de <b>134</b> preenchidos</span></div>
+      <div class="progresso-barra"><div class="progresso-fill" id="prog-geral-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="busca-wrap">
+      <input type="search" id="busca" placeholder="Buscar por nome ou código...">
+    </div>
+    <div class="chips">
+      <button type="button" class="chip on" data-filtro="todos">Todos</button>
+      <button type="button" class="chip" data-filtro="pendente">Pendentes</button>
+      <button type="button" class="chip" data-filtro="preenchido">Preenchidos</button>
+    </div>
+  </header>
+
+  <div id="secoes"></div>
+</div>
+
+<script>
+  const WA = "5531982976006";
+  const LIMITE_CHARS = 1200;
+  const STORAGE_KEY = "no_matheus_2026-07-29_v1";
+  const DATA_HOJE = "29/07";
+  const MARKUP_LABEL = "custo × 1,81";
+
+  const SECAO_PRECIFICACAO = {
+    id: "precificacao", tipo: "preco_sugerido",
+    titulo: "Preço de venda · itens em estoque",
+    sub: "57 itens que o Bling mostra com saldo, sem preço de venda ainda — ordenados do maior pro menor saldo. Onde dá pra calcular, já vem uma sugestão (custo × 1,81), mas é só sugestão.",
+    headerMsg: "PRECIFICAÇÃO",
+    itens: [{"codigo": "1984", "codigoExibido": "1984", "nome": "PARAFUSO GENÉRICO", "saldo": 182, "custo": 4.59, "sugestao": 8}, {"codigo": "1387", "codigoExibido": "1387", "nome": "SILICONE SPRAY 300ML MUNDIAL PRIME  -  REF AE03000018", "saldo": 68, "custo": 137.59, "sugestao": 249}, {"codigo": "2243", "codigoExibido": "2243", "nome": "ABRACADEIRA NYLON 200X2,5MM C/100 PTA FOXLUX  -  REF 18.13", "saldo": 9, "custo": 4.865, "sugestao": 9}, {"codigo": "1409", "codigoExibido": "1409", "nome": "SUPORTE P/BICICLETA LJJ-2 ACO PTO.", "saldo": 8, "custo": 56.4663, "sugestao": 102}, {"codigo": "3166", "codigoExibido": "3166", "nome": "LUBRIFICANTE C3 CERAMIC SECO - 5ML - MUC-OFF (876) - AMOSTRA", "saldo": 7, "custo": null, "sugestao": null}, {"codigo": "2267", "codigoExibido": "2267", "nome": "ABRACADEIRA NYLON 200X3,5MM C/100 PTA FOXLUX  -  REF 18.15", "saldo": 7, "custo": 7.255, "sugestao": 13}, {"codigo": "1461", "codigoExibido": "1461", "nome": "Trava do Rolamento da Direção", "saldo": 7, "custo": null, "sugestao": null}, {"codigo": "2460", "codigoExibido": "2460", "nome": "GRAXA LEVE SLICKOLEUM, 425G, FRASCO ORIG", "saldo": 6, "custo": 358.145, "sugestao": 648}, {"codigo": "2360", "codigoExibido": "2360", "nome": "ABRACADEIRA NYLON 140X2,5MM C/100 PTA FOXLUX  -  REF 18.12", "saldo": 6, "custo": 3.68, "sugestao": 7}, {"codigo": "3169", "codigoExibido": "3169", "nome": "AMOSTRA POLIDOR MATT FINISH DETAILER - 32ML - MUC-OFF (253)", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "3168", "codigoExibido": "3168", "nome": "DESENGRAXANTE DRIVETRAIN CLEANER PARA TRANSMISSAO - 25ML - MUC-OFF(255) - AMOSTRA", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "3167", "codigoExibido": "3167", "nome": "LIMPADOR BIODEGRADAVEL NANOTECH - 32 ML - AMOSTRA - MUC-OFF (254)", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1977", "codigoExibido": "1977", "nome": "PAPEL A4 210X297MM C/500 CHAMEX", "saldo": 5, "custo": 25.64, "sugestao": 46}, {"codigo": "69", "codigoExibido": "69", "nome": "Air Spacer - Token - FOX 40", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1612", "codigoExibido": "1612", "nome": "Gancheira - usada", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1474", "codigoExibido": "1474", "nome": "Valvula Tubeless - usada", "saldo": 4, "custo": null, "sugestao": null}, {"codigo": "2160", "codigoExibido": "2160", "nome": "CAMARA CONTINENTAL MTB 26 - S42 BICO FINO", "saldo": 3, "custo": 45.2267, "sugestao": 82}, {"codigo": "1454", "codigoExibido": "1454", "nome": "Trava de cassete - usada", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "85", "codigoExibido": "85", "nome": "Anel de Esferas", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "389", "codigoExibido": "389", "nome": "Castanha de Canote - Completa - usada", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "1566", "codigoExibido": "1566", "nome": "Espuma de Suspensão - usadas - PAR", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "3754", "codigoExibido": "3754", "nome": "KIT CONVERSAO SINGLE SPEED ABSOLUTE BRUTUS 16D PTO", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3753", "codigoExibido": "3753", "nome": "MANOPLA ESI GRIPS EXTRA CHUNKY (BIKE) - PRETO", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3148", "codigoExibido": "3148", "nome": "Desengraxante Graxa Zero - 20 L", "saldo": 2, "custo": 452.1, "sugestao": 818}, {"codigo": "2763", "codigoExibido": "2763", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 265MM", "saldo": 2, "custo": 69.76, "sugestao": 126}, {"codigo": "2748", "codigoExibido": "2748", "nome": "Pistao em aluminio p/ pinca ( Zee, Saint e Xt - 4 pistoes)", "saldo": 2, "custo": 98, "sugestao": 177}, {"codigo": "2158", "codigoExibido": "2158", "nome": "CONDUITE JAGWIRE PARA CAMBIO 4MM LEX SLICK LUBE PRETO - ROLO COM 10M", "saldo": 2, "custo": 106.395, "sugestao": 193}, {"codigo": "2088", "codigoExibido": "2088", "nome": "TERMINAL P/CABO ACO, ALUMINIO, NAT", "saldo": 2, "custo": 65.06, "sugestao": 118}, {"codigo": "1436", "codigoExibido": "1436", "nome": "TERMINAL CONDUITE CAMBIO, 4MM, PLAST,PTO", "saldo": 2, "custo": 32.8, "sugestao": 59}, {"codigo": "114", "codigoExibido": "114", "nome": "Bacia da Direção - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "37", "codigoExibido": "37", "nome": "Adaptador de cubo - 5mm", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "1711", "codigoExibido": "1711", "nome": "Haste Externa - LEV - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "1714", "codigoExibido": "1714", "nome": "Haste Interna - LEV - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3755", "codigoExibido": "3755", "nome": "Kit do Ar/Oleo RockShox Vivid Air (2024+)", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "3752", "codigoExibido": "3752", "nome": "GARRAFA CAMELBAK THRIVE CHUG TRITAN 25OZ / 740ML - CHARCOAL", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "3596", "codigoExibido": "3596", "nome": "SAPATILHA ROAD SH-RP101 TAM 38 PTO", "saldo": 1, "custo": 386.22, "sugestao": 699}, {"codigo": "3595", "codigoExibido": "3595", "nome": "GARRAFA INOX MIA 650ML TDF", "saldo": 1, "custo": 284.49, "sugestao": 515}, {"codigo": "3594", "codigoExibido": "3594", "nome": "BOMBA OFICINA PERFORMANCE PTO", "saldo": 1, "custo": 368.99, "sugestao": 668}, {"codigo": "3517", "codigoExibido": "3517", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 280MM", "saldo": 1, "custo": 71.73, "sugestao": 130}, {"codigo": "3513", "codigoExibido": "3513", "nome": "PASTA ANTIGRIPAGEM PARK TOOL ASC-1", "saldo": 1, "custo": 57.87, "sugestao": 105}, {"codigo": "3020", "codigoExibido": "3020", "nome": "DISPLAY DE BALCAO MUC-OFF (198)", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "2749", "codigoExibido": "2749", "nome": "Pino em aluminio p/ Manete Shimano (Slx, XT, XTR e Deore) - PAR", "saldo": 1, "custo": 24, "sugestao": 43}, {"codigo": "2690", "codigoExibido": "2690", "nome": "CAPACETE MTB ENDURO 2.0 BRANCO/PRETO (WHITE) TAM. US S/BR 51-55", "saldo": 1, "custo": 664.26, "sugestao": 1202}, {"codigo": "2435", "codigoExibido": "2435", "nome": "TERMINAL PARA CONDUITE DE CAMBIO JAGWIRE 4MM PLÁSTICO PRETO - 100 UND.", "saldo": 1, "custo": 153.27, "sugestao": 277}, {"codigo": "2361", "codigoExibido": "2361", "nome": "ESCOVA LAVAR ROUPA OVAL TOQ MULTILAR  -  REF 442", "saldo": 1, "custo": 24.04, "sugestao": 44}, {"codigo": "2033", "codigoExibido": "2033", "nome": "ESCOVAS, PARK TOOL BCB-4.2, 4 PCS", "saldo": 1, "custo": 132.56, "sugestao": 240}, {"codigo": "2032", "codigoExibido": "2032", "nome": "ALICATE P/ RAIOS PARK TOOL CSH-1", "saldo": 1, "custo": 192.77, "sugestao": 349}, {"codigo": "1558", "codigoExibido": "1558", "nome": "Espaçador Mesa Direct DH - novo", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1190", "codigoExibido": "1190", "nome": "Retentor Racing Bros Fox 32", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1605", "codigoExibido": "1605", "nome": "Freio V-brake", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "35", "codigoExibido": "35", "nome": "Acabamento de Quadro Specialized", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "33", "codigoExibido": "33", "nome": "Acabamento do Pivo do Link", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1460", "codigoExibido": "1460", "nome": "Trava do Cartucho de Suspensão", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1041", "codigoExibido": "1041", "nome": "Pastilha Shimano Padrão - Seminova", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1707", "codigoExibido": "1707", "nome": "Haste de Acionamento - KS - usada", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "189", "codigoExibido": "189", "nome": "Bucha Externa - Lev - usada", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "316", "codigoExibido": "316", "nome": "CAPA PROTETORA PARA FREIO A DISCO DE BICICLETAS - MUC-OFF", "saldo": 1, "custo": 348.01, "sugestao": 630}]
+  };
+  const SECAO_HIPRESS = {
+    id: "hipress", tipo: "preco_livre",
+    titulo: "Preço de venda · NF HIPRESS 180660",
+    sub: "7 anéis/vedações novos dessa nota.",
+    avisoSecao: "itens novos, ainda não cadastrados — sem custo no sistema",
+    headerMsg: "HIPRESS 180660",
+    itens: [{"codigo": "HIP-10023", "codigoExibido": "10023", "nome": "ANEL O'RING 6-252 N0674-70", "custoRef": 3.48, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-15104", "codigoExibido": "15104", "nome": "ANEL O'RING 6-639 N0674-70", "custoRef": 4.87, "qtd": 2, "ncm": "4016.93.00"}, {"codigo": "HIP-10173", "codigoExibido": "10173", "nome": "ANEL O'RING 2-208 N0674-70", "custoRef": 2.79, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-10228", "codigoExibido": "10228", "nome": "ANEL O'RING 2-117 N0674-70", "custoRef": 3.16, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38263", "codigoExibido": "38263", "nome": "ANEL X-RING X-109 N0674-70", "custoRef": 5.0, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-28104", "codigoExibido": "28104", "nome": "ANEL O'RING 2-109 N0552-90", "custoRef": 2.52, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38298", "codigoExibido": "38298", "nome": "GAXETA/RASPADOR EL 0082 P5008", "custoRef": 23.04, "qtd": 1, "ncm": "3926.90.90"}]
+  };
+  const SECAO_CONTAGEM = {
+    id: "contagem", tipo: "qtd",
+    titulo: "Contagem física · pneus e guidões",
+    sub: "70 itens agrupados por tipo. Confere na prateleira: se bater, toca em Confere; se não bater, digita a quantidade certa.",
+    headerMsg: "CONTAGEM PNEUS/GUIDÕES",
+    grupos: [{"id": "guidao", "titulo": "Guidão", "itens": [{"codigo": "3726", "codigoExibido": "3726", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 23 800MM PRETO (BLAST BLACK)", "saldo": 1}, {"codigo": "3725", "codigoExibido": "3725", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 38 800MM PRETO (BLAST BLACK)", "saldo": 1}, {"codigo": "2611", "codigoExibido": "2611", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 20MM - FATBAR 31.8MM -", "saldo": 2}, {"codigo": "2610", "codigoExibido": "2610", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 30MM - FATBAR 31.8MM -", "saldo": 1}, {"codigo": "3641", "codigoExibido": "3641", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 30MM - FATBAR 35MM -", "saldo": 5}, {"codigo": "3642", "codigoExibido": "3642", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 40MM - FATBAR 35MM -", "saldo": 3}, {"codigo": "3721", "codigoExibido": "3721", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 30 800MM ALUMINIO DOURADO", "saldo": 2}, {"codigo": "3720", "codigoExibido": "3720", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 40 800MM ALUMINIO DOURADO", "saldo": 2}, {"codigo": "2093", "codigoExibido": "2093", "nome": "GUIDAO ENDURO ALUM 35X800X30MM RS TRAIL PTO", "saldo": 2, "marca": "SENTEC"}, {"codigo": "2198", "codigoExibido": "2198", "nome": "GUIDAO TITLE AH1 PRETO 35 RISE:25mm", "saldo": 5}]}, {"id": "correlatos_guidao", "titulo": "Correlatos de guidão", "itens": [{"codigo": "1398", "codigoExibido": "1398", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL PTO FOSCO", "saldo": 3}, {"codigo": "2836", "codigoExibido": "2836", "nome": "FITA DE GUIDAO EASTON PINLINE LOGO BLACK", "saldo": 1}, {"codigo": "3656", "codigoExibido": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS", "saldo": 1}, {"codigo": "3062", "codigoExibido": "3062", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE 10MM - FATBAR 35MM -", "saldo": 1}, {"codigo": "3244", "codigoExibido": "3244", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "3359", "codigoExibido": "3359", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 50MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "1309", "codigoExibido": "1309", "nome": "SAFE PLUG - KIT DE FERRAMENTAS TUBELESS COM ENCAIXE NO GUIDAO DE BICICLETA - S-TRES SAFE PLUG L S", "saldo": 1}, {"codigo": "3017", "codigoExibido": "3017", "nome": "Plugs Token para Guidão - Black TK267R", "saldo": 4}]}, {"id": "pneu", "titulo": "Pneu", "itens": [{"codigo": "2813", "codigoExibido": "2813", "nome": "PNEU 20X2.10 K1016, PTO, KINIPTION", "saldo": 2}, {"codigo": "3273", "codigoExibido": "3273", "nome": "PNEU ARAME 29X2.5 SCORPION RACE DH M", "saldo": 3}, {"codigo": "2889", "codigoExibido": "2889", "nome": "PNEU 27,5X2,40 ENDURO PERSUADER DRY 120TPI 3C-MTB TR KEVLAR", "saldo": 4, "marca": "CHAOYANG"}, {"codigo": "2890", "codigoExibido": "2890", "nome": "PNEU 29X2,40 ENDURO PERSUADER WET 60TPI 3C-AM TR KEVLAR PTO", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2589", "codigoExibido": "2589", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS FX-CREME", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2521", "codigoExibido": "2521", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS PTO", "saldo": 1, "marca": "CHAOYANG"}, {"codigo": "2675", "codigoExibido": "2675", "nome": "PNEU CONTINENTAL CROSS KING 27,5 2 3 PERFORMANCE PRETO DOBRAVEL", "saldo": 2}, {"codigo": "2673", "codigoExibido": "2673", "nome": "PNEU CONTINENTAL CROSS KING SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 4}, {"codigo": "2674", "codigoExibido": "2674", "nome": "PNEU CONTINENTAL RUBAN SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 2}, {"codigo": "3292", "codigoExibido": "3292", "nome": "PNEU HUTCHINSON GRIFFUS TUBELESS 27,5X2,50", "saldo": 1}, {"codigo": "3294", "codigoExibido": "3294", "nome": "PNEU HUTCHINSON KRAKEN TUBELESS SIDESKIN 29X2", "saldo": 1}, {"codigo": "3293", "codigoExibido": "3293", "nome": "PNEU MTB HUTCHINSON PYTHON 3 TUBELESS 29X4 PR", "saldo": 1}, {"codigo": "1075", "codigoExibido": "1075", "nome": "PNEU 26X2.35 KENDA SMALL BLOCK", "saldo": 4}, {"codigo": "3102", "codigoExibido": "3102", "nome": "PNEU MOTO CG 125 90/90-18 MATRIX LEVORIN", "saldo": 1}, {"codigo": "2743", "codigoExibido": "2743", "nome": "PNEU MAXXIS 27.5X2.5 MINION DHF M301RU", "saldo": 2}, {"codigo": "2413", "codigoExibido": "2413", "nome": "PNEU MAXXIS 27.5X2.50WT ASSEGAI M356RU", "saldo": 4}, {"codigo": "2894", "codigoExibido": "2894", "nome": "PNEU MAXXIS 29X2.40 REKON RACE M355RU", "saldo": 2}, {"codigo": "2742", "codigoExibido": "2742", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU", "saldo": 2}, {"codigo": "2411", "codigoExibido": "2411", "nome": "PNEU MAXXIS 29X2.50 ASSEGAI M356RU", "saldo": 3}, {"codigo": "2741", "codigoExibido": "2741", "nome": "PNEU MAXXIS 29X2.50 WETSCREAM M137RU", "saldo": 1}, {"codigo": "2412", "codigoExibido": "2412", "nome": "PNEU MAXXIS 29X2.50WT MINION DHF", "saldo": 2}, {"codigo": "2545", "codigoExibido": "2545", "nome": "Pneu Michelin Wild Am2 29 X 2.40 Mixed/soft", "saldo": -2}, {"codigo": "3362", "codigoExibido": "3362", "nome": "PNEU 275X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3369"]}, {"codigo": "2342", "codigoExibido": "2342", "nome": "PNEU 275X260 WILD ENDURO RACING LINE 3X60TPI DIANT KVLR TLR", "saldo": 7, "marca": "MICHELIN FR"}, {"codigo": "3621", "codigoExibido": "3621", "nome": "PNEU 29X2.60 FORCE AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 3, "marca": "MICHELIN FR"}, {"codigo": "3622", "codigoExibido": "3622", "nome": "PNEU 29X2.60 WILD AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3363", "codigoExibido": "3363", "nome": "PNEU 29X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 10, "marca": "MICHELIN FR", "duplicados": ["3494"]}, {"codigo": "3364", "codigoExibido": "3364", "nome": "PNEU 29X240 DH22 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3495"]}, {"codigo": "2282", "codigoExibido": "2282", "nome": "PNEU 29X240 WILD AM2 COMPETITION KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "2283", "codigoExibido": "2283", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X33TPI TRAS KVLR TLR", "saldo": 11, "marca": "MICHELIN FR", "duplicados": ["3482"]}, {"codigo": "2284", "codigoExibido": "2284", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X60TPI DIANT KVLR TLR", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3481"]}, {"codigo": "2285", "codigoExibido": "2285", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI DIANT KEVLAR TLR", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3480"]}, {"codigo": "2391", "codigoExibido": "2391", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "saldo": 11, "marca": "MICHELIN FR"}, {"codigo": "3620", "codigoExibido": "3620", "nome": "PNEU 29X250 WILD ENDURO MH RACING LINE 2X55TPI KEVLAR TLR AM", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3291", "codigoExibido": "3291", "nome": "PV529822 - PNEU TUBELESS DE ALTA PERFORMANCE", "saldo": 1}]}, {"id": "correlatos_pneu", "titulo": "Correlatos de pneu", "itens": [{"codigo": "1180", "codigoExibido": "1180", "nome": "REPARO P/ PNEUS TUBELESS BLACKBURN C/10", "saldo": 3}, {"codigo": "2522", "codigoExibido": "2522", "nome": "KIT REPARO PNEU TUBELESS MACARRAO 3.5MM/1.5MM", "saldo": 5, "marca": "HIGH ONE"}, {"codigo": "1179", "codigoExibido": "1179", "nome": "REMENDO PNEU - MACARRAOZINHO", "saldo": -73}, {"codigo": "3789", "codigoExibido": "3789", "nome": "DEFENDER MTB - PROTETOR DE ARO E PNEU DE BICICLETA M", "saldo": 2}, {"codigo": "2380", "codigoExibido": "2380", "nome": "CARTUCHO INFLADOR E REPARADOR DE PNEUS B.A.M. - 125ML - MUC-OFF", "saldo": 3}, {"codigo": "3438", "codigoExibido": "3438", "nome": "ESPATULA DE NYLON PARA PNEUS - COR PRETA - MUC-OFF", "saldo": 1}, {"codigo": "3439", "codigoExibido": "3439", "nome": "ESPATULA DE NYLON PARA PNEUS - COR ROSA - MUC-OFF", "saldo": 4}, {"codigo": "3440", "codigoExibido": "3440", "nome": "ESPATULA DE NYLON PARA PNEUS - COR VERDE - MUC-OFF", "saldo": 1}, {"codigo": "3740", "codigoExibido": "3740", "nome": "ESPATULA DE PNEU PARK TOOL TL-4.2 KIT 2 UNIDADES", "saldo": 4}, {"codigo": "3175", "codigoExibido": "3175", "nome": "REFIL CONSERTO DE PNEU SEM CAMARA PASSEIO CAIXA COM 60 PECAS - R769062 - SCHEBOR", "saldo": 1}, {"codigo": "2223", "codigoExibido": "2223", "nome": "TUBO PARA REPARO DE PNEU TOPEAK", "saldo": 2}, {"codigo": "3582", "codigoExibido": "3582", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR LINER LIGHT XC TRAIL MTB TAMANHO, P/PNEUS 29 X 2.1 A 2.40", "saldo": 2}, {"codigo": "3326", "codigoExibido": "3326", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT DOWNHILL 29 X 2.4/2.6", "saldo": 7}, {"codigo": "3585", "codigoExibido": "3585", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 27.5X 2.4/2.6", "saldo": 1}, {"codigo": "3584", "codigoExibido": "3584", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 29 X 2.4/2.6", "saldo": -1}, {"codigo": "3583", "codigoExibido": "3583", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 27.5 X 2.4/2.6", "saldo": 0}, {"codigo": "3505", "codigoExibido": "3505", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 29 X 2.4/2.6", "saldo": 3}]}]
+  };
+  const SECOES = [SECAO_PRECIFICACAO, SECAO_HIPRESS, SECAO_CONTAGEM];
+
+  function itensDaSecao(secao) {
+    return secao.tipo === "qtd" ? secao.grupos.flatMap(g => g.itens) : secao.itens;
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch (e) { return {}; }
+  }
+  function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+  // codigo -> string digitada (raw). "" = ainda nao respondeu.
+  // "0" e um valor DIGITADO (nao vender / contei zero) — sempre diferente
+  // de "" em toda a logica de preenchido/mensagem/localStorage.
+  const state = loadState();
+
+  const TODOS_ITENS = SECOES.flatMap(s => itensDaSecao(s).map(it => ({ ...it, secaoId: s.id, tipo: s.tipo })));
+  TODOS_ITENS.forEach(it => { if (!(it.codigo in state)) state[it.codigo] = ""; });
+  saveState();
+
+  const INPUTS = {};
+  const PINTURAS = {};
+
+  function normalizarBusca(s) {
+    return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+  function fmtBRL(n) {
+    const s = n.toFixed(2).replace(".", ",");
+    const partes = s.split(",");
+    partes[0] = partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return "R$ " + partes.join(",");
+  }
+  function fmtBRLInt(n) {
+    return "R$ " + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  function fmtMil(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+  function nomeCurto(nome) {
+    if (nome.length <= 44) return nome;
+    return nome.slice(0, 44).trim() + "…";
+  }
+  function parsePreco(str) {
+    if (str === "" || str === undefined || str === null) return null;
+    const n = parseFloat(String(str).replace(",", "."));
+    return isNaN(n) ? null : n;
+  }
+  function limiteExcedido(str) { return encodeURIComponent(str).length > LIMITE_CHARS; }
+  function waHref(texto) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(texto); }
+
+  function estaPreenchido(codigo) { return state[codigo] !== ""; }
+
+  // ---------- secoes de preco (precificacao + hipress) ----------
+
+  function statusItemPreco(it) {
+    const v = state[it.codigo];
+    if (v === "") return "faltando";
+    if (v === "0") return "naovender";
+    if (it.custo == null) return "ok";
+    const n = parsePreco(v);
+    if (n == null) return "faltando";
+    const m = n / it.custo;
+    if (m < 1.3) return "baixa";
+    return "ok";
+  }
+
+  function margemInfo(it, valorStr) {
+    if (valorStr === "0") return { texto: "não vender", classe: "neutro" };
+    if (it.custo == null) return { texto: "sem custo", classe: "neutro" };
+    const n = parsePreco(valorStr);
+    if (n == null) return { texto: "—", classe: "neutro" };
+    const m = n / it.custo;
+    let classe = "verde";
+    if (m < 1.3) classe = "vermelho";
+    else if (m <= 1.6) classe = "amarelo";
+    return { texto: m.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "x", classe };
+  }
+
+  function renderItemPreco(container, it, secao) {
+    const row = document.createElement("div");
+    row.className = "item";
+    row.dataset.codigo = it.codigo;
+    row.dataset.busca = normalizarBusca([it.codigoExibido, it.nome].join(" "));
+
+    const semMargem = secao.tipo === "preco_livre";
+    const metaBits = [`<span>Cód. ${semMargem ? "fornecedor" : "Bling"}: <b>${it.codigoExibido}</b></span>`];
+    if (!semMargem) metaBits.push(`<span>Saldo no Bling: <b>${it.saldo}</b></span>`);
+    if (it.custo != null) metaBits.push(`<span>${semMargem ? "Custo de compra (referência)" : "Custo"}: <b>${fmtBRL(it.custo)}</b></span>`);
+    if (it.custoRef != null) metaBits.push(`<span>Custo de compra (referência): <b>${fmtBRL(it.custoRef)}</b></span>`);
+    if (it.qtd != null) metaBits.push(`<span>Qtd na NF: <b>${it.qtd}</b></span>`);
+    if (it.ncm) metaBits.push(`<span>NCM: <b>${it.ncm}</b></span>`);
+    if (!semMargem && it.sugestao != null) metaBits.push(`<span class="sugestao-chip">Sugerido: <b>${fmtBRLInt(it.sugestao)}</b></span> <span>(${MARKUP_LABEL})</span>`);
+
+    const semCustoHtml = (!semMargem && it.custo == null)
+      ? `<div class="sem-custo">⚠️ sem custo no sistema — não dá pra sugerir preço nem calcular margem, defina livremente</div>`
+      : "";
+
+    row.innerHTML = `
+      <div class="item-info">
+        <div class="item-cod">${it.codigoExibido}</div>
+        <div class="item-nome">${it.nome}</div>
+        <div class="item-meta">${metaBits.join("")}</div>
+        ${semCustoHtml}
+      </div>
+      <div class="row">
+        <div class="preco-wrap"><span>R$</span><input type="text" inputmode="decimal" data-codigo="${it.codigo}" placeholder="${(!semMargem && it.custo != null) ? "—" : "definir"}"></div>
+        ${!semMargem ? `<div class="margem-badge neutro" data-badge="${it.codigo}">—</div>` : ""}
+        ${!semMargem && it.sugestao != null ? `<button type="button" class="btn-aceitar" data-aceitar="${it.codigo}">usar ${fmtMil(it.sugestao)}</button>` : ""}
+      </div>
+    `;
+
+    const input = row.querySelector("input[data-codigo]");
+    const badge = row.querySelector(".margem-badge");
+    const btnAceitar = row.querySelector(".btn-aceitar");
+
+    function pintar() {
+      const v = state[it.codigo];
+      if (badge) {
+        const info = margemInfo(it, v);
+        badge.textContent = info.texto;
+        badge.className = "margem-badge " + info.classe;
+      }
+      row.classList.toggle("faltando", v === "");
+      row.dataset.status = v === "" ? "pendente" : "preenchido";
+    }
+
+    input.value = state[it.codigo];
+    pintar();
+    INPUTS[it.codigo] = input;
+    PINTURAS[it.codigo] = pintar;
+
+    input.addEventListener("input", () => {
+      state[it.codigo] = input.value;
+      saveState();
+      pintar();
+      refresh();
+    });
+    if (btnAceitar) {
+      btnAceitar.addEventListener("click", () => {
+        input.value = String(it.sugestao);
+        state[it.codigo] = input.value;
+        saveState();
+        pintar();
+        refresh();
+      });
+    }
+
+    container.appendChild(row);
+  }
+
+  function linhaPreco(it) {
+    const v = state[it.codigo];
+    const nome = nomeCurto(it.nome);
+    if (v === "0") return `- ${it.codigoExibido} ${nome}: NÃO VENDER`;
+    return `- ${it.codigoExibido} ${nome}: ${fmtBRL(parsePreco(v))}`;
+  }
+
+  function montarMensagensPreco(secao) {
+    const itens = itensDaSecao(secao);
+    const preenchidos = itens.filter(it => state[it.codigo] !== "");
+    if (preenchidos.length === 0) return [];
+    const headerBase = (parte, partes) => partes > 1
+      ? `${secao.headerMsg} ${DATA_HOJE} (parte ${parte}/${partes})`
+      : `${secao.headerMsg} ${DATA_HOJE}`;
+    const linhas = preenchidos.map(linhaPreco);
+    const textoUnico = `${headerBase(1, 1)}\n\nPreços definidos (${linhas.length} de ${itens.length}):\n${linhas.join("\n")}`;
+    if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: linhas.length }];
+
+    const partes = [[]];
+    linhas.forEach(linha => {
+      const atual = partes[partes.length - 1];
+      const tentativo = [...atual, linha];
+      const cab = headerBase(999, 999);
+      const teste = `${cab}\n\n${tentativo.join("\n")}`;
+      if (atual.length > 0 && limiteExcedido(teste)) partes.push([linha]);
+      else partes[partes.length - 1] = tentativo;
+    });
+    const totalPartes = partes.length;
+    return partes.map((p, i) => ({
+      texto: `${headerBase(i + 1, totalPartes)}\n\n${p.join("\n")}`,
+      count: p.length,
+    }));
+  }
+
+  // ---------- secao de contagem (qtd) ----------
+
+  function statusItemQtd(it) {
+    const v = state[it.codigo];
+    if (v === "") return "faltando";
+    const n = parseInt(v, 10);
+    return n === it.saldo ? "confere" : "diferente";
+  }
+
+  function renderItemQtd(container, it) {
+    const row = document.createElement("div");
+    row.className = "item";
+    row.dataset.codigo = it.codigo;
+    const buscaTxt = [it.codigo, it.nome, it.marca || "", (it.duplicados || []).join(" ")].join(" ");
+    row.dataset.busca = normalizarBusca(buscaTxt);
+
+    const marcaHtml = it.marca ? `<div class="item-marca">${it.marca}</div>` : "";
+    const dupHtml = (it.duplicados && it.duplicados.length)
+      ? `<div class="item-dup">Bling tem esse produto em ${1 + it.duplicados.length} cadastros (também cadastrado como: ${it.duplicados.join(", ")}) — somados dão ${it.saldo}.<span class="dup-nota">conte o total UMA vez</span></div>`
+      : "";
+    const negativo = it.saldo < 0;
+    const notaNeg = negativo
+      ? `<div class="nota-negativo">o sistema está negativo, isso é erro antigo — conta o que tem de verdade</div>`
+      : "";
+    const label = (it.duplicados && it.duplicados.length) ? "soma" : it.saldo;
+
+    row.innerHTML = `
+      <div class="item-info">
+        <div class="item-cod">${it.codigo}</div>
+        <div class="item-nome">${it.nome}</div>
+        ${marcaHtml}
+        ${dupHtml}
+        <div class="item-meta">Bling diz que tem hoje: <b class="${negativo ? "saldo-neg" : ""}">${it.saldo}</b></div>
+        ${notaNeg}
+      </div>
+      <div class="row">
+        <button class="btn-ok" type="button">Confere (${label})</button>
+        <div class="qtd-wrap"><input type="number" inputmode="numeric" min="0" step="1" data-codigo="${it.codigo}" placeholder="tenho"></div>
+        <div class="diverg-badge" data-badge="${it.codigo}">—</div>
+      </div>
+    `;
+
+    const btn = row.querySelector(".btn-ok");
+    const input = row.querySelector("input[data-codigo]");
+    const badge = row.querySelector(".diverg-badge");
+
+    function pintar() {
+      const v = state[it.codigo];
+      row.classList.toggle("faltando", v === "");
+      row.dataset.status = v === "" ? "pendente" : "preenchido";
+      if (v === "") {
+        badge.textContent = "—";
+        badge.className = "diverg-badge";
+        input.classList.remove("dif");
+        btn.classList.remove("on");
+        return;
+      }
+      const n = parseInt(v, 10);
+      if (n === it.saldo) {
+        badge.textContent = "bate";
+        badge.className = "diverg-badge verde";
+        input.classList.remove("dif");
+      } else {
+        badge.textContent = "difere";
+        badge.className = "diverg-badge vermelho";
+        input.classList.add("dif");
+      }
+    }
+
+    if (state[it.codigo] !== "") input.value = state[it.codigo];
+    if (state[it.codigo] === String(it.saldo) && state[it.codigo] !== "") btn.classList.add("on");
+    pintar();
+    INPUTS[it.codigo] = input;
+    PINTURAS[it.codigo] = pintar;
+
+    btn.addEventListener("click", () => {
+      const jaOn = btn.classList.contains("on");
+      if (jaOn) {
+        btn.classList.remove("on");
+        state[it.codigo] = "";
+        input.value = "";
+      } else {
+        btn.classList.add("on");
+        state[it.codigo] = String(it.saldo);
+        input.value = String(it.saldo);
+      }
+      saveState();
+      pintar();
+      refresh();
+    });
+    input.addEventListener("input", () => {
+      btn.classList.remove("on");
+      if (input.value === "") {
+        state[it.codigo] = "";
+      } else {
+        const n = Math.max(0, parseInt(input.value, 10) || 0);
+        state[it.codigo] = String(n);
+        if (String(n) === String(it.saldo)) btn.classList.add("on");
+      }
+      saveState();
+      pintar();
+      refresh();
+    });
+
+    container.appendChild(row);
+  }
+
+  function corpoContagemDados(secao) {
+    const itens = itensDaSecao(secao);
+    const diffs = [], matches = [];
+    let faltou = 0;
+    itens.forEach(it => {
+      const v = state[it.codigo];
+      if (v === "") { faltou++; return; }
+      const n = parseInt(v, 10);
+      if (n === it.saldo) matches.push(it.codigoExibido); else diffs.push(it);
+    });
+    return { diffs, matches, faltou, total: itens.length };
+  }
+
+  function montarMensagensContagem(secao) {
+    const { diffs, matches, faltou, total } = corpoContagemDados(secao);
+    const headerBase = (parte, partes) => partes > 1
+      ? `${secao.headerMsg} ${DATA_HOJE} (parte ${parte}/${partes})`
+      : `${secao.headerMsg} ${DATA_HOJE}`;
+
+    if (diffs.length + matches.length === 0) return [];
+    if (diffs.length === 0 && faltou === 0) {
+      return [{ texto: `${headerBase(1, 1)}\n\nConferi os ${total} itens, tudo batendo com o Bling.`, count: total }];
+    }
+
+    const linhasDiff = diffs.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: tenho ${state[it.codigo]} (Bling diz ${it.saldo})`);
+    const linhaMatch = matches.length ? `CONFEREM (${matches.length}): ${matches.join(" ")}` : null;
+    const linhaFaltou = faltou > 0 ? `Faltou conferir: ${faltou}` : null;
+
+    const blocos = [];
+    if (linhasDiff.length) blocos.push(`DIFERENTE do Bling (${linhasDiff.length}):\n${linhasDiff.join("\n")}`);
+    if (linhaMatch) blocos.push(linhaMatch);
+    if (linhaFaltou) blocos.push(linhaFaltou);
+    const corpo = blocos.join("\n\n");
+    const textoUnico = `${headerBase(1, 1)}\n\n${corpo}`;
+    if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: diffs.length + matches.length }];
+
+    const linhasBase = linhasDiff.slice();
+    if (matches.length) {
+      for (let i = 0; i < matches.length; i += 25) {
+        const fatia = matches.slice(i, i + 25);
+        linhasBase.push(`CONFEREM (${fatia.length}): ${fatia.join(" ")}`);
+      }
+    }
+    const extras = [linhaFaltou].filter(Boolean);
+
+    const partes = [{ linhas: [], extra: "" }];
+    const caberia = (idx, linhas, extra) => {
+      const corpoTeste = [linhas.join("\n"), extra].filter(Boolean).join("\n\n");
+      return !limiteExcedido(headerBase(999, 999) + "\n\n" + corpoTeste);
+    };
+    linhasBase.forEach(linha => {
+      const atual = partes[partes.length - 1];
+      const tentativo = [...atual.linhas, linha];
+      if (atual.linhas.length > 0 && !caberia(partes.length - 1, tentativo, atual.extra)) {
+        partes.push({ linhas: [linha], extra: "" });
+      } else {
+        atual.linhas = tentativo;
+      }
+    });
+    if (extras.length) {
+      const extraTexto = extras.join("\n\n");
+      const atual = partes[partes.length - 1];
+      if ((atual.linhas.length > 0 || atual.extra) && !caberia(partes.length - 1, atual.linhas, extraTexto)) {
+        partes.push({ linhas: [], extra: extraTexto });
+      } else {
+        atual.extra = extraTexto;
+      }
+    }
+    const totalPartes = partes.length;
+    return partes.map((p, i) => {
+      const corpoParte = [p.linhas.join("\n"), p.extra].filter(Boolean).join("\n\n");
+      return { texto: `${headerBase(i + 1, totalPartes)}\n\n${corpoParte}`, count: p.linhas.length };
+    });
+  }
+
+  // ---------- render das secoes / envio ----------
+
+  const secoesEl = document.getElementById("secoes");
+
+  function renderSecao(secao, aberta) {
+    const det = document.createElement("details");
+    det.className = "secao";
+    det.open = aberta;
+    const totalItens = itensDaSecao(secao).length;
+
+    const summary = document.createElement("summary");
+    summary.innerHTML = `
+      <div class="secao-titulo-wrap"><span class="secao-titulo">${secao.titulo}</span><span class="secao-seta">▾</span></div>
+      <div class="secao-prog" data-prog="${secao.id}"></div>
+    `;
+    det.appendChild(summary);
+
+    const sub = document.createElement("div");
+    sub.className = "secao-sub";
+    sub.textContent = secao.sub;
+    det.appendChild(sub);
+
+    if (secao.avisoSecao) {
+      const aviso = document.createElement("div");
+      aviso.className = "aviso-secao";
+      aviso.innerHTML = `⚠️ ${secao.avisoSecao}`;
+      det.appendChild(aviso);
+    }
+
+    const body = document.createElement("div");
+    body.dataset.corpo = secao.id;
+
+    if (secao.tipo === "qtd") {
+      secao.grupos.forEach(grupo => {
+        const h = document.createElement("div");
+        h.className = "grupo-titulo";
+        h.textContent = grupo.titulo;
+        body.appendChild(h);
+        grupo.itens.forEach(it => renderItemQtd(body, it));
+      });
+    } else {
+      secao.itens.forEach(it => renderItemPreco(body, it, secao));
+    }
+    det.appendChild(body);
+
+    const sendRow = document.createElement("div");
+    sendRow.className = "send-row";
+    sendRow.dataset.sendrow = secao.id;
+    det.appendChild(sendRow);
+
+    secoesEl.appendChild(det);
+    void totalItens;
+  }
+
+  renderSecao(SECAO_PRECIFICACAO, true);
+  renderSecao(SECAO_HIPRESS, false);
+  renderSecao(SECAO_CONTAGEM, false);
+
+  function refreshSecaoProg(secao) {
+    const el = document.querySelector(`[data-prog="${secao.id}"]`);
+    if (!el) return;
+    const itens = itensDaSecao(secao);
+    const preenchidos = itens.filter(it => estaPreenchido(it.codigo)).length;
+    el.innerHTML = `<b>${preenchidos}</b> de <b>${itens.length}</b> preenchidos`;
+  }
+
+  function refreshSendRow(secao) {
+    const wrap = document.querySelector(`[data-sendrow="${secao.id}"]`);
+    if (!wrap) return;
+    wrap.innerHTML = "";
+    const mensagens = secao.tipo === "qtd" ? montarMensagensContagem(secao) : montarMensagensPreco(secao);
+    if (mensagens.length === 0) {
+      const a = document.createElement("a");
+      a.className = "send disabled";
+      a.href = "#";
+      a.textContent = `Enviar ${secao.headerMsg} (0)`;
+      wrap.appendChild(a);
+      return;
+    }
+    mensagens.forEach((m, i) => {
+      const a = document.createElement("a");
+      a.className = "send";
+      a.href = waHref(m.texto);
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.textContent = mensagens.length > 1
+        ? `Enviar ${secao.headerMsg} parte ${i + 1}/${mensagens.length} (${m.count})`
+        : `Enviar ${secao.headerMsg} (${m.count})`;
+      wrap.appendChild(a);
+    });
+  }
+
+  function refreshGeral() {
+    const total = TODOS_ITENS.length;
+    const preenchidos = TODOS_ITENS.filter(it => estaPreenchido(it.codigo)).length;
+    document.getElementById("prog-geral-num").textContent = preenchidos;
+    document.getElementById("prog-geral-fill").style.width = (total ? (preenchidos / total * 100) : 0) + "%";
+  }
+
+  let filtroAtivo = "todos";
+  function aplicarFiltro() {
+    const termo = normalizarBusca(document.getElementById("busca").value.trim());
+    document.querySelectorAll(".item[data-codigo]").forEach(row => {
+      const passaBusca = !termo || row.dataset.busca.includes(termo);
+      const passaFiltro = filtroAtivo === "todos" || row.dataset.status === filtroAtivo;
+      row.style.display = (passaBusca && passaFiltro) ? "" : "none";
+    });
+    if (termo) {
+      document.querySelectorAll("details.secao").forEach(det => {
+        const algumVisivel = [...det.querySelectorAll(".item[data-codigo]")].some(r => r.style.display !== "none");
+        if (algumVisivel) det.open = true;
+      });
+    }
+  }
+  document.getElementById("busca").addEventListener("input", aplicarFiltro);
+  document.querySelectorAll(".chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("on"));
+      chip.classList.add("on");
+      filtroAtivo = chip.dataset.filtro;
+      aplicarFiltro();
+    });
+  });
+
+  function refresh() {
+    SECOES.forEach(refreshSecaoProg);
+    SECOES.forEach(refreshSendRow);
+    refreshGeral();
+    aplicarFiltro();
+  }
+
+  refresh();
+</script>
+</body>
+</html>
