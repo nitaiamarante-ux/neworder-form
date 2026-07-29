@@ -140,6 +140,42 @@
     gap: 6px; text-decoration: none; font-weight: 700; font-size: 13.5px; padding: 12px 10px; border-radius: 12px;
     white-space: nowrap; background: #25d366; color: #062b17; }
   .send.disabled { opacity: .4; pointer-events: none; }
+
+  .selos { display: inline-flex; gap: 5px; flex-wrap: wrap; margin-left: 7px; vertical-align: middle; }
+  .selo { font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    border-radius: 6px; padding: 2px 6px; }
+  .selo-inativar, .selo-reativar { background: var(--note-soft); color: var(--note); border: 1px solid var(--note-border); }
+  .selo-excluir { background: var(--bad-soft); color: var(--bad); border: 1px solid var(--bad); }
+  .selo-renomear { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+
+  .acao-bloco { margin-top: 9px; }
+  .acao-toggle { background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700;
+    text-decoration: underline; cursor: pointer; padding: 8px 0; min-height: 32px; -webkit-appearance: none; }
+  .acao-painel { margin-top: 4px; padding: 10px 10px 12px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 10px; }
+  .acao-check { display: flex; align-items: center; gap: 9px; font-size: 13.5px; padding: 8px 2px;
+    min-height: 44px; cursor: pointer; }
+  .acao-check input { width: 20px; height: 20px; flex: none; }
+  .acao-renomear-wrap { margin-top: 2px; }
+  .acao-renomear-wrap span { display: block; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+  .acao-renomear-wrap input { width: 100%; border: 1px solid var(--border-strong); border-radius: 10px;
+    background: var(--surface); color: var(--ink); font-size: 14px; padding: 10px 12px; min-height: 44px;
+    -webkit-appearance: none; }
+  .acao-renomear-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .acao-aviso-excluir { margin-top: 9px; font-size: 12.5px; color: var(--bad); background: var(--bad-soft);
+    border: 1px solid var(--bad); border-radius: 8px; padding: 8px 10px; }
+
+  details.secao-inativados { background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 4px 12px 12px; margin-top: 16px; }
+  details.secao-inativados summary { cursor: pointer; padding: 12px 0; font-weight: 700; font-size: 14.5px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  details.secao-inativados summary::-webkit-details-marker { display: none; }
+  details.secao-inativados summary .seta { color: var(--faint); font-size: 12.5px; font-weight: 600; }
+  .aviso-inativados { background: var(--bad-soft); border: 1px solid var(--bad); color: var(--ink);
+    border-radius: 10px; padding: 10px 12px; font-size: 13px; margin-bottom: 6px; }
+  .aviso-inativados b { color: var(--bad); }
+
+  .acoes-resumo { font-size: 12px; color: var(--muted); margin: 6px 0 2px; }
 </style>
 </head>
 <body>
@@ -151,7 +187,7 @@
     <div class="aviso"><b>Importante:</b> campo vazio = "ainda não respondi". Preencher com <b>0</b> é uma resposta válida (diferente de vazio) — não deixa vazio o que você já decidiu ou já contou.</div>
 
     <div class="progresso-geral">
-      <div class="progresso-txt"><span>Progresso geral</span><span><b id="prog-geral-num">0</b> de <b>134</b> preenchidos</span></div>
+      <div class="progresso-txt"><span>Progresso geral</span><span><b id="prog-geral-num">0</b> de <b>124</b> preenchidos</span></div>
       <div class="progresso-barra"><div class="progresso-fill" id="prog-geral-fill" style="width:0%"></div></div>
     </div>
 
@@ -171,14 +207,16 @@
 <script>
   const WA = "5531982976006";
   const LIMITE_CHARS = 1200;
-  const STORAGE_KEY = "no_matheus_2026-07-29_v1";
+  const STORAGE_KEY = "no_matheus_2026-07-29_v2";
+  const STORAGE_KEY_ANTERIOR = "no_matheus_2026-07-29_v1";
   const DATA_HOJE = "29/07";
+  const RETRATO_SALDOS = "29/07 12:58";
   const MARKUP_LABEL = "custo × 1,81";
 
   const SECAO_PRECIFICACAO = {
     id: "precificacao", tipo: "preco_sugerido",
     titulo: "Preço de venda · itens em estoque",
-    sub: "57 itens que o Bling mostra com saldo, sem preço de venda ainda — ordenados do maior pro menor saldo. Onde dá pra calcular, já vem uma sugestão (custo × 1,81), mas é só sugestão.",
+    sub: "57 itens que o Bling mostra com saldo, sem preço de venda ainda — ordenados do maior pro menor saldo. Onde dá pra calcular, já vem uma sugestão (custo × 1,81), mas é só sugestão. Saldo do Bling em " + RETRATO_SALDOS + ".",
     headerMsg: "PRECIFICAÇÃO",
     itens: [{"codigo": "1984", "codigoExibido": "1984", "nome": "PARAFUSO GENÉRICO", "saldo": 182, "custo": 4.59, "sugestao": 8}, {"codigo": "1387", "codigoExibido": "1387", "nome": "SILICONE SPRAY 300ML MUNDIAL PRIME  -  REF AE03000018", "saldo": 68, "custo": 137.59, "sugestao": 249}, {"codigo": "2243", "codigoExibido": "2243", "nome": "ABRACADEIRA NYLON 200X2,5MM C/100 PTA FOXLUX  -  REF 18.13", "saldo": 9, "custo": 4.865, "sugestao": 9}, {"codigo": "1409", "codigoExibido": "1409", "nome": "SUPORTE P/BICICLETA LJJ-2 ACO PTO.", "saldo": 8, "custo": 56.4663, "sugestao": 102}, {"codigo": "3166", "codigoExibido": "3166", "nome": "LUBRIFICANTE C3 CERAMIC SECO - 5ML - MUC-OFF (876) - AMOSTRA", "saldo": 7, "custo": null, "sugestao": null}, {"codigo": "2267", "codigoExibido": "2267", "nome": "ABRACADEIRA NYLON 200X3,5MM C/100 PTA FOXLUX  -  REF 18.15", "saldo": 7, "custo": 7.255, "sugestao": 13}, {"codigo": "1461", "codigoExibido": "1461", "nome": "Trava do Rolamento da Direção", "saldo": 7, "custo": null, "sugestao": null}, {"codigo": "2460", "codigoExibido": "2460", "nome": "GRAXA LEVE SLICKOLEUM, 425G, FRASCO ORIG", "saldo": 6, "custo": 358.145, "sugestao": 648}, {"codigo": "2360", "codigoExibido": "2360", "nome": "ABRACADEIRA NYLON 140X2,5MM C/100 PTA FOXLUX  -  REF 18.12", "saldo": 6, "custo": 3.68, "sugestao": 7}, {"codigo": "3169", "codigoExibido": "3169", "nome": "AMOSTRA POLIDOR MATT FINISH DETAILER - 32ML - MUC-OFF (253)", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "3168", "codigoExibido": "3168", "nome": "DESENGRAXANTE DRIVETRAIN CLEANER PARA TRANSMISSAO - 25ML - MUC-OFF(255) - AMOSTRA", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "3167", "codigoExibido": "3167", "nome": "LIMPADOR BIODEGRADAVEL NANOTECH - 32 ML - AMOSTRA - MUC-OFF (254)", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1977", "codigoExibido": "1977", "nome": "PAPEL A4 210X297MM C/500 CHAMEX", "saldo": 5, "custo": 25.64, "sugestao": 46}, {"codigo": "69", "codigoExibido": "69", "nome": "Air Spacer - Token - FOX 40", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1612", "codigoExibido": "1612", "nome": "Gancheira - usada", "saldo": 5, "custo": null, "sugestao": null}, {"codigo": "1474", "codigoExibido": "1474", "nome": "Valvula Tubeless - usada", "saldo": 4, "custo": null, "sugestao": null}, {"codigo": "2160", "codigoExibido": "2160", "nome": "CAMARA CONTINENTAL MTB 26 - S42 BICO FINO", "saldo": 3, "custo": 45.2267, "sugestao": 82}, {"codigo": "1454", "codigoExibido": "1454", "nome": "Trava de cassete - usada", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "85", "codigoExibido": "85", "nome": "Anel de Esferas", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "389", "codigoExibido": "389", "nome": "Castanha de Canote - Completa - usada", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "1566", "codigoExibido": "1566", "nome": "Espuma de Suspensão - usadas - PAR", "saldo": 3, "custo": null, "sugestao": null}, {"codigo": "3754", "codigoExibido": "3754", "nome": "KIT CONVERSAO SINGLE SPEED ABSOLUTE BRUTUS 16D PTO", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3753", "codigoExibido": "3753", "nome": "MANOPLA ESI GRIPS EXTRA CHUNKY (BIKE) - PRETO", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3148", "codigoExibido": "3148", "nome": "Desengraxante Graxa Zero - 20 L", "saldo": 2, "custo": 452.1, "sugestao": 818}, {"codigo": "2763", "codigoExibido": "2763", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 265MM", "saldo": 2, "custo": 69.76, "sugestao": 126}, {"codigo": "2748", "codigoExibido": "2748", "nome": "Pistao em aluminio p/ pinca ( Zee, Saint e Xt - 4 pistoes)", "saldo": 2, "custo": 98, "sugestao": 177}, {"codigo": "2158", "codigoExibido": "2158", "nome": "CONDUITE JAGWIRE PARA CAMBIO 4MM LEX SLICK LUBE PRETO - ROLO COM 10M", "saldo": 2, "custo": 106.395, "sugestao": 193}, {"codigo": "2088", "codigoExibido": "2088", "nome": "TERMINAL P/CABO ACO, ALUMINIO, NAT", "saldo": 2, "custo": 65.06, "sugestao": 118}, {"codigo": "1436", "codigoExibido": "1436", "nome": "TERMINAL CONDUITE CAMBIO, 4MM, PLAST,PTO", "saldo": 2, "custo": 32.8, "sugestao": 59}, {"codigo": "114", "codigoExibido": "114", "nome": "Bacia da Direção - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "37", "codigoExibido": "37", "nome": "Adaptador de cubo - 5mm", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "1711", "codigoExibido": "1711", "nome": "Haste Externa - LEV - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "1714", "codigoExibido": "1714", "nome": "Haste Interna - LEV - usada", "saldo": 2, "custo": null, "sugestao": null}, {"codigo": "3755", "codigoExibido": "3755", "nome": "Kit do Ar/Oleo RockShox Vivid Air (2024+)", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "3752", "codigoExibido": "3752", "nome": "GARRAFA CAMELBAK THRIVE CHUG TRITAN 25OZ / 740ML - CHARCOAL", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "3596", "codigoExibido": "3596", "nome": "SAPATILHA ROAD SH-RP101 TAM 38 PTO", "saldo": 1, "custo": 386.22, "sugestao": 699}, {"codigo": "3595", "codigoExibido": "3595", "nome": "GARRAFA INOX MIA 650ML TDF", "saldo": 1, "custo": 284.49, "sugestao": 515}, {"codigo": "3594", "codigoExibido": "3594", "nome": "BOMBA OFICINA PERFORMANCE PTO", "saldo": 1, "custo": 368.99, "sugestao": 668}, {"codigo": "3517", "codigoExibido": "3517", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 280MM", "saldo": 1, "custo": 71.73, "sugestao": 130}, {"codigo": "3513", "codigoExibido": "3513", "nome": "PASTA ANTIGRIPAGEM PARK TOOL ASC-1", "saldo": 1, "custo": 57.87, "sugestao": 105}, {"codigo": "3020", "codigoExibido": "3020", "nome": "DISPLAY DE BALCAO MUC-OFF (198)", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "2749", "codigoExibido": "2749", "nome": "Pino em aluminio p/ Manete Shimano (Slx, XT, XTR e Deore) - PAR", "saldo": 1, "custo": 24, "sugestao": 43}, {"codigo": "2690", "codigoExibido": "2690", "nome": "CAPACETE MTB ENDURO 2.0 BRANCO/PRETO (WHITE) TAM. US S/BR 51-55", "saldo": 1, "custo": 664.26, "sugestao": 1202}, {"codigo": "2435", "codigoExibido": "2435", "nome": "TERMINAL PARA CONDUITE DE CAMBIO JAGWIRE 4MM PLÁSTICO PRETO - 100 UND.", "saldo": 1, "custo": 153.27, "sugestao": 277}, {"codigo": "2361", "codigoExibido": "2361", "nome": "ESCOVA LAVAR ROUPA OVAL TOQ MULTILAR  -  REF 442", "saldo": 1, "custo": 24.04, "sugestao": 44}, {"codigo": "2033", "codigoExibido": "2033", "nome": "ESCOVAS, PARK TOOL BCB-4.2, 4 PCS", "saldo": 1, "custo": 132.56, "sugestao": 240}, {"codigo": "2032", "codigoExibido": "2032", "nome": "ALICATE P/ RAIOS PARK TOOL CSH-1", "saldo": 1, "custo": 192.77, "sugestao": 349}, {"codigo": "1558", "codigoExibido": "1558", "nome": "Espaçador Mesa Direct DH - novo", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1190", "codigoExibido": "1190", "nome": "Retentor Racing Bros Fox 32", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1605", "codigoExibido": "1605", "nome": "Freio V-brake", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "35", "codigoExibido": "35", "nome": "Acabamento de Quadro Specialized", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "33", "codigoExibido": "33", "nome": "Acabamento do Pivo do Link", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1460", "codigoExibido": "1460", "nome": "Trava do Cartucho de Suspensão", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1041", "codigoExibido": "1041", "nome": "Pastilha Shimano Padrão - Seminova", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "1707", "codigoExibido": "1707", "nome": "Haste de Acionamento - KS - usada", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "189", "codigoExibido": "189", "nome": "Bucha Externa - Lev - usada", "saldo": 1, "custo": null, "sugestao": null}, {"codigo": "316", "codigoExibido": "316", "nome": "CAPA PROTETORA PARA FREIO A DISCO DE BICICLETAS - MUC-OFF", "saldo": 1, "custo": 348.01, "sugestao": 630}]
   };
@@ -186,16 +224,21 @@
     id: "hipress", tipo: "preco_livre",
     titulo: "Preço de venda · NF HIPRESS 180660",
     sub: "7 anéis/vedações novos dessa nota.",
-    avisoSecao: "itens novos, ainda não cadastrados — sem custo no sistema",
+    avisoSecao: "itens novos, ainda não cadastrados no Bling. O custo é o da própria nota, não tem histórico de venda pra comparar",
     headerMsg: "HIPRESS 180660",
     itens: [{"codigo": "HIP-10023", "codigoExibido": "10023", "nome": "ANEL O'RING 6-252 N0674-70", "custoRef": 3.48, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-15104", "codigoExibido": "15104", "nome": "ANEL O'RING 6-639 N0674-70", "custoRef": 4.87, "qtd": 2, "ncm": "4016.93.00"}, {"codigo": "HIP-10173", "codigoExibido": "10173", "nome": "ANEL O'RING 2-208 N0674-70", "custoRef": 2.79, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-10228", "codigoExibido": "10228", "nome": "ANEL O'RING 2-117 N0674-70", "custoRef": 3.16, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38263", "codigoExibido": "38263", "nome": "ANEL X-RING X-109 N0674-70", "custoRef": 5.0, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-28104", "codigoExibido": "28104", "nome": "ANEL O'RING 2-109 N0552-90", "custoRef": 2.52, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38298", "codigoExibido": "38298", "nome": "GAXETA/RASPADOR EL 0082 P5008", "custoRef": 23.04, "qtd": 1, "ncm": "3926.90.90"}]
   };
   const SECAO_CONTAGEM = {
     id: "contagem", tipo: "qtd",
     titulo: "Contagem física · pneus e guidões",
-    sub: "70 itens agrupados por tipo. Confere na prateleira: se bater, toca em Confere; se não bater, digita a quantidade certa.",
+    sub: "60 itens ativos agrupados por tipo. Confere na prateleira: se bater, toca em Confere; se não bater, digita a quantidade certa. Saldo do Bling em " + RETRATO_SALDOS + ". O grupo Guidão já foi respondido e ajustado — não está mais aqui. Em cada item dá pra marcar uma ação de cadastro (inativar/renomear/excluir), e no fim tem o grupo Inativados (23/07), fechado.",
     headerMsg: "CONTAGEM PNEUS/GUIDÕES",
-    grupos: [{"id": "guidao", "titulo": "Guidão", "itens": [{"codigo": "3726", "codigoExibido": "3726", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 23 800MM PRETO (BLAST BLACK)", "saldo": 1}, {"codigo": "3725", "codigoExibido": "3725", "nome": "GUIDAO C/ MANOPLA LEATT LAUNCH CONTROL 6.0 35MM RISE 38 800MM PRETO (BLAST BLACK)", "saldo": 1}, {"codigo": "2611", "codigoExibido": "2611", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 20MM - FATBAR 31.8MM -", "saldo": 2}, {"codigo": "2610", "codigoExibido": "2610", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 30MM - FATBAR 31.8MM -", "saldo": 1}, {"codigo": "3641", "codigoExibido": "3641", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 30MM - FATBAR 35MM -", "saldo": 5}, {"codigo": "3642", "codigoExibido": "3642", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 40MM - FATBAR 35MM -", "saldo": 3}, {"codigo": "3721", "codigoExibido": "3721", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 30 800MM ALUMINIO DOURADO", "saldo": 2}, {"codigo": "3720", "codigoExibido": "3720", "nome": "GUIDAO RENTHAL FATBAR 35 V3 RISE 40 800MM ALUMINIO DOURADO", "saldo": 2}, {"codigo": "2093", "codigoExibido": "2093", "nome": "GUIDAO ENDURO ALUM 35X800X30MM RS TRAIL PTO", "saldo": 2, "marca": "SENTEC"}, {"codigo": "2198", "codigoExibido": "2198", "nome": "GUIDAO TITLE AH1 PRETO 35 RISE:25mm", "saldo": 5}]}, {"id": "correlatos_guidao", "titulo": "Correlatos de guidão", "itens": [{"codigo": "1398", "codigoExibido": "1398", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL PTO FOSCO", "saldo": 3}, {"codigo": "2836", "codigoExibido": "2836", "nome": "FITA DE GUIDAO EASTON PINLINE LOGO BLACK", "saldo": 1}, {"codigo": "3656", "codigoExibido": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS", "saldo": 1}, {"codigo": "3062", "codigoExibido": "3062", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE 10MM - FATBAR 35MM -", "saldo": 1}, {"codigo": "3244", "codigoExibido": "3244", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "3359", "codigoExibido": "3359", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 50MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "1309", "codigoExibido": "1309", "nome": "SAFE PLUG - KIT DE FERRAMENTAS TUBELESS COM ENCAIXE NO GUIDAO DE BICICLETA - S-TRES SAFE PLUG L S", "saldo": 1}, {"codigo": "3017", "codigoExibido": "3017", "nome": "Plugs Token para Guidão - Black TK267R", "saldo": 4}]}, {"id": "pneu", "titulo": "Pneu", "itens": [{"codigo": "2813", "codigoExibido": "2813", "nome": "PNEU 20X2.10 K1016, PTO, KINIPTION", "saldo": 2}, {"codigo": "3273", "codigoExibido": "3273", "nome": "PNEU ARAME 29X2.5 SCORPION RACE DH M", "saldo": 3}, {"codigo": "2889", "codigoExibido": "2889", "nome": "PNEU 27,5X2,40 ENDURO PERSUADER DRY 120TPI 3C-MTB TR KEVLAR", "saldo": 4, "marca": "CHAOYANG"}, {"codigo": "2890", "codigoExibido": "2890", "nome": "PNEU 29X2,40 ENDURO PERSUADER WET 60TPI 3C-AM TR KEVLAR PTO", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2589", "codigoExibido": "2589", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS FX-CREME", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2521", "codigoExibido": "2521", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS PTO", "saldo": 1, "marca": "CHAOYANG"}, {"codigo": "2675", "codigoExibido": "2675", "nome": "PNEU CONTINENTAL CROSS KING 27,5 2 3 PERFORMANCE PRETO DOBRAVEL", "saldo": 2}, {"codigo": "2673", "codigoExibido": "2673", "nome": "PNEU CONTINENTAL CROSS KING SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 4}, {"codigo": "2674", "codigoExibido": "2674", "nome": "PNEU CONTINENTAL RUBAN SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 2}, {"codigo": "3292", "codigoExibido": "3292", "nome": "PNEU HUTCHINSON GRIFFUS TUBELESS 27,5X2,50", "saldo": 1}, {"codigo": "3294", "codigoExibido": "3294", "nome": "PNEU HUTCHINSON KRAKEN TUBELESS SIDESKIN 29X2", "saldo": 1}, {"codigo": "3293", "codigoExibido": "3293", "nome": "PNEU MTB HUTCHINSON PYTHON 3 TUBELESS 29X4 PR", "saldo": 1}, {"codigo": "1075", "codigoExibido": "1075", "nome": "PNEU 26X2.35 KENDA SMALL BLOCK", "saldo": 4}, {"codigo": "3102", "codigoExibido": "3102", "nome": "PNEU MOTO CG 125 90/90-18 MATRIX LEVORIN", "saldo": 1}, {"codigo": "2743", "codigoExibido": "2743", "nome": "PNEU MAXXIS 27.5X2.5 MINION DHF M301RU", "saldo": 2}, {"codigo": "2413", "codigoExibido": "2413", "nome": "PNEU MAXXIS 27.5X2.50WT ASSEGAI M356RU", "saldo": 4}, {"codigo": "2894", "codigoExibido": "2894", "nome": "PNEU MAXXIS 29X2.40 REKON RACE M355RU", "saldo": 2}, {"codigo": "2742", "codigoExibido": "2742", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU", "saldo": 2}, {"codigo": "2411", "codigoExibido": "2411", "nome": "PNEU MAXXIS 29X2.50 ASSEGAI M356RU", "saldo": 3}, {"codigo": "2741", "codigoExibido": "2741", "nome": "PNEU MAXXIS 29X2.50 WETSCREAM M137RU", "saldo": 1}, {"codigo": "2412", "codigoExibido": "2412", "nome": "PNEU MAXXIS 29X2.50WT MINION DHF", "saldo": 2}, {"codigo": "2545", "codigoExibido": "2545", "nome": "Pneu Michelin Wild Am2 29 X 2.40 Mixed/soft", "saldo": -2}, {"codigo": "3362", "codigoExibido": "3362", "nome": "PNEU 275X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3369"]}, {"codigo": "2342", "codigoExibido": "2342", "nome": "PNEU 275X260 WILD ENDURO RACING LINE 3X60TPI DIANT KVLR TLR", "saldo": 7, "marca": "MICHELIN FR"}, {"codigo": "3621", "codigoExibido": "3621", "nome": "PNEU 29X2.60 FORCE AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 3, "marca": "MICHELIN FR"}, {"codigo": "3622", "codigoExibido": "3622", "nome": "PNEU 29X2.60 WILD AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3363", "codigoExibido": "3363", "nome": "PNEU 29X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 10, "marca": "MICHELIN FR", "duplicados": ["3494"]}, {"codigo": "3364", "codigoExibido": "3364", "nome": "PNEU 29X240 DH22 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3495"]}, {"codigo": "2282", "codigoExibido": "2282", "nome": "PNEU 29X240 WILD AM2 COMPETITION KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "2283", "codigoExibido": "2283", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X33TPI TRAS KVLR TLR", "saldo": 11, "marca": "MICHELIN FR", "duplicados": ["3482"]}, {"codigo": "2284", "codigoExibido": "2284", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X60TPI DIANT KVLR TLR", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3481"]}, {"codigo": "2285", "codigoExibido": "2285", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI DIANT KEVLAR TLR", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3480"]}, {"codigo": "2391", "codigoExibido": "2391", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "saldo": 11, "marca": "MICHELIN FR"}, {"codigo": "3620", "codigoExibido": "3620", "nome": "PNEU 29X250 WILD ENDURO MH RACING LINE 2X55TPI KEVLAR TLR AM", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3291", "codigoExibido": "3291", "nome": "PV529822 - PNEU TUBELESS DE ALTA PERFORMANCE", "saldo": 1}]}, {"id": "correlatos_pneu", "titulo": "Correlatos de pneu", "itens": [{"codigo": "1180", "codigoExibido": "1180", "nome": "REPARO P/ PNEUS TUBELESS BLACKBURN C/10", "saldo": 3}, {"codigo": "2522", "codigoExibido": "2522", "nome": "KIT REPARO PNEU TUBELESS MACARRAO 3.5MM/1.5MM", "saldo": 5, "marca": "HIGH ONE"}, {"codigo": "1179", "codigoExibido": "1179", "nome": "REMENDO PNEU - MACARRAOZINHO", "saldo": -73}, {"codigo": "3789", "codigoExibido": "3789", "nome": "DEFENDER MTB - PROTETOR DE ARO E PNEU DE BICICLETA M", "saldo": 2}, {"codigo": "2380", "codigoExibido": "2380", "nome": "CARTUCHO INFLADOR E REPARADOR DE PNEUS B.A.M. - 125ML - MUC-OFF", "saldo": 3}, {"codigo": "3438", "codigoExibido": "3438", "nome": "ESPATULA DE NYLON PARA PNEUS - COR PRETA - MUC-OFF", "saldo": 1}, {"codigo": "3439", "codigoExibido": "3439", "nome": "ESPATULA DE NYLON PARA PNEUS - COR ROSA - MUC-OFF", "saldo": 4}, {"codigo": "3440", "codigoExibido": "3440", "nome": "ESPATULA DE NYLON PARA PNEUS - COR VERDE - MUC-OFF", "saldo": 1}, {"codigo": "3740", "codigoExibido": "3740", "nome": "ESPATULA DE PNEU PARK TOOL TL-4.2 KIT 2 UNIDADES", "saldo": 4}, {"codigo": "3175", "codigoExibido": "3175", "nome": "REFIL CONSERTO DE PNEU SEM CAMARA PASSEIO CAIXA COM 60 PECAS - R769062 - SCHEBOR", "saldo": 1}, {"codigo": "2223", "codigoExibido": "2223", "nome": "TUBO PARA REPARO DE PNEU TOPEAK", "saldo": 2}, {"codigo": "3582", "codigoExibido": "3582", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR LINER LIGHT XC TRAIL MTB TAMANHO, P/PNEUS 29 X 2.1 A 2.40", "saldo": 2}, {"codigo": "3326", "codigoExibido": "3326", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT DOWNHILL 29 X 2.4/2.6", "saldo": 7}, {"codigo": "3585", "codigoExibido": "3585", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 27.5X 2.4/2.6", "saldo": 1}, {"codigo": "3584", "codigoExibido": "3584", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 29 X 2.4/2.6", "saldo": -1}, {"codigo": "3583", "codigoExibido": "3583", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 27.5 X 2.4/2.6", "saldo": 0}, {"codigo": "3505", "codigoExibido": "3505", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 29 X 2.4/2.6", "saldo": 3}]}]
+    grupos: [{"id": "correlatos_guidao", "titulo": "Correlatos de guidão", "itens": [{"codigo": "1398", "codigoExibido": "1398", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL PTO FOSCO", "saldo": 3}, {"codigo": "2836", "codigoExibido": "2836", "nome": "FITA DE GUIDAO EASTON PINLINE LOGO BLACK", "saldo": 1}, {"codigo": "3656", "codigoExibido": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS", "saldo": 1}, {"codigo": "3062", "codigoExibido": "3062", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE 10MM - FATBAR 35MM -", "saldo": 1}, {"codigo": "3244", "codigoExibido": "3244", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "3359", "codigoExibido": "3359", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 50MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "1309", "codigoExibido": "1309", "nome": "SAFE PLUG - KIT DE FERRAMENTAS TUBELESS COM ENCAIXE NO GUIDAO DE BICICLETA - S-TRES SAFE PLUG L S", "saldo": 1}, {"codigo": "3017", "codigoExibido": "3017", "nome": "Plugs Token para Guidão - Black TK267R", "saldo": 4}]}, {"id": "pneu", "titulo": "Pneu", "itens": [{"codigo": "2813", "codigoExibido": "2813", "nome": "PNEU 20X2.10 K1016, PTO, KINIPTION", "saldo": 2}, {"codigo": "3273", "codigoExibido": "3273", "nome": "PNEU ARAME 29X2.5 SCORPION RACE DH M", "saldo": 3}, {"codigo": "2889", "codigoExibido": "2889", "nome": "PNEU 27,5X2,40 ENDURO PERSUADER DRY 120TPI 3C-MTB TR KEVLAR", "saldo": 4, "marca": "CHAOYANG"}, {"codigo": "2890", "codigoExibido": "2890", "nome": "PNEU 29X2,40 ENDURO PERSUADER WET 60TPI 3C-AM TR KEVLAR PTO", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2589", "codigoExibido": "2589", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS FX-CREME", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2521", "codigoExibido": "2521", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS PTO", "saldo": 1, "marca": "CHAOYANG"}, {"codigo": "2675", "codigoExibido": "2675", "nome": "PNEU CONTINENTAL CROSS KING 27,5 2 3 PERFORMANCE PRETO DOBRAVEL", "saldo": 2}, {"codigo": "2673", "codigoExibido": "2673", "nome": "PNEU CONTINENTAL CROSS KING SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 4}, {"codigo": "2674", "codigoExibido": "2674", "nome": "PNEU CONTINENTAL RUBAN SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 2}, {"codigo": "3292", "codigoExibido": "3292", "nome": "PNEU HUTCHINSON GRIFFUS TUBELESS 27,5X2,50", "saldo": 1}, {"codigo": "3294", "codigoExibido": "3294", "nome": "PNEU HUTCHINSON KRAKEN TUBELESS SIDESKIN 29X2", "saldo": 1}, {"codigo": "3293", "codigoExibido": "3293", "nome": "PNEU MTB HUTCHINSON PYTHON 3 TUBELESS 29X4 PR", "saldo": 1}, {"codigo": "1075", "codigoExibido": "1075", "nome": "PNEU 26X2.35 KENDA SMALL BLOCK", "saldo": 4}, {"codigo": "3102", "codigoExibido": "3102", "nome": "PNEU MOTO CG 125 90/90-18 MATRIX LEVORIN", "saldo": 1}, {"codigo": "2743", "codigoExibido": "2743", "nome": "PNEU MAXXIS 27.5X2.5 MINION DHF M301RU", "saldo": 2}, {"codigo": "2413", "codigoExibido": "2413", "nome": "PNEU MAXXIS 27.5X2.50WT ASSEGAI M356RU", "saldo": 4}, {"codigo": "2894", "codigoExibido": "2894", "nome": "PNEU MAXXIS 29X2.40 REKON RACE M355RU", "saldo": 2}, {"codigo": "2742", "codigoExibido": "2742", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU", "saldo": 2}, {"codigo": "2411", "codigoExibido": "2411", "nome": "PNEU MAXXIS 29X2.50 ASSEGAI M356RU", "saldo": 3}, {"codigo": "2741", "codigoExibido": "2741", "nome": "PNEU MAXXIS 29X2.50 WETSCREAM M137RU", "saldo": 1}, {"codigo": "2412", "codigoExibido": "2412", "nome": "PNEU MAXXIS 29X2.50WT MINION DHF", "saldo": 2}, {"codigo": "2545", "codigoExibido": "2545", "nome": "Pneu Michelin Wild Am2 29 X 2.40 Mixed/soft", "saldo": -2}, {"codigo": "3362", "codigoExibido": "3362", "nome": "PNEU 275X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3369"]}, {"codigo": "2342", "codigoExibido": "2342", "nome": "PNEU 275X260 WILD ENDURO RACING LINE 3X60TPI DIANT KVLR TLR", "saldo": 7, "marca": "MICHELIN FR"}, {"codigo": "3621", "codigoExibido": "3621", "nome": "PNEU 29X2.60 FORCE AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 3, "marca": "MICHELIN FR"}, {"codigo": "3622", "codigoExibido": "3622", "nome": "PNEU 29X2.60 WILD AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3363", "codigoExibido": "3363", "nome": "PNEU 29X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 10, "marca": "MICHELIN FR", "duplicados": ["3494"]}, {"codigo": "3364", "codigoExibido": "3364", "nome": "PNEU 29X240 DH22 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3495"]}, {"codigo": "2282", "codigoExibido": "2282", "nome": "PNEU 29X240 WILD AM2 COMPETITION KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "2283", "codigoExibido": "2283", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X33TPI TRAS KVLR TLR", "saldo": 11, "marca": "MICHELIN FR", "duplicados": ["3482"]}, {"codigo": "2284", "codigoExibido": "2284", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X60TPI DIANT KVLR TLR", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3481"]}, {"codigo": "2285", "codigoExibido": "2285", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI DIANT KEVLAR TLR", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3480"]}, {"codigo": "2391", "codigoExibido": "2391", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "saldo": 11, "marca": "MICHELIN FR"}, {"codigo": "3620", "codigoExibido": "3620", "nome": "PNEU 29X250 WILD ENDURO MH RACING LINE 2X55TPI KEVLAR TLR AM", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3291", "codigoExibido": "3291", "nome": "PV529822 - PNEU TUBELESS DE ALTA PERFORMANCE", "saldo": 1}]}, {"id": "correlatos_pneu", "titulo": "Correlatos de pneu", "itens": [{"codigo": "1180", "codigoExibido": "1180", "nome": "REPARO P/ PNEUS TUBELESS BLACKBURN C/10", "saldo": 3}, {"codigo": "2522", "codigoExibido": "2522", "nome": "KIT REPARO PNEU TUBELESS MACARRAO 3.5MM/1.5MM", "saldo": 5, "marca": "HIGH ONE"}, {"codigo": "1179", "codigoExibido": "1179", "nome": "REMENDO PNEU - MACARRAOZINHO", "saldo": -73}, {"codigo": "3789", "codigoExibido": "3789", "nome": "DEFENDER MTB - PROTETOR DE ARO E PNEU DE BICICLETA M", "saldo": 2}, {"codigo": "2380", "codigoExibido": "2380", "nome": "CARTUCHO INFLADOR E REPARADOR DE PNEUS B.A.M. - 125ML - MUC-OFF", "saldo": 3}, {"codigo": "3438", "codigoExibido": "3438", "nome": "ESPATULA DE NYLON PARA PNEUS - COR PRETA - MUC-OFF", "saldo": 1}, {"codigo": "3439", "codigoExibido": "3439", "nome": "ESPATULA DE NYLON PARA PNEUS - COR ROSA - MUC-OFF", "saldo": 4}, {"codigo": "3440", "codigoExibido": "3440", "nome": "ESPATULA DE NYLON PARA PNEUS - COR VERDE - MUC-OFF", "saldo": 1}, {"codigo": "3740", "codigoExibido": "3740", "nome": "ESPATULA DE PNEU PARK TOOL TL-4.2 KIT 2 UNIDADES", "saldo": 4}, {"codigo": "3175", "codigoExibido": "3175", "nome": "REFIL CONSERTO DE PNEU SEM CAMARA PASSEIO CAIXA COM 60 PECAS - R769062 - SCHEBOR", "saldo": 1}, {"codigo": "2223", "codigoExibido": "2223", "nome": "TUBO PARA REPARO DE PNEU TOPEAK", "saldo": 2}, {"codigo": "3582", "codigoExibido": "3582", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR LINER LIGHT XC TRAIL MTB TAMANHO, P/PNEUS 29 X 2.1 A 2.40", "saldo": 2}, {"codigo": "3326", "codigoExibido": "3326", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT DOWNHILL 29 X 2.4/2.6", "saldo": 7}, {"codigo": "3585", "codigoExibido": "3585", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 27.5X 2.4/2.6", "saldo": 1}, {"codigo": "3584", "codigoExibido": "3584", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 29 X 2.4/2.6", "saldo": -1}, {"codigo": "3583", "codigoExibido": "3583", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 27.5 X 2.4/2.6", "saldo": 0}, {"codigo": "3505", "codigoExibido": "3505", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 29 X 2.4/2.6", "saldo": 3}]}],
+    inativados: {
+      titulo: "Inativados (23/07)",
+      aviso: "Atenção: esses produtos foram desativados no sistema em 23/07 por estarem sem giro. Se você ACHAR algum fisicamente, anote a quantidade — a gente reativa.",
+      itens: [{"codigo": "3272", "codigoExibido": "3272", "nome": "PNEU 27.5X2.50 SCORPION RACE DH T"}, {"codigo": "3649", "codigoExibido": "3649", "nome": "SUPORTE GUIDAO 31.8X50MM ALM WILD EX 2 P"}, {"codigo": "3647", "codigoExibido": "3647", "nome": "GUIDAO ALM MTB NERO 31.8X720X60MM PTO"}, {"codigo": "2969", "codigoExibido": "2969", "nome": "SUPORTE GUIDAO, ALM, AHEAD, D601, 31,8X5"}, {"codigo": "1406", "codigoExibido": "1406", "nome": "SUPORTE GUIDAO, ALM, PROTAPER, PTO 35X35"}, {"codigo": "1407", "codigoExibido": "1407", "nome": "SUPORTE GUIDAO, ALM, PTO 31.8X35MM .5."}, {"codigo": "3097", "codigoExibido": "3097", "nome": "Pneu Continental Cross King Shieldwall 29 29 X 2.6 Dobravel"}, {"codigo": "1079", "codigoExibido": "1079", "nome": "Pneu Levorin Praieiro 700x32"}, {"codigo": "2924", "codigoExibido": "2924", "nome": "PNEU MAXXIS 27.5 X2.50 ASSEGAI USADO"}, {"codigo": "1115", "codigoExibido": "1115", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU"}, {"codigo": "3321", "codigoExibido": "3321", "nome": "PNEU MAXXIS SHORTY GEN 2 29X2.40 WT DH CASING"}, {"codigo": "2655", "codigoExibido": "2655", "nome": "Pneu Maxxis Minion DHF 29 x 2.50 DH CASING"}, {"codigo": "2996", "codigoExibido": "2996", "nome": "Pneu Maxxis Minion DHR 27.5 x 2.40 Usado"}, {"codigo": "3360", "codigoExibido": "3360", "nome": "PAR DE PNEUS MICHELIN RACING LINE DH 34 MULLET 29X2.40 / 27.5X2.40"}, {"codigo": "3614", "codigoExibido": "3614", "nome": "PNEU MICHELIN WILD ENDURO FRONT COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3598", "codigoExibido": "3598", "nome": "PNEU MICHELIN WILD ENDURO REAR COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3368", "codigoExibido": "3368", "nome": "Pneu Michelin Racing Line Dh 16 29 X 2.40 Preto"}, {"codigo": "3544", "codigoExibido": "3544", "nome": "Pneu Michelin Wild Enduro Competition Line 29x2.40 Traseiro - Preto"}, {"codigo": "2526", "codigoExibido": "2526", "nome": "Pneu Michelin Wild Enduro Competition Line Front 27.5 X 2.60"}, {"codigo": "2422", "codigoExibido": "2422", "nome": "Pneu Michelin Wild Enduro Competition Line Front 29 X 2.40"}, {"codigo": "3542", "codigoExibido": "3542", "nome": "Pneu Michelin Wild Enduro Front 29 X 2.40 Preto", "duplicados": ["3543"]}, {"codigo": "2574", "codigoExibido": "2574", "nome": "Pneu Michelin Wild Enduro Front Racing Line 29 X 2.40 E-bike", "duplicados": ["2596", "3061"]}, {"codigo": "2531", "codigoExibido": "2531", "nome": "Pneu Michelin Wild Enduro Rear Racing Line 29 X 2.40", "duplicados": ["2575"]}, {"codigo": "2286", "codigoExibido": "2286", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "2912", "codigoExibido": "2912", "nome": "PNEU MOTO TORNADO 120/80-18 VIPER MAGGION"}, {"codigo": "1774", "codigoExibido": "1774", "nome": "KIT REPARADOR DE PNEUS TUBELESS PUNCTURE PLUG - MUC-OFF"}, {"codigo": "2888", "codigoExibido": "2888", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 10 Macarrões", "duplicados": ["2919"]}, {"codigo": "2711", "codigoExibido": "2711", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 15 Macarrão"}, {"codigo": "1586", "codigoExibido": "1586", "nome": "Fita P/ Kit Reparo Pneu Bicicleta - Nomad"}, {"codigo": "1138", "codigoExibido": "1138", "nome": "PRE SELANTE S-VULCAN PARA PNEU TUBELESS - S-TRES 30ML"}, {"codigo": "3243", "codigoExibido": "3243", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR CARBON35 800MM - RISE 30MM - FATBAR 35M"}, {"codigo": "2930", "codigoExibido": "2930", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 30MM - FATBAR 35MM - ALU"}, {"codigo": "2914", "codigoExibido": "2914", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 40MM - FATBAR 35MM - ALU"}, {"codigo": "1699", "codigoExibido": "1699", "nome": "Guidão Renthal Fatbar 35mm - rise 20mm - al - Black"}, {"codigo": "1694", "codigoExibido": "1694", "nome": "Guidão Renthal Fatbar 35mm - rise 30mm - al - Black"}, {"codigo": "3153", "codigoExibido": "3153", "nome": "Guidão Renthal Fatbar 35mm Clamprise 20mm Preto"}, {"codigo": "3150", "codigoExibido": "3150", "nome": "Guidão Renthal Fatnar V2 Aluminium Black 800mm X 35mm X 30mm"}, {"codigo": "2929", "codigoExibido": "2929", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 33MM - FATBAR 35MM - 136 GRAMAS"}, {"codigo": "2138", "codigoExibido": "2138", "nome": "Espatula Para Pneus Sentec - 3unidades"}, {"codigo": "2097", "codigoExibido": "2097", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL FACTORY PTO BRI", "marca": "SENTEC"}, {"codigo": "1", "codigoExibido": "1", "nome": "GUIDAO TITLE AH1 CROMADO 31.8X25mm"}, {"codigo": "1704", "codigoExibido": "1704", "nome": "GUIDAO TITLE AH1 CROMADO 35X25", "duplicados": ["1706"]}, {"codigo": "1705", "codigoExibido": "1705", "nome": "GUIDAO TITLE AH1 PRETO 31.8x50"}, {"codigo": "2", "codigoExibido": "2", "nome": "GUIDAO TITLE AH1 PRETO 35X25mm"}, {"codigo": "67", "codigoExibido": "67", "nome": "GUIDÃO TITLE AH1 BLACK 31.8x25"}, {"codigo": "68", "codigoExibido": "68", "nome": "GUIDÃO TITLEA AH1BLACK 35x25"}]
+    }
   };
   const SECOES = [SECAO_PRECIFICACAO, SECAO_HIPRESS, SECAO_CONTAGEM];
 
@@ -206,19 +249,49 @@
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : {};
+      if (raw) return JSON.parse(raw);
+      // migracao v1 -> v2: v1 guardava tudo como string (inclusive contagem).
+      // v2 guarda itens de contagem como objeto { v, acaoInativar, ... } pra
+      // caber as acoes de cadastro. O valor de contagem ja digitado no v1 e
+      // adotado como ponto de partida (normalizado no loop de init abaixo).
+      const anterior = localStorage.getItem(STORAGE_KEY_ANTERIOR);
+      return anterior ? JSON.parse(anterior) : {};
     } catch (e) { return {}; }
   }
   function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
 
-  // codigo -> string digitada (raw). "" = ainda nao respondeu.
-  // "0" e um valor DIGITADO (nao vender / contei zero) — sempre diferente
-  // de "" em toda a logica de preenchido/mensagem/localStorage.
+  // Para itens de preco (precificacao/hipress): state[codigo] = string digitada.
+  // "" = ainda nao respondeu. "0" e um valor DIGITADO — sempre diferente de
+  // "" em toda a logica de preenchido/mensagem/localStorage.
+  //
+  // Para itens de contagem (secao "qtd", ativos e inativados): state[codigo] = {
+  //   v: "5",                                  contagem — "" = ainda nao contei
+  //   acaoInativar, acaoReativar, acaoExcluir: bool,   (acoes de cadastro)
+  //   acaoRenomear: "novo nome" (texto livre, pode estar vazio)
+  // }
   const state = loadState();
 
-  const TODOS_ITENS = SECOES.flatMap(s => itensDaSecao(s).map(it => ({ ...it, secaoId: s.id, tipo: s.tipo })));
-  TODOS_ITENS.forEach(it => { if (!(it.codigo in state)) state[it.codigo] = ""; });
+  const TODOS_ITENS_FLAT = SECOES.flatMap(s => itensDaSecao(s).map(it => ({ ...it, secaoId: s.id, tipo: s.tipo })));
+  const INATIVADOS_ITENS = SECAO_CONTAGEM.inativados.itens.map(it => ({ ...it, secaoId: "contagem", tipo: "qtd", inativado: true }));
+  const TIPO_POR_CODIGO = {};
+  TODOS_ITENS_FLAT.concat(INATIVADOS_ITENS).forEach(it => { TIPO_POR_CODIGO[it.codigo] = it.tipo; });
+
+  TODOS_ITENS_FLAT.concat(INATIVADOS_ITENS).forEach(it => {
+    const existente = state[it.codigo];
+    if (it.tipo === "qtd") {
+      if (existente === undefined) state[it.codigo] = { v: "" };
+      else if (typeof existente === "string") state[it.codigo] = { v: existente }; // migracao v1
+      if (state[it.codigo].v === undefined) state[it.codigo].v = "";
+    } else {
+      if (existente === undefined) state[it.codigo] = "";
+    }
+  });
   saveState();
+
+  // TODOS_ITENS alimenta o progresso geral e o total da pagina — os
+  // inativados ficam de fora (sao achado bonus, nao pendencia obrigatoria,
+  // mesmo comportamento do HTML antigo de contagem).
+  const TODOS_ITENS = TODOS_ITENS_FLAT;
 
   const INPUTS = {};
   const PINTURAS = {};
@@ -250,7 +323,55 @@
   function limiteExcedido(str) { return encodeURIComponent(str).length > LIMITE_CHARS; }
   function waHref(texto) { return "https://wa.me/" + WA + "?text=" + encodeURIComponent(texto); }
 
-  function estaPreenchido(codigo) { return state[codigo] !== ""; }
+  function estaPreenchido(codigo) {
+    if (TIPO_POR_CODIGO[codigo] === "qtd") {
+      const s = state[codigo];
+      return !!s && s.v !== undefined && s.v !== "";
+    }
+    return state[codigo] !== "";
+  }
+
+  // ---------- acoes de cadastro (so na secao de contagem) ----------
+
+  function getEstadoQtd(codigo) {
+    if (typeof state[codigo] !== "object" || state[codigo] === null) state[codigo] = { v: "" };
+    return state[codigo];
+  }
+  function temAcaoMarcada(codigo) {
+    const s = state[codigo];
+    return !!s && (!!s.acaoInativar || !!s.acaoReativar || !!s.acaoExcluir || !!(s.acaoRenomear && s.acaoRenomear.trim()));
+  }
+  function atualizarSelos(codigo, row) {
+    const s = state[codigo] || {};
+    const el = row.querySelector(".selos");
+    if (!el) return;
+    const selos = [];
+    if (s.acaoInativar) selos.push('<span class="selo selo-inativar">INATIVAR</span>');
+    if (s.acaoReativar) selos.push('<span class="selo selo-reativar">REATIVAR</span>');
+    if (s.acaoExcluir) selos.push('<span class="selo selo-excluir">EXCLUIR</span>');
+    if (s.acaoRenomear && s.acaoRenomear.trim()) selos.push('<span class="selo selo-renomear">RENOMEAR</span>');
+    el.innerHTML = selos.join(" ");
+  }
+  // Lista de linhas "AÇÕES DE CADASTRO" (INATIVAR/REATIVAR/EXCLUIR/RENOMEAR)
+  // pros itens dados — usada tanto na mensagem dos ativos quanto na dos
+  // inativados. So entra quem tem alguma acao marcada.
+  function acoesDoItens(itens) {
+    const inativar = [], reativar = [], excluir = [], renomear = [];
+    itens.forEach(it => {
+      const s = state[it.codigo];
+      if (!s) return;
+      if (s.acaoInativar) inativar.push(it.codigo);
+      if (s.acaoReativar) reativar.push(it.codigo);
+      if (s.acaoExcluir) excluir.push(it.codigo);
+      if (s.acaoRenomear && s.acaoRenomear.trim()) renomear.push(`- ${it.codigo} => ${s.acaoRenomear.trim()}`);
+    });
+    const linhas = [];
+    if (inativar.length) linhas.push(`INATIVAR (${inativar.length}): ${inativar.join(" ")}`);
+    if (reativar.length) linhas.push(`REATIVAR (${reativar.length}): ${reativar.join(" ")}`);
+    if (excluir.length) linhas.push(`EXCLUIR (${excluir.length}): ${excluir.join(" ")}`);
+    if (renomear.length) linhas.push(`RENOMEAR (${renomear.length}):\n${renomear.join("\n")}`);
+    return linhas;
+  }
 
   // ---------- secoes de preco (precificacao + hipress) ----------
 
@@ -384,16 +505,28 @@
     }));
   }
 
-  // ---------- secao de contagem (qtd) ----------
+  // ---------- secao de contagem (qtd) — ativos e inativados ----------
+
+  function valorQtd(codigo) {
+    const s = state[codigo];
+    return (s && s.v !== undefined) ? s.v : "";
+  }
 
   function statusItemQtd(it) {
-    const v = state[it.codigo];
+    const v = valorQtd(it.codigo);
     if (v === "") return "faltando";
+    if (it.saldo === undefined) return "achado"; // inativados: sem saldo pra comparar
     const n = parseInt(v, 10);
     return n === it.saldo ? "confere" : "diferente";
   }
 
+  // Renderiza uma linha de contagem — serve tanto pros grupos ativos
+  // (it.saldo definido, com Confere/badge de divergencia) quanto pro grupo
+  // Inativados (it.saldo undefined, campo "achei", sem Confere/badge).
+  // Em ambos os casos entra o bloco recolhido "+ ação no cadastro"
+  // (Inativar ou Reativar, Excluir, Renomear), copiado da v4 da pagina antiga.
   function renderItemQtd(container, it) {
+    const temSaldo = it.saldo !== undefined;
     const row = document.createElement("div");
     row.className = "item";
     row.dataset.codigo = it.codigo;
@@ -402,38 +535,69 @@
 
     const marcaHtml = it.marca ? `<div class="item-marca">${it.marca}</div>` : "";
     const dupHtml = (it.duplicados && it.duplicados.length)
-      ? `<div class="item-dup">Bling tem esse produto em ${1 + it.duplicados.length} cadastros (também cadastrado como: ${it.duplicados.join(", ")}) — somados dão ${it.saldo}.<span class="dup-nota">conte o total UMA vez</span></div>`
+      ? `<div class="item-dup">Bling tem esse produto em ${1 + it.duplicados.length} cadastros (também cadastrado como: ${it.duplicados.join(", ")})${temSaldo ? ` — somados dão ${it.saldo}` : ""}.<span class="dup-nota">conte o total UMA vez</span></div>`
       : "";
-    const negativo = it.saldo < 0;
-    const notaNeg = negativo
-      ? `<div class="nota-negativo">o sistema está negativo, isso é erro antigo — conta o que tem de verdade</div>`
-      : "";
-    const label = (it.duplicados && it.duplicados.length) ? "soma" : it.saldo;
+
+    let metaHtml = "", botaoHtml = "", labelCampo = "tenho";
+    if (temSaldo) {
+      const negativo = it.saldo < 0;
+      const notaNeg = negativo
+        ? `<div class="nota-negativo">o sistema está negativo, isso é erro antigo — conta o que tem de verdade</div>`
+        : "";
+      metaHtml = `<div class="item-meta">Bling diz que tem hoje: <b class="${negativo ? "saldo-neg" : ""}">${it.saldo}</b></div>${notaNeg}`;
+      const label = (it.duplicados && it.duplicados.length) ? "soma" : it.saldo;
+      botaoHtml = `<button class="btn-ok" type="button">Confere (${label})</button>`;
+    } else {
+      labelCampo = "achei";
+    }
+
+    const acaoStatusHtml = it.inativado
+      ? `<label class="acao-check"><input type="checkbox" class="acao-reativar"> Reativar</label>`
+      : `<label class="acao-check"><input type="checkbox" class="acao-inativar"> Inativar</label>`;
 
     row.innerHTML = `
       <div class="item-info">
         <div class="item-cod">${it.codigo}</div>
-        <div class="item-nome">${it.nome}</div>
+        <div class="item-nome">${it.nome}<span class="selos"></span></div>
         ${marcaHtml}
         ${dupHtml}
-        <div class="item-meta">Bling diz que tem hoje: <b class="${negativo ? "saldo-neg" : ""}">${it.saldo}</b></div>
-        ${notaNeg}
+        ${metaHtml}
       </div>
       <div class="row">
-        <button class="btn-ok" type="button">Confere (${label})</button>
-        <div class="qtd-wrap"><input type="number" inputmode="numeric" min="0" step="1" data-codigo="${it.codigo}" placeholder="tenho"></div>
-        <div class="diverg-badge" data-badge="${it.codigo}">—</div>
+        ${botaoHtml}
+        <div class="qtd-wrap"><input type="number" inputmode="numeric" min="0" step="1" data-codigo="${it.codigo}" placeholder="${labelCampo}"></div>
+        ${temSaldo ? `<div class="diverg-badge" data-badge="${it.codigo}">—</div>` : ""}
+      </div>
+      <div class="acao-bloco">
+        <button type="button" class="acao-toggle">+ ação no cadastro</button>
+        <div class="acao-painel" hidden>
+          ${acaoStatusHtml}
+          <label class="acao-check"><input type="checkbox" class="acao-excluir"> Excluir</label>
+          <div class="acao-renomear-wrap">
+            <span>Renomear para:</span>
+            <input type="text" class="acao-renomear" placeholder="${it.nome.replace(/"/g, "&quot;")}">
+          </div>
+          <div class="acao-aviso-excluir" hidden>Excluir é definitivo e some com o histórico. Se o objetivo é só sumir da busca, inativar resolve e dá pra desfazer.</div>
+        </div>
       </div>
     `;
 
     const btn = row.querySelector(".btn-ok");
     const input = row.querySelector("input[data-codigo]");
     const badge = row.querySelector(".diverg-badge");
+    const acaoToggle = row.querySelector(".acao-toggle");
+    const acaoPainel = row.querySelector(".acao-painel");
+    const acaoInativarChk = row.querySelector(".acao-inativar");
+    const acaoReativarChk = row.querySelector(".acao-reativar");
+    const acaoExcluirChk = row.querySelector(".acao-excluir");
+    const acaoRenomearInput = row.querySelector(".acao-renomear");
+    const acaoAvisoExcluir = row.querySelector(".acao-aviso-excluir");
 
     function pintar() {
-      const v = state[it.codigo];
+      const v = valorQtd(it.codigo);
       row.classList.toggle("faltando", v === "");
       row.dataset.status = v === "" ? "pendente" : "preenchido";
+      if (!temSaldo) return;
       if (v === "") {
         badge.textContent = "—";
         badge.className = "diverg-badge";
@@ -453,35 +617,96 @@
       }
     }
 
-    if (state[it.codigo] !== "") input.value = state[it.codigo];
-    if (state[it.codigo] === String(it.saldo) && state[it.codigo] !== "") btn.classList.add("on");
+    const s0 = state[it.codigo];
+    if (s0 && s0.v !== undefined && s0.v !== "") input.value = s0.v;
+    if (temSaldo && s0 && s0.v === String(it.saldo) && s0.v !== "") btn.classList.add("on");
+    if (s0) {
+      if (acaoInativarChk) acaoInativarChk.checked = !!s0.acaoInativar;
+      if (acaoReativarChk) acaoReativarChk.checked = !!s0.acaoReativar;
+      if (acaoExcluirChk) acaoExcluirChk.checked = !!s0.acaoExcluir;
+      if (acaoRenomearInput && s0.acaoRenomear) acaoRenomearInput.value = s0.acaoRenomear;
+      if (acaoAvisoExcluir) acaoAvisoExcluir.hidden = !s0.acaoExcluir;
+    }
     pintar();
+    atualizarSelos(it.codigo, row);
+    if (temAcaoMarcada(it.codigo)) {
+      acaoPainel.hidden = false;
+      acaoToggle.textContent = "- ação no cadastro";
+    }
     INPUTS[it.codigo] = input;
     PINTURAS[it.codigo] = pintar;
 
-    btn.addEventListener("click", () => {
-      const jaOn = btn.classList.contains("on");
-      if (jaOn) {
-        btn.classList.remove("on");
-        state[it.codigo] = "";
-        input.value = "";
-      } else {
-        btn.classList.add("on");
-        state[it.codigo] = String(it.saldo);
-        input.value = String(it.saldo);
+    acaoToggle.addEventListener("click", () => {
+      const abrindo = acaoPainel.hidden;
+      acaoPainel.hidden = !abrindo;
+      acaoToggle.textContent = abrindo ? "- ação no cadastro" : "+ ação no cadastro";
+    });
+
+    function onMudaAcaoStatus(chkLigado, chkOutro, campo, campoOutro) {
+      const st = getEstadoQtd(it.codigo);
+      st[campo] = chkLigado.checked;
+      if (chkLigado.checked && chkOutro) {
+        chkOutro.checked = false;
+        st[campoOutro] = false;
+        if (campoOutro === "acaoExcluir" && acaoAvisoExcluir) acaoAvisoExcluir.hidden = true;
       }
       saveState();
-      pintar();
+      atualizarSelos(it.codigo, row);
+      refresh();
+    }
+    if (acaoInativarChk) {
+      acaoInativarChk.addEventListener("change", () => onMudaAcaoStatus(acaoInativarChk, acaoExcluirChk, "acaoInativar", "acaoExcluir"));
+    }
+    if (acaoReativarChk) {
+      acaoReativarChk.addEventListener("change", () => onMudaAcaoStatus(acaoReativarChk, acaoExcluirChk, "acaoReativar", "acaoExcluir"));
+    }
+    acaoExcluirChk.addEventListener("change", () => {
+      const st = getEstadoQtd(it.codigo);
+      st.acaoExcluir = acaoExcluirChk.checked;
+      if (acaoExcluirChk.checked) {
+        if (acaoInativarChk) { acaoInativarChk.checked = false; st.acaoInativar = false; }
+        if (acaoReativarChk) { acaoReativarChk.checked = false; st.acaoReativar = false; }
+      }
+      acaoAvisoExcluir.hidden = !acaoExcluirChk.checked;
+      saveState();
+      atualizarSelos(it.codigo, row);
       refresh();
     });
+    acaoRenomearInput.addEventListener("input", () => {
+      const st = getEstadoQtd(it.codigo);
+      st.acaoRenomear = acaoRenomearInput.value;
+      saveState();
+      atualizarSelos(it.codigo, row);
+      refresh();
+    });
+
+    if (btn) {
+      btn.addEventListener("click", () => {
+        const jaOn = btn.classList.contains("on");
+        const st = getEstadoQtd(it.codigo);
+        if (jaOn) {
+          btn.classList.remove("on");
+          st.v = "";
+          input.value = "";
+        } else {
+          btn.classList.add("on");
+          st.v = String(it.saldo);
+          input.value = String(it.saldo);
+        }
+        saveState();
+        pintar();
+        refresh();
+      });
+    }
     input.addEventListener("input", () => {
-      btn.classList.remove("on");
+      if (btn) btn.classList.remove("on");
+      const st = getEstadoQtd(it.codigo);
       if (input.value === "") {
-        state[it.codigo] = "";
+        st.v = "";
       } else {
         const n = Math.max(0, parseInt(input.value, 10) || 0);
-        state[it.codigo] = String(n);
-        if (String(n) === String(it.saldo)) btn.classList.add("on");
+        st.v = String(n);
+        if (temSaldo && btn && String(n) === String(it.saldo)) btn.classList.add("on");
       }
       saveState();
       pintar();
@@ -496,7 +721,7 @@
     const diffs = [], matches = [];
     let faltou = 0;
     itens.forEach(it => {
-      const v = state[it.codigo];
+      const v = valorQtd(it.codigo);
       if (v === "") { faltou++; return; }
       const n = parseInt(v, 10);
       if (n === it.saldo) matches.push(it.codigoExibido); else diffs.push(it);
@@ -510,31 +735,43 @@
       ? `${secao.headerMsg} ${DATA_HOJE} (parte ${parte}/${partes})`
       : `${secao.headerMsg} ${DATA_HOJE}`;
 
-    if (diffs.length + matches.length === 0) return [];
-    if (diffs.length === 0 && faltou === 0) {
+    const acoesLinhas = acoesDoItens(itensDaSecao(secao));
+    const acoesBloco = acoesLinhas.length ? `AÇÕES DE CADASTRO:\n${acoesLinhas.join("\n")}` : null;
+
+    if (diffs.length + matches.length === 0 && !acoesBloco) return [];
+    if (diffs.length === 0 && faltou === 0 && !acoesBloco) {
       return [{ texto: `${headerBase(1, 1)}\n\nConferi os ${total} itens, tudo batendo com o Bling.`, count: total }];
     }
 
-    const linhasDiff = diffs.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: tenho ${state[it.codigo]} (Bling diz ${it.saldo})`);
+    const linhasDiff = diffs.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: tenho ${valorQtd(it.codigo)} (Bling diz ${it.saldo})`);
     const linhaMatch = matches.length ? `CONFEREM (${matches.length}): ${matches.join(" ")}` : null;
     const linhaFaltou = faltou > 0 ? `Faltou conferir: ${faltou}` : null;
 
     const blocos = [];
-    if (linhasDiff.length) blocos.push(`DIFERENTE do Bling (${linhasDiff.length}):\n${linhasDiff.join("\n")}`);
-    if (linhaMatch) blocos.push(linhaMatch);
-    if (linhaFaltou) blocos.push(linhaFaltou);
+    if (diffs.length === 0 && faltou === 0) {
+      blocos.push(`Conferi os ${total} itens, tudo batendo com o Bling.`);
+    } else {
+      if (linhasDiff.length) blocos.push(`DIFERENTE do Bling (${linhasDiff.length}):\n${linhasDiff.join("\n")}`);
+      if (linhaMatch) blocos.push(linhaMatch);
+      if (linhaFaltou) blocos.push(linhaFaltou);
+    }
+    if (acoesBloco) blocos.push(acoesBloco);
     const corpo = blocos.join("\n\n");
     const textoUnico = `${headerBase(1, 1)}\n\n${corpo}`;
     if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: diffs.length + matches.length }];
 
-    const linhasBase = linhasDiff.slice();
-    if (matches.length) {
-      for (let i = 0; i < matches.length; i += 25) {
-        const fatia = matches.slice(i, i + 25);
-        linhasBase.push(`CONFEREM (${fatia.length}): ${fatia.join(" ")}`);
+    const linhasBase = (diffs.length === 0 && faltou === 0)
+      ? [`Conferi os ${total} itens, tudo batendo com o Bling.`]
+      : linhasDiff.slice();
+    if (diffs.length !== 0 || faltou !== 0) {
+      if (matches.length) {
+        for (let i = 0; i < matches.length; i += 25) {
+          const fatia = matches.slice(i, i + 25);
+          linhasBase.push(`CONFEREM (${fatia.length}): ${fatia.join(" ")}`);
+        }
       }
     }
-    const extras = [linhaFaltou].filter(Boolean);
+    const extras = [linhaFaltou, acoesBloco].filter(Boolean);
 
     const partes = [{ linhas: [], extra: "" }];
     const caberia = (idx, linhas, extra) => {
@@ -564,6 +801,70 @@
       const corpoParte = [p.linhas.join("\n"), p.extra].filter(Boolean).join("\n\n");
       return { texto: `${headerBase(i + 1, totalPartes)}\n\n${corpoParte}`, count: p.linhas.length };
     });
+  }
+
+  // ---------- grupo Inativados (23/07) — mensagem propria, own send-row ----------
+
+  function montarMensagensInativados(secao) {
+    const itens = secao.inativados.itens;
+    const achados = itens.filter(it => valorQtd(it.codigo) !== "");
+    const acoesLinhas = acoesDoItens(itens);
+    const acoesBloco = acoesLinhas.length ? `AÇÕES DE CADASTRO:\n${acoesLinhas.join("\n")}` : null;
+    if (achados.length === 0 && !acoesBloco) return [];
+
+    const headerBase = (parte, partes) => partes > 1
+      ? `${secao.headerMsg} ${DATA_HOJE} — Inativados (parte ${parte}/${partes})`
+      : `${secao.headerMsg} ${DATA_HOJE} — Inativados`;
+    const linhas = achados.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: achei ${valorQtd(it.codigo)}`);
+    const blocoAchados = linhas.length ? `Achados (${achados.length}):\n${linhas.join("\n")}` : null;
+    const corpo = [blocoAchados, acoesBloco].filter(Boolean).join("\n\n");
+    const textoUnico = `${headerBase(1, 1)}\n\n${corpo}`;
+    if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: achados.length }];
+
+    const grupos = [[]];
+    linhas.forEach(linha => {
+      const tentativo = [...grupos[grupos.length - 1], linha];
+      const cab = headerBase(grupos.length, grupos.length);
+      const textoTeste = `${cab}\n\nAchados:\n${tentativo.join("\n")}`;
+      if (limiteExcedido(textoTeste) && grupos[grupos.length - 1].length > 0) grupos.push([linha]);
+      else grupos[grupos.length - 1] = tentativo;
+    });
+    if (acoesBloco) {
+      const ultimo = grupos[grupos.length - 1];
+      const cab = headerBase(grupos.length, grupos.length);
+      const textoTeste = `${cab}\n\nAchados:\n${(Array.isArray(ultimo) ? ultimo : ultimo.linhas).join("\n")}\n\n${acoesBloco}`;
+      if (Array.isArray(ultimo) && ultimo.length > 0 && limiteExcedido(textoTeste)) grupos.push({ acoes: acoesBloco, linhas: [] });
+      else grupos[grupos.length - 1] = { linhas: Array.isArray(ultimo) ? ultimo : ultimo.linhas, acoes: acoesBloco };
+    }
+    const totalPartes = grupos.length;
+    return grupos.map((g, i) => {
+      const linhasG = Array.isArray(g) ? g : g.linhas;
+      const acoesG = Array.isArray(g) ? null : g.acoes;
+      const corpoParte = [linhasG.length ? `Achados (${linhasG.length}):\n${linhasG.join("\n")}` : null, acoesG]
+        .filter(Boolean).join("\n\n");
+      return { texto: `${headerBase(i + 1, totalPartes)}\n\n${corpoParte}`, count: linhasG.length };
+    });
+  }
+
+  function refreshAcoesResumo(secao) {
+    const el = document.querySelector(`[data-acoes="${secao.id}"]`);
+    if (!el) return;
+    const todos = itensDaSecao(secao).concat(secao.inativados.itens);
+    let inativar = 0, reativar = 0, excluir = 0, renomear = 0;
+    todos.forEach(it => {
+      const s = state[it.codigo];
+      if (!s) return;
+      if (s.acaoInativar) inativar++;
+      if (s.acaoReativar) reativar++;
+      if (s.acaoExcluir) excluir++;
+      if (s.acaoRenomear && s.acaoRenomear.trim()) renomear++;
+    });
+    const partes = [];
+    if (inativar) partes.push(`${inativar} pra inativar`);
+    if (reativar) partes.push(`${reativar} pra reativar`);
+    if (excluir) partes.push(`${excluir} pra excluir`);
+    if (renomear) partes.push(`${renomear} pra renomear`);
+    el.textContent = partes.length ? `Ações de cadastro marcadas: ${partes.join(" · ")}` : "";
   }
 
   // ---------- render das secoes / envio ----------
@@ -611,10 +912,41 @@
     }
     det.appendChild(body);
 
+    if (secao.tipo === "qtd") {
+      const acoesResumo = document.createElement("div");
+      acoesResumo.className = "acoes-resumo";
+      acoesResumo.dataset.acoes = secao.id;
+      det.appendChild(acoesResumo);
+    }
+
     const sendRow = document.createElement("div");
     sendRow.className = "send-row";
     sendRow.dataset.sendrow = secao.id;
     det.appendChild(sendRow);
+
+    // Grupo Inativados (23/07): <details> aninhado, fechado por padrao,
+    // com o aviso literal, os itens (sem saldo, campo "achei") e o proprio
+    // botao de envio — copiado da v4 da pagina antiga de contagem.
+    if (secao.tipo === "qtd" && secao.inativados) {
+      const detInat = document.createElement("details");
+      detInat.className = "secao-inativados";
+      const summaryInat = document.createElement("summary");
+      summaryInat.innerHTML = `<span>${secao.inativados.titulo}</span><span class="seta">▸ abrir</span>`;
+      detInat.appendChild(summaryInat);
+      const avisoInat = document.createElement("div");
+      avisoInat.className = "aviso-inativados";
+      avisoInat.innerHTML = `<b>Atenção:</b> ${secao.inativados.aviso.replace(/^Atenção:\s*/, "")}`;
+      detInat.appendChild(avisoInat);
+
+      secao.inativados.itens.forEach(it => renderItemQtd(detInat, { ...it, inativado: true }));
+
+      const sendRowInat = document.createElement("div");
+      sendRowInat.className = "send-row";
+      sendRowInat.dataset.sendrow = secao.id + "_inativados";
+      detInat.appendChild(sendRowInat);
+
+      det.appendChild(detInat);
+    }
 
     secoesEl.appendChild(det);
     void totalItens;
@@ -632,16 +964,15 @@
     el.innerHTML = `<b>${preenchidos}</b> de <b>${itens.length}</b> preenchidos`;
   }
 
-  function refreshSendRow(secao) {
-    const wrap = document.querySelector(`[data-sendrow="${secao.id}"]`);
+  function preencherSendRow(wrapId, mensagens, rotulo) {
+    const wrap = document.querySelector(`[data-sendrow="${wrapId}"]`);
     if (!wrap) return;
     wrap.innerHTML = "";
-    const mensagens = secao.tipo === "qtd" ? montarMensagensContagem(secao) : montarMensagensPreco(secao);
     if (mensagens.length === 0) {
       const a = document.createElement("a");
       a.className = "send disabled";
       a.href = "#";
-      a.textContent = `Enviar ${secao.headerMsg} (0)`;
+      a.textContent = `Enviar ${rotulo} (0)`;
       wrap.appendChild(a);
       return;
     }
@@ -652,10 +983,19 @@
       a.target = "_blank";
       a.rel = "noopener";
       a.textContent = mensagens.length > 1
-        ? `Enviar ${secao.headerMsg} parte ${i + 1}/${mensagens.length} (${m.count})`
-        : `Enviar ${secao.headerMsg} (${m.count})`;
+        ? `Enviar ${rotulo} parte ${i + 1}/${mensagens.length} (${m.count})`
+        : `Enviar ${rotulo} (${m.count})`;
       wrap.appendChild(a);
     });
+  }
+
+  function refreshSendRow(secao) {
+    const mensagens = secao.tipo === "qtd" ? montarMensagensContagem(secao) : montarMensagensPreco(secao);
+    preencherSendRow(secao.id, mensagens, secao.headerMsg);
+    if (secao.tipo === "qtd" && secao.inativados) {
+      const mensagensInat = montarMensagensInativados(secao);
+      preencherSendRow(secao.id + "_inativados", mensagensInat, secao.inativados.titulo);
+    }
   }
 
   function refreshGeral() {
@@ -674,7 +1014,7 @@
       row.style.display = (passaBusca && passaFiltro) ? "" : "none";
     });
     if (termo) {
-      document.querySelectorAll("details.secao").forEach(det => {
+      document.querySelectorAll("details.secao, details.secao-inativados").forEach(det => {
         const algumVisivel = [...det.querySelectorAll(".item[data-codigo]")].some(r => r.style.display !== "none");
         if (algumVisivel) det.open = true;
       });
@@ -693,6 +1033,7 @@
   function refresh() {
     SECOES.forEach(refreshSecaoProg);
     SECOES.forEach(refreshSendRow);
+    refreshAcoesResumo(SECAO_CONTAGEM);
     refreshGeral();
     aplicarFiltro();
   }
