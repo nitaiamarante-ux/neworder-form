@@ -186,6 +186,41 @@
     background: var(--surface-2); color: var(--ink); font-size: 14px; padding: 10px 12px; min-height: 44px;
     -webkit-appearance: none; }
   .nome-sugerido-wrap input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+  .destino-misto { margin-top: 10px; padding: 10px 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  .destino-misto-campos { display: flex; gap: 8px; }
+  .destino-misto-campo { flex: 1 1 0; }
+  .destino-misto-campo span { display: block; font-size: 11.5px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+  .destino-misto-campo input { width: 100%; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface-2);
+    color: var(--ink); font-size: 16px; padding: 10px; min-height: 44px; text-align: right;
+    font-variant-numeric: tabular-nums; -webkit-appearance: none; }
+  .destino-misto-campo input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .destino-misto-total { margin-top: 8px; font-size: 12.5px; color: var(--muted); }
+  .destino-misto-total b { color: var(--ink); }
+  .destino-misto-badge { margin-top: 6px; font-size: 12px; font-weight: 700; }
+  .destino-misto-badge.verde { color: var(--good); }
+  .destino-misto-badge.vermelho { color: var(--bad); }
+
+  .saldo3 { display: flex; gap: 8px; margin-top: 8px; }
+  .saldo3-cel { flex: 1 1 0; background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 6px; text-align: center; }
+  .saldo3-cel.saldo3-fica { background: var(--accent-soft); border-color: var(--accent); }
+  .saldo3-label { display: block; font-size: 10px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .03em; }
+  .saldo3-val { display: block; font-size: 16px; font-weight: 800; margin-top: 2px; }
+
+  .bloco { margin-top: 24px; }
+  .bloco:first-child { margin-top: 18px; }
+  .bloco-header { padding: 13px 15px; border-radius: 14px; }
+  .bloco-bling .bloco-header { background: var(--accent-soft); border: 1px solid var(--accent); }
+  .bloco-nf .bloco-header { background: var(--note-soft); border: 1px solid var(--note-border); }
+  .bloco-titulo { font-weight: 800; font-size: 15px; }
+  .bloco-selo { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+    border-radius: 6px; padding: 2px 7px; margin-right: 8px; vertical-align: middle; }
+  .bloco-bling .bloco-selo { background: var(--accent); color: var(--accent-ink); }
+  .bloco-nf .bloco-selo { background: var(--note-border); color: #33290a; }
+  .bloco-desc { font-size: 13px; color: var(--muted); margin-top: 5px; }
+
+  details.secao.secao-bloco-bling { border-left: 4px solid var(--accent); }
+  details.secao.secao-bloco-nf { border-left: 4px solid var(--note-border); }
 </style>
 </head>
 <body>
@@ -211,13 +246,28 @@
     </div>
   </header>
 
-  <div id="secoes"></div>
+  <div class="bloco bloco-bling">
+    <div class="bloco-header">
+      <div class="bloco-titulo"><span class="bloco-selo">Bling</span>Pendência do Bling</div>
+      <div class="bloco-desc">O produto já existe e já tem estoque no sistema — falta só a informação: o preço de venda ou quantas peças tem na prateleira.</div>
+    </div>
+    <div id="secoes-bling"></div>
+  </div>
+
+  <div class="bloco bloco-nf">
+    <div class="bloco-header">
+      <div class="bloco-titulo"><span class="bloco-selo">NF</span>Pendência de lançamento de NF</div>
+      <div class="bloco-desc">Essa nota ainda não foi lançada — o produto ainda nem existe no sistema, e o estoque dela ainda vai entrar quando lançarmos.</div>
+    </div>
+    <div id="secoes-nf"></div>
+  </div>
 </div>
 
 <script>
   const WA = "5531982976006";
   const LIMITE_CHARS = 1200;
-  const STORAGE_KEY = "no_matheus_2026-07-29_v3";
+  const STORAGE_KEY = "no_matheus_2026-07-29_v4";
+  const STORAGE_KEY_V3 = "no_matheus_2026-07-29_v3";
   const STORAGE_KEY_V2 = "no_matheus_2026-07-29_v2";
   const STORAGE_KEY_V1 = "no_matheus_2026-07-29_v1";
   const DATA_HOJE = "30/07";
@@ -225,26 +275,26 @@
   const HIPRESS_NF_INFO = "NF 180660 · série 1 · emissão 21/07/2026";
 
   const SECAO_PRECIFICACAO = {
-    id: "precificacao", tipo: "preco_sugerido",
+    id: "precificacao", tipo: "preco_sugerido", bloco: "bling",
     titulo: "Preço de venda · itens em estoque",
     sub: "57 itens que o Bling mostra com saldo, sem preço de venda ainda — ordenados do maior pro menor saldo. Saldo do Bling em " + RETRATO_SALDOS + ".",
-    headerMsg: "PRECIFICAÇÃO",
+    headerMsg: "[BLING] PRECIFICAÇÃO",
     itens: [{"codigo": "1984", "codigoExibido": "1984", "nome": "PARAFUSO GENÉRICO", "saldo": 182, "custo": 4.59, "dataEntrada": null}, {"codigo": "1387", "codigoExibido": "1387", "nome": "SILICONE SPRAY 300ML MUNDIAL PRIME  -  REF AE03000018", "saldo": 68, "custo": 137.59, "dataEntrada": "16/06/2026"}, {"codigo": "2243", "codigoExibido": "2243", "nome": "ABRACADEIRA NYLON 200X2,5MM C/100 PTA FOXLUX  -  REF 18.13", "saldo": 9, "custo": 4.865, "dataEntrada": "23/10/2025"}, {"codigo": "1409", "codigoExibido": "1409", "nome": "SUPORTE P/BICICLETA LJJ-2 ACO PTO.", "saldo": 8, "custo": 56.4663, "dataEntrada": "02/02/2023"}, {"codigo": "3166", "codigoExibido": "3166", "nome": "LUBRIFICANTE C3 CERAMIC SECO - 5ML - MUC-OFF (876) - AMOSTRA", "saldo": 7, "custo": null, "dataEntrada": "24/04/2025"}, {"codigo": "2267", "codigoExibido": "2267", "nome": "ABRACADEIRA NYLON 200X3,5MM C/100 PTA FOXLUX  -  REF 18.15", "saldo": 7, "custo": 7.255, "dataEntrada": "16/06/2026"}, {"codigo": "1461", "codigoExibido": "1461", "nome": "Trava do Rolamento da Direção", "saldo": 7, "custo": null, "dataEntrada": null}, {"codigo": "2460", "codigoExibido": "2460", "nome": "GRAXA LEVE SLICKOLEUM, 425G, FRASCO ORIG", "saldo": 6, "custo": 358.145, "dataEntrada": "06/10/2025"}, {"codigo": "2360", "codigoExibido": "2360", "nome": "ABRACADEIRA NYLON 140X2,5MM C/100 PTA FOXLUX  -  REF 18.12", "saldo": 6, "custo": 3.68, "dataEntrada": "23/10/2025"}, {"codigo": "3169", "codigoExibido": "3169", "nome": "AMOSTRA POLIDOR MATT FINISH DETAILER - 32ML - MUC-OFF (253)", "saldo": 5, "custo": null, "dataEntrada": "24/04/2025"}, {"codigo": "3168", "codigoExibido": "3168", "nome": "DESENGRAXANTE DRIVETRAIN CLEANER PARA TRANSMISSAO - 25ML - MUC-OFF(255) - AMOSTRA", "saldo": 5, "custo": null, "dataEntrada": "24/04/2025"}, {"codigo": "3167", "codigoExibido": "3167", "nome": "LIMPADOR BIODEGRADAVEL NANOTECH - 32 ML - AMOSTRA - MUC-OFF (254)", "saldo": 5, "custo": null, "dataEntrada": "24/04/2025"}, {"codigo": "1977", "codigoExibido": "1977", "nome": "PAPEL A4 210X297MM C/500 CHAMEX", "saldo": 5, "custo": 25.64, "dataEntrada": "16/06/2026"}, {"codigo": "69", "codigoExibido": "69", "nome": "Air Spacer - Token - FOX 40", "saldo": 5, "custo": null, "dataEntrada": "04/05/2022"}, {"codigo": "1612", "codigoExibido": "1612", "nome": "Gancheira - usada", "saldo": 5, "custo": null, "dataEntrada": null}, {"codigo": "1474", "codigoExibido": "1474", "nome": "Valvula Tubeless - usada", "saldo": 4, "custo": null, "dataEntrada": null}, {"codigo": "2160", "codigoExibido": "2160", "nome": "CAMARA CONTINENTAL MTB 26 - S42 BICO FINO", "saldo": 3, "custo": 45.2267, "dataEntrada": "16/06/2023"}, {"codigo": "1454", "codigoExibido": "1454", "nome": "Trava de cassete - usada", "saldo": 3, "custo": null, "dataEntrada": null}, {"codigo": "85", "codigoExibido": "85", "nome": "Anel de Esferas", "saldo": 3, "custo": null, "dataEntrada": "06/04/2022"}, {"codigo": "389", "codigoExibido": "389", "nome": "Castanha de Canote - Completa - usada", "saldo": 3, "custo": null, "dataEntrada": "05/01/2023"}, {"codigo": "1566", "codigoExibido": "1566", "nome": "Espuma de Suspensão - usadas - PAR", "saldo": 3, "custo": null, "dataEntrada": null}, {"codigo": "3754", "codigoExibido": "3754", "nome": "KIT CONVERSAO SINGLE SPEED ABSOLUTE BRUTUS 16D PTO", "saldo": 2, "custo": null, "dataEntrada": "28/04/2026"}, {"codigo": "3753", "codigoExibido": "3753", "nome": "MANOPLA ESI GRIPS EXTRA CHUNKY (BIKE) - PRETO", "saldo": 2, "custo": null, "dataEntrada": "03/07/2026"}, {"codigo": "3148", "codigoExibido": "3148", "nome": "Desengraxante Graxa Zero - 20 L", "saldo": 2, "custo": 452.1, "dataEntrada": "30/06/2026"}, {"codigo": "2763", "codigoExibido": "2763", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 265MM", "saldo": 2, "custo": 69.76, "dataEntrada": "26/04/2025"}, {"codigo": "2748", "codigoExibido": "2748", "nome": "Pistao em aluminio p/ pinca ( Zee, Saint e Xt - 4 pistoes)", "saldo": 2, "custo": 98, "dataEntrada": "22/07/2024"}, {"codigo": "2158", "codigoExibido": "2158", "nome": "CONDUITE JAGWIRE PARA CAMBIO 4MM LEX SLICK LUBE PRETO - ROLO COM 10M", "saldo": 2, "custo": 106.395, "dataEntrada": "16/06/2023"}, {"codigo": "2088", "codigoExibido": "2088", "nome": "TERMINAL P/CABO ACO, ALUMINIO, NAT", "saldo": 2, "custo": 65.06, "dataEntrada": "10/07/2025"}, {"codigo": "1436", "codigoExibido": "1436", "nome": "TERMINAL CONDUITE CAMBIO, 4MM, PLAST,PTO", "saldo": 2, "custo": 32.8, "dataEntrada": "10/07/2025"}, {"codigo": "114", "codigoExibido": "114", "nome": "Bacia da Direção - usada", "saldo": 2, "custo": null, "dataEntrada": "10/08/2022"}, {"codigo": "37", "codigoExibido": "37", "nome": "Adaptador de cubo - 5mm", "saldo": 2, "custo": null, "dataEntrada": null}, {"codigo": "1711", "codigoExibido": "1711", "nome": "Haste Externa - LEV - usada", "saldo": 2, "custo": null, "dataEntrada": null}, {"codigo": "1714", "codigoExibido": "1714", "nome": "Haste Interna - LEV - usada", "saldo": 2, "custo": null, "dataEntrada": null}, {"codigo": "3755", "codigoExibido": "3755", "nome": "Kit do Ar/Oleo RockShox Vivid Air (2024+)", "saldo": 1, "custo": null, "dataEntrada": "12/06/2026"}, {"codigo": "3752", "codigoExibido": "3752", "nome": "GARRAFA CAMELBAK THRIVE CHUG TRITAN 25OZ / 740ML - CHARCOAL", "saldo": 1, "custo": null, "dataEntrada": "03/07/2026"}, {"codigo": "3596", "codigoExibido": "3596", "nome": "SAPATILHA ROAD SH-RP101 TAM 38 PTO", "saldo": 1, "custo": 386.22, "dataEntrada": "14/11/2025"}, {"codigo": "3595", "codigoExibido": "3595", "nome": "GARRAFA INOX MIA 650ML TDF", "saldo": 1, "custo": 284.49, "dataEntrada": "14/11/2025"}, {"codigo": "3594", "codigoExibido": "3594", "nome": "BOMBA OFICINA PERFORMANCE PTO", "saldo": 1, "custo": 368.99, "dataEntrada": "14/11/2025"}, {"codigo": "3517", "codigoExibido": "3517", "nome": "RAIO INOX PTO, NIPLE, 2,0 X 280MM", "saldo": 1, "custo": 71.73, "dataEntrada": "06/10/2025"}, {"codigo": "3513", "codigoExibido": "3513", "nome": "PASTA ANTIGRIPAGEM PARK TOOL ASC-1", "saldo": 1, "custo": 57.87, "dataEntrada": "06/10/2025"}, {"codigo": "3020", "codigoExibido": "3020", "nome": "DISPLAY DE BALCAO MUC-OFF (198)", "saldo": 1, "custo": null, "dataEntrada": "27/01/2025"}, {"codigo": "2749", "codigoExibido": "2749", "nome": "Pino em aluminio p/ Manete Shimano (Slx, XT, XTR e Deore) - PAR", "saldo": 1, "custo": 24, "dataEntrada": "22/07/2024"}, {"codigo": "2690", "codigoExibido": "2690", "nome": "CAPACETE MTB ENDURO 2.0 BRANCO/PRETO (WHITE) TAM. US S/BR 51-55", "saldo": 1, "custo": 664.26, "dataEntrada": "21/06/2024"}, {"codigo": "2435", "codigoExibido": "2435", "nome": "TERMINAL PARA CONDUITE DE CAMBIO JAGWIRE 4MM PLÁSTICO PRETO - 100 UND.", "saldo": 1, "custo": 153.27, "dataEntrada": "08/03/2024"}, {"codigo": "2361", "codigoExibido": "2361", "nome": "ESCOVA LAVAR ROUPA OVAL TOQ MULTILAR  -  REF 442", "saldo": 1, "custo": 24.04, "dataEntrada": "08/01/2024"}, {"codigo": "2033", "codigoExibido": "2033", "nome": "ESCOVAS, PARK TOOL BCB-4.2, 4 PCS", "saldo": 1, "custo": 132.56, "dataEntrada": "02/02/2023"}, {"codigo": "2032", "codigoExibido": "2032", "nome": "ALICATE P/ RAIOS PARK TOOL CSH-1", "saldo": 1, "custo": 192.77, "dataEntrada": "02/02/2023"}, {"codigo": "1558", "codigoExibido": "1558", "nome": "Espaçador Mesa Direct DH - novo", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "1190", "codigoExibido": "1190", "nome": "Retentor Racing Bros Fox 32", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "1605", "codigoExibido": "1605", "nome": "Freio V-brake", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "35", "codigoExibido": "35", "nome": "Acabamento de Quadro Specialized", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "33", "codigoExibido": "33", "nome": "Acabamento do Pivo do Link", "saldo": 1, "custo": null, "dataEntrada": "24/02/2022"}, {"codigo": "1460", "codigoExibido": "1460", "nome": "Trava do Cartucho de Suspensão", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "1041", "codigoExibido": "1041", "nome": "Pastilha Shimano Padrão - Seminova", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "1707", "codigoExibido": "1707", "nome": "Haste de Acionamento - KS - usada", "saldo": 1, "custo": null, "dataEntrada": null}, {"codigo": "189", "codigoExibido": "189", "nome": "Bucha Externa - Lev - usada", "saldo": 1, "custo": null, "dataEntrada": "10/05/2022"}, {"codigo": "316", "codigoExibido": "316", "nome": "CAPA PROTETORA PARA FREIO A DISCO DE BICICLETAS - MUC-OFF", "saldo": 1, "custo": 348.01, "dataEntrada": "06/03/2025"}]
   };
   const SECAO_HIPRESS = {
-    id: "hipress", tipo: "preco_livre",
+    id: "hipress", tipo: "preco_livre", bloco: "nf",
     titulo: "Preço de venda · NF HIPRESS 180660",
     sub: "7 anéis/vedações novos dessa nota.",
     notaFiscal: HIPRESS_NF_INFO,
     avisoSecao: "itens novos, ainda não cadastrados no Bling. O custo é o da própria nota, não tem histórico de venda pra comparar",
-    headerMsg: "HIPRESS 180660",
-    itens: [{"codigo": "HIP-10023", "codigoExibido": "10023", "nome": "ANEL O'RING 6-252 N0674-70", "custoRef": 3.48, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-15104", "codigoExibido": "15104", "nome": "ANEL O'RING 6-639 N0674-70", "custoRef": 4.87, "qtd": 2, "ncm": "4016.93.00"}, {"codigo": "HIP-10173", "codigoExibido": "10173", "nome": "ANEL O'RING 2-208 N0674-70", "custoRef": 2.79, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-10228", "codigoExibido": "10228", "nome": "ANEL O'RING 2-117 N0674-70", "custoRef": 3.16, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38263", "codigoExibido": "38263", "nome": "ANEL X-RING X-109 N0674-70", "custoRef": 5.0, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-28104", "codigoExibido": "28104", "nome": "ANEL O'RING 2-109 N0552-90", "custoRef": 2.52, "qtd": 1, "ncm": "4016.93.00"}, {"codigo": "HIP-38298", "codigoExibido": "38298", "nome": "GAXETA/RASPADOR EL 0082 P5008", "custoRef": 23.04, "qtd": 1, "ncm": "3926.90.90"}]
+    headerMsg: "[NF] HIPRESS 180660",
+    itens: [{"codigo": "HIP-10023", "codigoExibido": "10023", "nome": "ANEL O'RING 6-252 N0674-70", "custoRef": 3.48, "qtd": 1, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-15104", "codigoExibido": "15104", "nome": "ANEL O'RING 6-639 N0674-70", "custoRef": 4.87, "qtd": 2, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-10173", "codigoExibido": "10173", "nome": "ANEL O'RING 2-208 N0674-70", "custoRef": 2.79, "qtd": 1, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-10228", "codigoExibido": "10228", "nome": "ANEL O'RING 2-117 N0674-70", "custoRef": 3.16, "qtd": 1, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-38263", "codigoExibido": "38263", "nome": "ANEL X-RING X-109 N0674-70", "custoRef": 5.0, "qtd": 1, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-28104", "codigoExibido": "28104", "nome": "ANEL O'RING 2-109 N0552-90", "custoRef": 2.52, "qtd": 1, "saldoAtual": 0, "ncm": "4016.93.00"}, {"codigo": "HIP-38298", "codigoExibido": "38298", "nome": "GAXETA/RASPADOR EL 0082 P5008", "custoRef": 23.04, "qtd": 1, "saldoAtual": 0, "ncm": "3926.90.90"}]
   };
   const SECAO_CONTAGEM = {
-    id: "contagem", tipo: "qtd",
+    id: "contagem", tipo: "qtd", bloco: "bling",
     titulo: "Contagem física · pneus e guidões",
     sub: "60 itens ativos agrupados por tipo. Confere na prateleira: se bater, toca em Confere; se não bater, digita a quantidade certa. Saldo do Bling em " + RETRATO_SALDOS + ". O grupo Guidão já foi respondido e ajustado — não está mais aqui. Em cada item dá pra marcar uma ação de cadastro (inativar/renomear/excluir) e o destino do produto, e no fim tem o grupo Inativados (23/07), fechado.",
-    headerMsg: "CONTAGEM PNEUS/GUIDÕES",
+    headerMsg: "[BLING] CONTAGEM PNEUS/GUIDÕES",
     grupos: [{"id": "correlatos_guidao", "titulo": "Correlatos de guidão", "itens": [{"codigo": "1398", "codigoExibido": "1398", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL PTO FOSCO", "saldo": 3}, {"codigo": "2836", "codigoExibido": "2836", "nome": "FITA DE GUIDAO EASTON PINLINE LOGO BLACK", "saldo": 1}, {"codigo": "3656", "codigoExibido": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS", "saldo": 1}, {"codigo": "3062", "codigoExibido": "3062", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE 10MM - FATBAR 35MM -", "saldo": 1}, {"codigo": "3244", "codigoExibido": "3244", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 45MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "3359", "codigoExibido": "3359", "nome": "MESA DE GUIDAO RENTHAL BIKE INTEGRA35 50MM - RISE ZERO - FATBAR 35MM -", "saldo": 1}, {"codigo": "1309", "codigoExibido": "1309", "nome": "SAFE PLUG - KIT DE FERRAMENTAS TUBELESS COM ENCAIXE NO GUIDAO DE BICICLETA - S-TRES SAFE PLUG L S", "saldo": 1}, {"codigo": "3017", "codigoExibido": "3017", "nome": "Plugs Token para Guidão - Black TK267R", "saldo": 4}]}, {"id": "pneu", "titulo": "Pneu", "itens": [{"codigo": "2813", "codigoExibido": "2813", "nome": "PNEU 20X2.10 K1016, PTO, KINIPTION", "saldo": 2}, {"codigo": "3273", "codigoExibido": "3273", "nome": "PNEU ARAME 29X2.5 SCORPION RACE DH M", "saldo": 3}, {"codigo": "2889", "codigoExibido": "2889", "nome": "PNEU 27,5X2,40 ENDURO PERSUADER DRY 120TPI 3C-MTB TR KEVLAR", "saldo": 4, "marca": "CHAOYANG"}, {"codigo": "2890", "codigoExibido": "2890", "nome": "PNEU 29X2,40 ENDURO PERSUADER WET 60TPI 3C-AM TR KEVLAR PTO", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2589", "codigoExibido": "2589", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS FX-CREME", "saldo": 3, "marca": "CHAOYANG"}, {"codigo": "2521", "codigoExibido": "2521", "nome": "PNEU 29X2.20 MTB PHANTOM WET 60TPI 2C-MTB TUBELESS PTO", "saldo": 1, "marca": "CHAOYANG"}, {"codigo": "2675", "codigoExibido": "2675", "nome": "PNEU CONTINENTAL CROSS KING 27,5 2 3 PERFORMANCE PRETO DOBRAVEL", "saldo": 2}, {"codigo": "2673", "codigoExibido": "2673", "nome": "PNEU CONTINENTAL CROSS KING SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 4}, {"codigo": "2674", "codigoExibido": "2674", "nome": "PNEU CONTINENTAL RUBAN SHIELDWALL 29 29X2 6 PRETO DOBRAVEL", "saldo": 2}, {"codigo": "3292", "codigoExibido": "3292", "nome": "PNEU HUTCHINSON GRIFFUS TUBELESS 27,5X2,50", "saldo": 1}, {"codigo": "3294", "codigoExibido": "3294", "nome": "PNEU HUTCHINSON KRAKEN TUBELESS SIDESKIN 29X2", "saldo": 1}, {"codigo": "3293", "codigoExibido": "3293", "nome": "PNEU MTB HUTCHINSON PYTHON 3 TUBELESS 29X4 PR", "saldo": 1}, {"codigo": "1075", "codigoExibido": "1075", "nome": "PNEU 26X2.35 KENDA SMALL BLOCK", "saldo": 4}, {"codigo": "3102", "codigoExibido": "3102", "nome": "PNEU MOTO CG 125 90/90-18 MATRIX LEVORIN", "saldo": 1}, {"codigo": "2743", "codigoExibido": "2743", "nome": "PNEU MAXXIS 27.5X2.5 MINION DHF M301RU", "saldo": 2}, {"codigo": "2413", "codigoExibido": "2413", "nome": "PNEU MAXXIS 27.5X2.50WT ASSEGAI M356RU", "saldo": 4}, {"codigo": "2894", "codigoExibido": "2894", "nome": "PNEU MAXXIS 29X2.40 REKON RACE M355RU", "saldo": 2}, {"codigo": "2742", "codigoExibido": "2742", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU", "saldo": 2}, {"codigo": "2411", "codigoExibido": "2411", "nome": "PNEU MAXXIS 29X2.50 ASSEGAI M356RU", "saldo": 3}, {"codigo": "2741", "codigoExibido": "2741", "nome": "PNEU MAXXIS 29X2.50 WETSCREAM M137RU", "saldo": 1}, {"codigo": "2412", "codigoExibido": "2412", "nome": "PNEU MAXXIS 29X2.50WT MINION DHF", "saldo": 2}, {"codigo": "2545", "codigoExibido": "2545", "nome": "Pneu Michelin Wild Am2 29 X 2.40 Mixed/soft", "saldo": -2}, {"codigo": "3362", "codigoExibido": "3362", "nome": "PNEU 275X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3369"]}, {"codigo": "2342", "codigoExibido": "2342", "nome": "PNEU 275X260 WILD ENDURO RACING LINE 3X60TPI DIANT KVLR TLR", "saldo": 7, "marca": "MICHELIN FR"}, {"codigo": "3621", "codigoExibido": "3621", "nome": "PNEU 29X2.60 FORCE AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 3, "marca": "MICHELIN FR"}, {"codigo": "3622", "codigoExibido": "3622", "nome": "PNEU 29X2.60 WILD AM2 COMPETITION 3X60TPI KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3363", "codigoExibido": "3363", "nome": "PNEU 29X240 DH16 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 10, "marca": "MICHELIN FR", "duplicados": ["3494"]}, {"codigo": "3364", "codigoExibido": "3364", "nome": "PNEU 29X240 DH22 RACING LINE 2X55TPI KEVLAR TLR AMARELO", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3495"]}, {"codigo": "2282", "codigoExibido": "2282", "nome": "PNEU 29X240 WILD AM2 COMPETITION KEVLAR TLR", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "2283", "codigoExibido": "2283", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X33TPI TRAS KVLR TLR", "saldo": 11, "marca": "MICHELIN FR", "duplicados": ["3482"]}, {"codigo": "2284", "codigoExibido": "2284", "nome": "PNEU 29X240 WILD ENDURO COMPETITION 3X60TPI DIANT KVLR TLR", "saldo": 12, "marca": "MICHELIN FR", "duplicados": ["3481"]}, {"codigo": "2285", "codigoExibido": "2285", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI DIANT KEVLAR TLR", "saldo": 19, "marca": "MICHELIN FR", "duplicados": ["3480"]}, {"codigo": "2391", "codigoExibido": "2391", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "saldo": 11, "marca": "MICHELIN FR"}, {"codigo": "3620", "codigoExibido": "3620", "nome": "PNEU 29X250 WILD ENDURO MH RACING LINE 2X55TPI KEVLAR TLR AM", "saldo": 2, "marca": "MICHELIN FR"}, {"codigo": "3291", "codigoExibido": "3291", "nome": "PV529822 - PNEU TUBELESS DE ALTA PERFORMANCE", "saldo": 1}]}, {"id": "correlatos_pneu", "titulo": "Correlatos de pneu", "itens": [{"codigo": "1180", "codigoExibido": "1180", "nome": "REPARO P/ PNEUS TUBELESS BLACKBURN C/10", "saldo": 3}, {"codigo": "2522", "codigoExibido": "2522", "nome": "KIT REPARO PNEU TUBELESS MACARRAO 3.5MM/1.5MM", "saldo": 5, "marca": "HIGH ONE"}, {"codigo": "1179", "codigoExibido": "1179", "nome": "REMENDO PNEU - MACARRAOZINHO", "saldo": -73}, {"codigo": "3789", "codigoExibido": "3789", "nome": "DEFENDER MTB - PROTETOR DE ARO E PNEU DE BICICLETA M", "saldo": 2}, {"codigo": "2380", "codigoExibido": "2380", "nome": "CARTUCHO INFLADOR E REPARADOR DE PNEUS B.A.M. - 125ML - MUC-OFF", "saldo": 3}, {"codigo": "3438", "codigoExibido": "3438", "nome": "ESPATULA DE NYLON PARA PNEUS - COR PRETA - MUC-OFF", "saldo": 1}, {"codigo": "3439", "codigoExibido": "3439", "nome": "ESPATULA DE NYLON PARA PNEUS - COR ROSA - MUC-OFF", "saldo": 4}, {"codigo": "3440", "codigoExibido": "3440", "nome": "ESPATULA DE NYLON PARA PNEUS - COR VERDE - MUC-OFF", "saldo": 1}, {"codigo": "3740", "codigoExibido": "3740", "nome": "ESPATULA DE PNEU PARK TOOL TL-4.2 KIT 2 UNIDADES", "saldo": 4}, {"codigo": "3175", "codigoExibido": "3175", "nome": "REFIL CONSERTO DE PNEU SEM CAMARA PASSEIO CAIXA COM 60 PECAS - R769062 - SCHEBOR", "saldo": 1}, {"codigo": "2223", "codigoExibido": "2223", "nome": "TUBO PARA REPARO DE PNEU TOPEAK", "saldo": 2}, {"codigo": "3582", "codigoExibido": "3582", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR LINER LIGHT XC TRAIL MTB TAMANHO, P/PNEUS 29 X 2.1 A 2.40", "saldo": 2}, {"codigo": "3326", "codigoExibido": "3326", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT DOWNHILL 29 X 2.4/2.6", "saldo": 7}, {"codigo": "3585", "codigoExibido": "3585", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 27.5X 2.4/2.6", "saldo": 1}, {"codigo": "3584", "codigoExibido": "3584", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT E-BIKE 29 X 2.4/2.6", "saldo": -1}, {"codigo": "3583", "codigoExibido": "3583", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 27.5 X 2.4/2.6", "saldo": 0}, {"codigo": "3505", "codigoExibido": "3505", "nome": "INSERTO PARA PNEU TUBELESS VITTORIA AIR-LINER PROTECT ENDURO 29 X 2.4/2.6", "saldo": 3}]}],
     inativados: {
       titulo: "Inativados (23/07)",
@@ -262,7 +312,14 @@
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) return JSON.parse(raw);
-      // migracao v2 -> v3: em v2, itens de PRECO (precificacao/hipress) eram
+      // migracao v3 -> v4: em v3, os itens (preco e contagem) ja eram
+      // objeto ({ v, destino, nome/acoes... }) mas SEM os campos do misto
+      // (qtdRevenda/qtdConsumo, usados quando destino==="ambos") -- o loop
+      // de init abaixo completa esses 2 campos como "" pra quem ja existia,
+      // sem apagar nada do que ja estava preenchido.
+      const v3 = localStorage.getItem(STORAGE_KEY_V3);
+      if (v3) return JSON.parse(v3);
+      // migracao v2 -> v3/v4: em v2, itens de PRECO (precificacao/hipress) eram
       // string pura (o preco digitado, "" ou valor); em v3 viram objeto
       // { v, destino, nome } pra caber destino (revenda/consumo/ambos) e
       // nome sugerido, no MESMO padrao que os itens de contagem ja usavam
@@ -272,7 +329,7 @@
       // de contagem que ja eram objeto).
       const v2 = localStorage.getItem(STORAGE_KEY_V2);
       if (v2) return JSON.parse(v2);
-      // fallback mais antigo, v1 -> v2/v3: v1 guardava TUDO como string,
+      // fallback mais antigo, v1 -> v2/v3/v4: v1 guardava TUDO como string,
       // inclusive contagem — mantido por seguranca (nao custa nada).
       const v1 = localStorage.getItem(STORAGE_KEY_V1);
       return v1 ? JSON.parse(v1) : {};
@@ -284,6 +341,7 @@
   //   v: "97.50",                              preco digitado — "" = ainda nao respondeu
   //   destino: "revenda"|"consumo"|"ambos"|"", escolha de destino — "" = ainda nao escolheu
   //   nome: "nome sugerido"                    campo livre — "" = nao sugeriu nome novo
+  //   qtdRevenda, qtdConsumo: "" | "n"          so usados quando destino==="ambos"
   // }
   // "0" em v e um valor DIGITADO (NÃO VENDER) — sempre diferente de "" em
   // toda a logica de preenchido/mensagem/localStorage. Se destino==="consumo",
@@ -293,6 +351,7 @@
   // Para itens de contagem (secao "qtd", ativos e inativados): state[codigo] = {
   //   v: "5",                                  contagem — "" = ainda nao contei
   //   destino: "revenda"|"consumo"|"ambos"|"", mesma escolha de destino
+  //   qtdRevenda, qtdConsumo: "" | "n"          so usados quando destino==="ambos"
   //   acaoInativar, acaoReativar, acaoExcluir: bool,   (acoes de cadastro)
   //   acaoRenomear: "novo nome" (texto livre, pode estar vazio — dobra como
   //   "nome mais adequado", campo unico, nao duplicado)
@@ -318,6 +377,11 @@
       if (state[it.codigo].destino === undefined) state[it.codigo].destino = "";
       if (state[it.codigo].nome === undefined) state[it.codigo].nome = "";
     }
+    // migracao v3 -> v4 (os 2 tipos): campos do misto (Revenda/Consumo),
+    // usados so quando destino==="ambos" -- comecam vazios pra quem ja
+    // tinha estado salvo sem eles, nunca sobrescreve quem ja tinha valor.
+    if (state[it.codigo].qtdRevenda === undefined) state[it.codigo].qtdRevenda = "";
+    if (state[it.codigo].qtdConsumo === undefined) state[it.codigo].qtdConsumo = "";
   });
   saveState();
 
@@ -378,13 +442,26 @@
     if (destino === "ambos") return "revenda e consumo";
     return "";
   }
-  function destinoHtml() {
+  // refQtd = quantidade de referencia pro aviso de soma do misto (Revenda +
+  // Consumo) — saldo do Bling nas secoes de preco/contagem, qtd da nota na
+  // secao hipress. undefined/null = sem referencia (ex.: Inativados, que
+  // nao tem saldo pra comparar) -- os campos aparecem mas sem badge.
+  function destinoHtml(refQtd) {
     const botoes = DESTINO_OPCOES.map(o => `<button type="button" class="destino-btn" data-destino-opcao="${o.chave}">${o.label}</button>`).join("");
+    const temRef = refQtd !== undefined && refQtd !== null;
     return `
       <div class="destino-bloco">
         <div class="destino-label">Destino</div>
         <div class="destino-btns">${botoes}</div>
         <div class="destino-ajuda">Revenda = vai embora com o cliente (peça, óleo, pastilha) · Consumo = fica na oficina (ferramenta, funil, chave)</div>
+        <div class="destino-misto" hidden${temRef ? ` data-ref-qtd="${refQtd}"` : ""}>
+          <div class="destino-misto-campos">
+            <div class="destino-misto-campo"><span>Revenda</span><input type="number" inputmode="numeric" min="0" step="1" class="qtd-revenda" placeholder="0"></div>
+            <div class="destino-misto-campo"><span>Consumo</span><input type="number" inputmode="numeric" min="0" step="1" class="qtd-consumo" placeholder="0"></div>
+          </div>
+          <div class="destino-misto-total">Total: <b class="destino-misto-total-num">0</b>${temRef ? ` de ${refQtd}` : ""}</div>
+          <div class="destino-misto-badge"></div>
+        </div>
       </div>
     `;
   }
@@ -393,11 +470,44 @@
   function estadoParaDestino(codigo) {
     return TIPO_POR_CODIGO[codigo] === "qtd" ? getEstadoQtd(codigo) : state[codigo];
   }
-  function wireDestino(row, it, aoMudar) {
+  function wireDestino(row, it, refQtd, aoMudar) {
     const btns = [...row.querySelectorAll(".destino-btn")];
+    const mistoEl = row.querySelector(".destino-misto");
+    const inputRevenda = row.querySelector(".qtd-revenda");
+    const inputConsumo = row.querySelector(".qtd-consumo");
+    const totalNumEl = row.querySelector(".destino-misto-total-num");
+    const badgeEl = row.querySelector(".destino-misto-badge");
+    const temRef = refQtd !== undefined && refQtd !== null;
+
+    function pintarMisto() {
+      const s = estadoParaDestino(it.codigo) || {};
+      const ehAmbos = s.destino === "ambos";
+      if (mistoEl) mistoEl.hidden = !ehAmbos;
+      if (!ehAmbos || !mistoEl) return;
+      const rev = s.qtdRevenda !== undefined ? s.qtdRevenda : "";
+      const cons = s.qtdConsumo !== undefined ? s.qtdConsumo : "";
+      if (inputRevenda.value !== rev) inputRevenda.value = rev;
+      if (inputConsumo.value !== cons) inputConsumo.value = cons;
+      const total = (parseInt(rev, 10) || 0) + (parseInt(cons, 10) || 0);
+      if (totalNumEl) totalNumEl.textContent = String(total);
+      if (!badgeEl) return;
+      if (!temRef || (rev === "" && cons === "")) {
+        badgeEl.textContent = "";
+        badgeEl.className = "destino-misto-badge";
+      } else if (total === refQtd) {
+        badgeEl.textContent = "bate com a referência";
+        badgeEl.className = "destino-misto-badge verde";
+      } else {
+        const diff = total - refQtd;
+        const sinal = diff > 0 ? "+" : "";
+        badgeEl.textContent = `difere da referência (${refQtd}) em ${sinal}${diff}`;
+        badgeEl.className = "destino-misto-badge vermelho";
+      }
+    }
     function pintarDestino() {
       const s = estadoParaDestino(it.codigo) || {};
       btns.forEach(b => b.classList.toggle("on", s.destino === b.dataset.destinoOpcao));
+      pintarMisto();
     }
     btns.forEach(b => {
       b.addEventListener("click", () => {
@@ -410,13 +520,99 @@
         refresh();
       });
     });
+    if (inputRevenda) {
+      inputRevenda.addEventListener("input", () => {
+        const s = estadoParaDestino(it.codigo);
+        s.qtdRevenda = inputRevenda.value;
+        saveState();
+        pintarMisto();
+        refresh();
+      });
+    }
+    if (inputConsumo) {
+      inputConsumo.addEventListener("input", () => {
+        const s = estadoParaDestino(it.codigo);
+        s.qtdConsumo = inputConsumo.value;
+        saveState();
+        pintarMisto();
+        refresh();
+      });
+    }
     pintarDestino();
     return pintarDestino;
   }
+  // Texto " (revenda N / consumo M)" pro item em destino "ambos" -- so
+  // aparece se ALGUMA das 2 quantidades foi digitada (senao infla toda
+  // mensagem com "(revenda 0 / consumo 0)" pra quem ainda nem tocou nos
+  // campos, e pode estourar o limite de 1200 chars em massa a toa).
+  function qtdMistoTxt(s) {
+    if (!s || s.destino !== "ambos") return "";
+    const rev = s.qtdRevenda !== undefined ? s.qtdRevenda : "";
+    const cons = s.qtdConsumo !== undefined ? s.qtdConsumo : "";
+    if (rev === "" && cons === "") return "";
+    return ` (revenda ${rev || 0} / consumo ${cons || 0})`;
+  }
+  // ---------- empacotamento seguro de blocos longos na mensagem ----------
+  // Defeito corrigido 30/07: o bloco DESTINO (e AÇÕES DE CADASTRO) era
+  // montado como UMA STRING OPACA e so testado contra o limite de 1200
+  // chars como blob inteiro — se ele sozinho ja passasse do limite (ex.:
+  // muitos itens marcados "Revenda e consumo", cada um com "/" e espacos
+  // que o encodeURIComponent infla bastante — "/" vira %2F, espaco vira
+  // %20), a mensagem saia estourada mesmo assim. A partir daqui, cada
+  // categoria (REVENDA/CONSUMO/REVENDA E CONSUMO/INATIVAR/etc.) e fatiada
+  // em uma ou mais linhas que CABEM SOZINHAS (por tamanho ENCODED real,
+  // nao por contagem fixa de itens), e essas linhas entram como unidades
+  // independentes no mesmo empacotamento guloso que ja fatiava diffs/
+  // CONFEREM — nunca mais um bloco inteiro empurrado pra uma parte sem
+  // checar se cabia.
+  const RESERVA_CABECALHO = 150; // sobra pro cabecalho da mensagem + separadores
+  function pedacoCabeSozinho(texto) {
+    return encodeURIComponent(texto).length <= (LIMITE_CHARS - RESERVA_CABECALHO);
+  }
+  function fatiarCategoria(rotulo, entradas) {
+    if (!entradas.length) return [];
+    const linhas = [];
+    let atual = [];
+    entradas.forEach(entrada => {
+      const tentativo = [...atual, entrada];
+      const linhaTeste = `${rotulo} (${tentativo.length}): ${tentativo.join(" ")}`;
+      if (atual.length > 0 && !pedacoCabeSozinho(linhaTeste)) {
+        linhas.push(`${rotulo} (${atual.length}): ${atual.join(" ")}`);
+        atual = [entrada];
+      } else {
+        atual = tentativo;
+      }
+    });
+    if (atual.length) linhas.push(`${rotulo} (${atual.length}): ${atual.join(" ")}`);
+    return linhas;
+  }
+  // Agrupa unidades {tipo, texto} adjacentes do MESMO tipo sob um cabecalho
+  // comum (so pra achado/acoes/destino — diff/match/faltou/tudobate ficam
+  // sem cabecalho extra, tight-joined, igual ao comportamento de sempre).
+  function rotuloGrupo(tipo, linhas) {
+    if (tipo === "acoes") return "AÇÕES DE CADASTRO:";
+    if (tipo === "destino") return "DESTINO:";
+    if (tipo === "achado") return `Achados (${linhas.length}):`;
+    return null;
+  }
+  function juntarUnidades(unidades) {
+    const grupos = [];
+    unidades.forEach(u => {
+      const ultimo = grupos[grupos.length - 1];
+      if (ultimo && ultimo.tipo === u.tipo) ultimo.linhas.push(u.texto);
+      else grupos.push({ tipo: u.tipo, linhas: [u.texto] });
+    });
+    return grupos.map(g => {
+      const rotulo = rotuloGrupo(g.tipo, g.linhas);
+      return rotulo ? `${rotulo}\n${g.linhas.join("\n")}` : g.linhas.join("\n");
+    }).join("\n\n");
+  }
+
   // Bloco "DESTINO:" pros itens dados — mesmo padrao do "AÇÕES DE CADASTRO:",
   // usado nas secoes de contagem (que ja mandam listas compactas tipo
   // CONFEREM, sem detalhe por item — nas secoes de preco o destino entra
-  // direto na linha de cada item, ver linhaPreco()).
+  // direto na linha de cada item, ver linhaPreco()). Cada categoria pode
+  // virar MAIS de uma linha se a lista for grande (ver fatiarCategoria).
   function destinosDoItens(itens) {
     const revenda = [], consumo = [], ambos = [];
     itens.forEach(it => {
@@ -424,13 +620,13 @@
       if (!s) return;
       if (s.destino === "revenda") revenda.push(it.codigoExibido);
       else if (s.destino === "consumo") consumo.push(it.codigoExibido);
-      else if (s.destino === "ambos") ambos.push(it.codigoExibido);
+      else if (s.destino === "ambos") ambos.push(`${it.codigoExibido}${qtdMistoTxt(s)}`);
     });
-    const linhas = [];
-    if (revenda.length) linhas.push(`REVENDA (${revenda.length}): ${revenda.join(" ")}`);
-    if (consumo.length) linhas.push(`CONSUMO (${consumo.length}): ${consumo.join(" ")}`);
-    if (ambos.length) linhas.push(`REVENDA E CONSUMO (${ambos.length}): ${ambos.join(" ")}`);
-    return linhas;
+    return [
+      ...fatiarCategoria("REVENDA", revenda),
+      ...fatiarCategoria("CONSUMO", consumo),
+      ...fatiarCategoria("REVENDA E CONSUMO", ambos),
+    ];
   }
 
   // ---------- acoes de cadastro (so na secao de contagem) ----------
@@ -456,7 +652,8 @@
   }
   // Lista de linhas "AÇÕES DE CADASTRO" (INATIVAR/REATIVAR/EXCLUIR/RENOMEAR)
   // pros itens dados — usada tanto na mensagem dos ativos quanto na dos
-  // inativados. So entra quem tem alguma acao marcada.
+  // inativados. So entra quem tem alguma acao marcada. Cada categoria pode
+  // virar MAIS de uma linha se a lista for grande (ver fatiarCategoria).
   function acoesDoItens(itens) {
     const inativar = [], reativar = [], excluir = [], renomear = [];
     itens.forEach(it => {
@@ -467,11 +664,27 @@
       if (s.acaoExcluir) excluir.push(it.codigo);
       if (s.acaoRenomear && s.acaoRenomear.trim()) renomear.push(`- ${it.codigo} => ${s.acaoRenomear.trim()}`);
     });
-    const linhas = [];
-    if (inativar.length) linhas.push(`INATIVAR (${inativar.length}): ${inativar.join(" ")}`);
-    if (reativar.length) linhas.push(`REATIVAR (${reativar.length}): ${reativar.join(" ")}`);
-    if (excluir.length) linhas.push(`EXCLUIR (${excluir.length}): ${excluir.join(" ")}`);
-    if (renomear.length) linhas.push(`RENOMEAR (${renomear.length}):\n${renomear.join("\n")}`);
+    const linhas = [
+      ...fatiarCategoria("INATIVAR", inativar),
+      ...fatiarCategoria("REATIVAR", reativar),
+      ...fatiarCategoria("EXCLUIR", excluir),
+    ];
+    // RENOMEAR ja e uma linha por item (nome livre, pode ser longo) — fatia
+    // em blocos que cabem sozinhos, mesmo espirito das outras categorias.
+    if (renomear.length) {
+      let atual = [];
+      renomear.forEach(linha => {
+        const tentativo = [...atual, linha];
+        const blocoTeste = `RENOMEAR (${tentativo.length}):\n${tentativo.join("\n")}`;
+        if (atual.length > 0 && !pedacoCabeSozinho(blocoTeste)) {
+          linhas.push(`RENOMEAR (${atual.length}):\n${atual.join("\n")}`);
+          atual = [linha];
+        } else {
+          atual = tentativo;
+        }
+      });
+      if (atual.length) linhas.push(`RENOMEAR (${atual.length}):\n${atual.join("\n")}`);
+    }
     return linhas;
   }
 
@@ -497,11 +710,13 @@
     row.dataset.busca = normalizarBusca([it.codigoExibido, it.nome].join(" "));
 
     const semMargem = secao.tipo === "preco_livre";
+    // referencia pro aviso de soma do misto: saldo do Bling (precificacao)
+    // ou qtd que entra pela nota (hipress).
+    const refQtd = semMargem ? it.qtd : it.saldo;
     const metaBits = [`<span>Cód. ${semMargem ? "fornecedor" : "Bling"}: <b>${it.codigoExibido}</b></span>`];
     if (!semMargem) metaBits.push(`<span>Saldo no Bling: <b>${it.saldo}</b></span>`);
     if (it.custo != null) metaBits.push(`<span>${semMargem ? "Custo de compra (referência)" : "Custo"}: <b>${fmtBRL(it.custo)}</b></span>`);
     if (it.custoRef != null) metaBits.push(`<span>Custo de compra (referência): <b>${fmtBRL(it.custoRef)}</b></span>`);
-    if (it.qtd != null) metaBits.push(`<span>Qtd na NF: <b>${it.qtd}</b></span>`);
     if (it.ncm) metaBits.push(`<span>NCM: <b>${it.ncm}</b></span>`);
     if (it.dataEntrada !== undefined) {
       metaBits.push(it.dataEntrada
@@ -513,19 +728,32 @@
       ? `<div class="sem-custo">⚠️ sem custo no sistema — não dá pra sugerir preço nem calcular margem, defina livremente</div>`
       : "";
 
+    // 3 saldos lado a lado, so nos itens da NF (secao hipress): o que o
+    // Bling ja tem hoje + o que entra pela nota + o total resultante --
+    // "fica com" e SEMPRE calculado aqui (it.saldoAtual + it.qtd), nunca
+    // lido pronto do gerador, pra funcionar tambem quando saldoAtual != 0.
+    const saldo3Html = (semMargem && it.saldoAtual !== undefined && it.qtd !== undefined) ? `
+      <div class="saldo3">
+        <div class="saldo3-cel"><span class="saldo3-label">No Bling hoje</span><span class="saldo3-val">${it.saldoAtual}</span></div>
+        <div class="saldo3-cel"><span class="saldo3-label">Entra pela NF</span><span class="saldo3-val">+${it.qtd}</span></div>
+        <div class="saldo3-cel saldo3-fica"><span class="saldo3-label">Fica com</span><span class="saldo3-val">${it.saldoAtual + it.qtd}</span></div>
+      </div>
+    ` : "";
+
     row.innerHTML = `
       <div class="item-info">
         <div class="item-cod">${it.codigoExibido}</div>
         <div class="item-nome">${it.nome}</div>
         <div class="item-meta">${metaBits.join("")}</div>
         ${semCustoHtml}
+        ${saldo3Html}
       </div>
       <div class="row">
         <div class="preco-wrap"><span>R$</span><input type="text" inputmode="decimal" data-codigo="${it.codigo}" placeholder="${(!semMargem && it.custo != null) ? "—" : "definir"}"></div>
         ${!semMargem ? `<div class="margem-badge neutro" data-badge="${it.codigo}">—</div>` : ""}
       </div>
       <div class="nota-consumo" hidden>Marcado como consumo — não precisa de preço de venda.</div>
-      ${destinoHtml()}
+      ${destinoHtml(refQtd)}
       <div class="nome-sugerido-wrap">
         <span>Nome mais adequado (opcional):</span>
         <input type="text" class="nome-sugerido" placeholder="${it.nome.replace(/"/g, "&quot;")}">
@@ -571,7 +799,7 @@
       saveState();
       refresh();
     });
-    wireDestino(row, it, () => pintar());
+    wireDestino(row, it, refQtd, () => pintar());
 
     container.appendChild(row);
   }
@@ -581,7 +809,12 @@
     const nomeBase = nomeCurto(it.nome);
     const nomeParte = (s.nome && s.nome.trim()) ? `${nomeBase} → ${nomeCurto(s.nome.trim())}` : nomeBase;
     const destinoTxt = destinoLabel(s.destino);
-    const sufixo = destinoTxt ? ` (${destinoTxt})` : "";
+    let sufixo = destinoTxt ? ` (${destinoTxt})` : "";
+    if (s.destino === "ambos" && (s.qtdRevenda || s.qtdConsumo)) {
+      const rev = s.qtdRevenda || "0";
+      const cons = s.qtdConsumo || "0";
+      sufixo = ` (${destinoTxt} — revenda ${rev} / consumo ${cons})`;
+    }
     if (s.destino === "consumo" && s.v === "") {
       return `- ${it.codigoExibido} ${nomeParte}${sufixo}: consumo, sem preço de venda`;
     }
@@ -679,7 +912,7 @@
         <div class="qtd-wrap"><input type="number" inputmode="numeric" min="0" step="1" data-codigo="${it.codigo}" placeholder="${labelCampo}"></div>
         ${temSaldo ? `<div class="diverg-badge" data-badge="${it.codigo}">—</div>` : ""}
       </div>
-      ${destinoHtml()}
+      ${destinoHtml(temSaldo ? it.saldo : undefined)}
       <div class="acao-bloco">
         <button type="button" class="acao-toggle">+ ação no cadastro</button>
         <div class="acao-painel" hidden>
@@ -741,7 +974,7 @@
     }
     pintar();
     atualizarSelos(it.codigo, row);
-    wireDestino(row, it);
+    wireDestino(row, it, temSaldo ? it.saldo : undefined);
     if (temAcaoMarcada(it.codigo)) {
       acaoPainel.hidden = false;
       acaoToggle.textContent = "- ação no cadastro";
@@ -876,47 +1109,42 @@
     const textoUnico = `${headerBase(1, 1)}\n\n${corpo}`;
     if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: diffs.length + matches.length }];
 
-    const linhasBase = (diffs.length === 0 && faltou === 0)
-      ? [`Conferi os ${total} itens, tudo batendo com o Bling.`]
-      : linhasDiff.slice();
-    if (diffs.length !== 0 || faltou !== 0) {
+    // Fatiamento: cada unidade abaixo (linha de diff, fatia de CONFEREM, ou
+    // linha ja fatiada de AÇÕES/DESTINO — ver fatiarCategoria) CABE SOZINHA
+    // numa parte. Empacotamento guloso decide onde cada uma entra; nunca
+    // mais um bloco opaco (a antiga "extras") que podia estourar sozinho.
+    const unidades = [];
+    if (diffs.length === 0 && faltou === 0) {
+      unidades.push({ tipo: "lista", texto: `Conferi os ${total} itens, tudo batendo com o Bling.`, peso: total });
+    } else {
+      linhasDiff.forEach(t => unidades.push({ tipo: "lista", texto: t, peso: 1 }));
       if (matches.length) {
         for (let i = 0; i < matches.length; i += 25) {
           const fatia = matches.slice(i, i + 25);
-          linhasBase.push(`CONFEREM (${fatia.length}): ${fatia.join(" ")}`);
+          unidades.push({ tipo: "lista", texto: `CONFEREM (${fatia.length}): ${fatia.join(" ")}`, peso: fatia.length });
         }
       }
+      if (linhaFaltou) unidades.push({ tipo: "lista", texto: linhaFaltou, peso: 0 });
     }
-    const extras = [linhaFaltou, acoesBloco, destinoBloco].filter(Boolean);
+    acoesLinhas.forEach(linha => unidades.push({ tipo: "acoes", texto: linha, peso: 0 }));
+    destinoLinhas.forEach(linha => unidades.push({ tipo: "destino", texto: linha, peso: 0 }));
 
-    const partes = [{ linhas: [], extra: "" }];
-    const caberia = (idx, linhas, extra) => {
-      const corpoTeste = [linhas.join("\n"), extra].filter(Boolean).join("\n\n");
-      return !limiteExcedido(headerBase(999, 999) + "\n\n" + corpoTeste);
-    };
-    linhasBase.forEach(linha => {
+    const partes = [{ linhas: [] }];
+    const caberia = (linhas) => !limiteExcedido(headerBase(999, 999) + "\n\n" + juntarUnidades(linhas));
+    unidades.forEach(unidade => {
       const atual = partes[partes.length - 1];
-      const tentativo = [...atual.linhas, linha];
-      if (atual.linhas.length > 0 && !caberia(partes.length - 1, tentativo, atual.extra)) {
-        partes.push({ linhas: [linha], extra: "" });
+      const tentativo = [...atual.linhas, unidade];
+      if (atual.linhas.length > 0 && !caberia(tentativo)) {
+        partes.push({ linhas: [unidade] });
       } else {
         atual.linhas = tentativo;
       }
     });
-    if (extras.length) {
-      const extraTexto = extras.join("\n\n");
-      const atual = partes[partes.length - 1];
-      if ((atual.linhas.length > 0 || atual.extra) && !caberia(partes.length - 1, atual.linhas, extraTexto)) {
-        partes.push({ linhas: [], extra: extraTexto });
-      } else {
-        atual.extra = extraTexto;
-      }
-    }
     const totalPartes = partes.length;
-    return partes.map((p, i) => {
-      const corpoParte = [p.linhas.join("\n"), p.extra].filter(Boolean).join("\n\n");
-      return { texto: `${headerBase(i + 1, totalPartes)}\n\n${corpoParte}`, count: p.linhas.length };
-    });
+    return partes.map((p, i) => ({
+      texto: `${headerBase(i + 1, totalPartes)}\n\n${juntarUnidades(p.linhas)}`,
+      count: p.linhas.reduce((acc, u) => acc + u.peso, 0),
+    }));
   }
 
   // ---------- grupo Inativados (23/07) — mensagem propria, own send-row ----------
@@ -928,42 +1156,39 @@
     const acoesBloco = acoesLinhas.length ? `AÇÕES DE CADASTRO:\n${acoesLinhas.join("\n")}` : null;
     const destinoLinhas = destinosDoItens(itens);
     const destinoBloco = destinoLinhas.length ? `DESTINO:\n${destinoLinhas.join("\n")}` : null;
-    const extraBloco = [acoesBloco, destinoBloco].filter(Boolean).join("\n\n") || null;
-    if (achados.length === 0 && !extraBloco) return [];
+    if (achados.length === 0 && !acoesBloco && !destinoBloco) return [];
 
     const headerBase = (parte, partes) => partes > 1
       ? `${secao.headerMsg} ${DATA_HOJE} — Inativados (parte ${parte}/${partes})`
       : `${secao.headerMsg} ${DATA_HOJE} — Inativados`;
-    const linhas = achados.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: achei ${valorQtd(it.codigo)}`);
-    const blocoAchados = linhas.length ? `Achados (${achados.length}):\n${linhas.join("\n")}` : null;
-    const corpo = [blocoAchados, extraBloco].filter(Boolean).join("\n\n");
+    const linhasAchados = achados.map(it => `- ${it.codigoExibido} ${nomeCurto(it.nome)}: achei ${valorQtd(it.codigo)}`);
+    const blocoAchados = linhasAchados.length ? `Achados (${achados.length}):\n${linhasAchados.join("\n")}` : null;
+    const corpo = [blocoAchados, acoesBloco, destinoBloco].filter(Boolean).join("\n\n");
     const textoUnico = `${headerBase(1, 1)}\n\n${corpo}`;
     if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: achados.length }];
 
-    const grupos = [[]];
-    linhas.forEach(linha => {
-      const tentativo = [...grupos[grupos.length - 1], linha];
-      const cab = headerBase(grupos.length, grupos.length);
-      const textoTeste = `${cab}\n\nAchados:\n${tentativo.join("\n")}`;
-      if (limiteExcedido(textoTeste) && grupos[grupos.length - 1].length > 0) grupos.push([linha]);
-      else grupos[grupos.length - 1] = tentativo;
+    // Fatiamento: mesma logica unificada de montarMensagensContagem — cada
+    // achado, ou linha ja fatiada de AÇÕES/DESTINO, cabe sozinha numa parte.
+    const unidades = linhasAchados.map(t => ({ tipo: "achado", texto: t, peso: 1 }));
+    acoesLinhas.forEach(linha => unidades.push({ tipo: "acoes", texto: linha, peso: 0 }));
+    destinoLinhas.forEach(linha => unidades.push({ tipo: "destino", texto: linha, peso: 0 }));
+
+    const partes = [{ linhas: [] }];
+    const caberia = (linhas) => !limiteExcedido(headerBase(999, 999) + "\n\n" + juntarUnidades(linhas));
+    unidades.forEach(unidade => {
+      const atual = partes[partes.length - 1];
+      const tentativo = [...atual.linhas, unidade];
+      if (atual.linhas.length > 0 && !caberia(tentativo)) {
+        partes.push({ linhas: [unidade] });
+      } else {
+        atual.linhas = tentativo;
+      }
     });
-    if (extraBloco) {
-      const ultimo = grupos[grupos.length - 1];
-      const linhasUltimo = Array.isArray(ultimo) ? ultimo : ultimo.linhas;
-      const cab = headerBase(grupos.length, grupos.length);
-      const textoTeste = `${cab}\n\nAchados:\n${linhasUltimo.join("\n")}\n\n${extraBloco}`;
-      if (Array.isArray(ultimo) && ultimo.length > 0 && limiteExcedido(textoTeste)) grupos.push({ extra: extraBloco, linhas: [] });
-      else grupos[grupos.length - 1] = { linhas: linhasUltimo, extra: extraBloco };
-    }
-    const totalPartes = grupos.length;
-    return grupos.map((g, i) => {
-      const linhasG = Array.isArray(g) ? g : g.linhas;
-      const extraG = Array.isArray(g) ? null : g.extra;
-      const corpoParte = [linhasG.length ? `Achados (${linhasG.length}):\n${linhasG.join("\n")}` : null, extraG]
-        .filter(Boolean).join("\n\n");
-      return { texto: `${headerBase(i + 1, totalPartes)}\n\n${corpoParte}`, count: linhasG.length };
-    });
+    const totalPartes = partes.length;
+    return partes.map((p, i) => ({
+      texto: `${headerBase(i + 1, totalPartes)}\n\n${juntarUnidades(p.linhas)}`,
+      count: p.linhas.reduce((acc, u) => acc + u.peso, 0),
+    }));
   }
 
   function refreshAcoesResumo(secao) {
@@ -989,11 +1214,12 @@
 
   // ---------- render das secoes / envio ----------
 
-  const secoesEl = document.getElementById("secoes");
+  const secoesBlingEl = document.getElementById("secoes-bling");
+  const secoesNfEl = document.getElementById("secoes-nf");
 
-  function renderSecao(secao, aberta) {
+  function renderSecao(secao, aberta, container) {
     const det = document.createElement("details");
-    det.className = "secao";
+    det.className = "secao secao-bloco-" + secao.bloco;
     det.open = aberta;
     const totalItens = itensDaSecao(secao).length;
 
@@ -1075,13 +1301,14 @@
       det.appendChild(detInat);
     }
 
-    secoesEl.appendChild(det);
+    container.appendChild(det);
     void totalItens;
   }
 
-  renderSecao(SECAO_PRECIFICACAO, true);
-  renderSecao(SECAO_HIPRESS, false);
-  renderSecao(SECAO_CONTAGEM, false);
+  // Ordem visual: BLOCO A (Bling) = precificação -> contagem; BLOCO B (NF) = hipress.
+  renderSecao(SECAO_PRECIFICACAO, true, secoesBlingEl);
+  renderSecao(SECAO_CONTAGEM, false, secoesBlingEl);
+  renderSecao(SECAO_HIPRESS, false, secoesNfEl);
 
   function refreshSecaoProg(secao) {
     const el = document.querySelector(`[data-prog="${secao.id}"]`);
