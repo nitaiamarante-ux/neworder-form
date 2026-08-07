@@ -47,6 +47,17 @@
   .aviso-rodape { margin-top: 14px; padding-top: 10px; border-top: 1px dashed var(--border);
     font-size: 12px; color: var(--faint); }
 
+  .pergunta-secao { background: var(--bad-soft); border: 2px solid var(--bad); border-radius: 12px;
+    padding: 12px 14px; margin: 6px 0 10px; }
+  .pergunta-secao-titulo { font-weight: 800; font-size: 14px; color: var(--bad); margin-bottom: 4px; }
+  .pergunta-secao-texto { font-size: 13px; color: var(--ink); line-height: 1.5; }
+  .pergunta-secao-btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .pergunta-btn { flex: 1 1 160px; border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--ink); border-radius: 10px; padding: 11px 10px; font-size: 13px; font-weight: 700;
+    cursor: pointer; min-height: 44px; -webkit-appearance: none; }
+  .pergunta-btn.on { background: var(--bad); border-color: var(--bad); color: #fff; }
+  .pergunta-secao-resp { margin-top: 8px; font-size: 12px; font-weight: 600; }
+
   .progresso-geral { margin-top: 16px; background: var(--surface); border: 1px solid var(--border);
     border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); }
   .progresso-txt { font-size: 13.5px; color: var(--muted); display: flex; justify-content: space-between; margin-bottom: 8px; }
@@ -95,8 +106,13 @@
   .item-meta b { color: var(--ink); }
   .item-meta b.saldo-neg { color: var(--bad); }
   .nota-negativo { font-size: 12px; color: var(--bad); margin-top: 2px; font-weight: 600; }
+  .nota-saldo-zero { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .sem-custo { margin-top: 6px; font-size: 12px; color: var(--warn); background: var(--note-soft);
     border: 1px solid var(--note-border); border-radius: 8px; padding: 5px 8px; display: inline-block; }
+  .item.item-prioridade { border-left: 3px solid var(--bad); padding-left: 9px; }
+  .selo-prioridade { display: inline-block; margin-top: 6px; font-size: 10.5px; font-weight: 800;
+    letter-spacing: .03em; text-transform: uppercase; background: var(--bad-soft); color: var(--bad);
+    border: 1px solid var(--bad); border-radius: 6px; padding: 3px 8px; }
 
   .row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
   .preco-wrap { flex: 1 1 auto; position: relative; }
@@ -234,7 +250,7 @@
     <div class="aviso"><b>Importante:</b> campo vazio = "ainda não respondi". Preencher com <b>0</b> é uma resposta válida (diferente de vazio) — não deixa vazio o que você já decidiu ou já contou.</div>
 
     <div class="progresso-geral">
-      <div class="progresso-txt"><span>Progresso geral</span><span><b id="prog-geral-num">0</b> de <b>127</b> preenchidos</span></div>
+      <div class="progresso-txt"><span>Progresso geral</span><span><b id="prog-geral-num">0</b> de <b>145</b> preenchidos</span></div>
       <div class="progresso-barra"><div class="progresso-fill" id="prog-geral-fill" style="width:0%"></div></div>
     </div>
 
@@ -272,11 +288,13 @@
   const STORAGE_KEY_V3 = "no_matheus_2026-07-29_v3";
   const STORAGE_KEY_V2 = "no_matheus_2026-07-29_v2";
   const STORAGE_KEY_V1 = "no_matheus_2026-07-29_v1";
-  const DATA_HOJE = "03/08";
+  const DATA_HOJE = "07/08";
   const RETRATO_SALDOS = "03/08 09:52";
+  const RETRATO_ARSTOP_GUIDOES = "07/08 09:25";
   const HIPRESS_NF_INFO = "NF 180660 · série 1 · emissão 21/07/2026";
   const LM_NF_INFO = "NF 389622 · série 1 · emissão 24/07/2026";
   const LM_AVISO_RODAPE = "Essa nota tem um 4º item: GUIA DE CORRENTE SENTEC (cód. 2099, 3 un a R$ 77,08). Esse produto já existia no cadastro e já tem preço de venda (R$ 160,00), então não precisa de resposta — está aqui só pra nota fechar com os 4 itens do DANFE.";
+  const PERGUNTA_ARSTOP = {"chave": "arstop_estoque", "titulo": "Antes de mexer nesses 13 itens", "texto": "Os nomes dizem “(PAR)” — hoje o estoque desses 13 itens é contado em PARES. Mas você mandou preço unidade R$ 55,00 e o par R$ 90,00, “dando baixa em 2 unidades no estoque” — isso só funciona se o estoque estiver contado em VÁLVULA AVULSA, não em par. O estoque desses itens deve continuar em PAR (como está hoje) ou passar a ser contado em UNIDADE avulsa? Mudar pra unidade DOBRA as quantidades no Bling (ex.: o cód. 3693 tem saldo 8 hoje = 8 pares = 16 válvulas) — por isso ninguém mexe no cadastro até você responder.", "opcoes": [{"chave": "par", "label": "Manter em PAR (como está hoje)"}, {"chave": "unidade", "label": "Passar pra UNIDADE avulsa"}]};
 
   const SECAO_LM = {
     id: "lm", tipo: "preco_sugerido", bloco: "bling",
@@ -315,7 +333,22 @@
       itens: [{"codigo": "3272", "codigoExibido": "3272", "nome": "PNEU 27.5X2.50 SCORPION RACE DH T"}, {"codigo": "3649", "codigoExibido": "3649", "nome": "SUPORTE GUIDAO 31.8X50MM ALM WILD EX 2 P"}, {"codigo": "3647", "codigoExibido": "3647", "nome": "GUIDAO ALM MTB NERO 31.8X720X60MM PTO"}, {"codigo": "2969", "codigoExibido": "2969", "nome": "SUPORTE GUIDAO, ALM, AHEAD, D601, 31,8X5"}, {"codigo": "1406", "codigoExibido": "1406", "nome": "SUPORTE GUIDAO, ALM, PROTAPER, PTO 35X35"}, {"codigo": "1407", "codigoExibido": "1407", "nome": "SUPORTE GUIDAO, ALM, PTO 31.8X35MM .5."}, {"codigo": "3097", "codigoExibido": "3097", "nome": "Pneu Continental Cross King Shieldwall 29 29 X 2.6 Dobravel"}, {"codigo": "1079", "codigoExibido": "1079", "nome": "Pneu Levorin Praieiro 700x32"}, {"codigo": "2924", "codigoExibido": "2924", "nome": "PNEU MAXXIS 27.5 X2.50 ASSEGAI USADO"}, {"codigo": "1115", "codigoExibido": "1115", "nome": "PNEU MAXXIS 29X2.50 AGGRESSOR M343RU"}, {"codigo": "3321", "codigoExibido": "3321", "nome": "PNEU MAXXIS SHORTY GEN 2 29X2.40 WT DH CASING"}, {"codigo": "2655", "codigoExibido": "2655", "nome": "Pneu Maxxis Minion DHF 29 x 2.50 DH CASING"}, {"codigo": "2996", "codigoExibido": "2996", "nome": "Pneu Maxxis Minion DHR 27.5 x 2.40 Usado"}, {"codigo": "3360", "codigoExibido": "3360", "nome": "PAR DE PNEUS MICHELIN RACING LINE DH 34 MULLET 29X2.40 / 27.5X2.40"}, {"codigo": "3614", "codigoExibido": "3614", "nome": "PNEU MICHELIN WILD ENDURO FRONT COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3598", "codigoExibido": "3598", "nome": "PNEU MICHELIN WILD ENDURO REAR COMPETITION ARO 29 MEDIDA 2.40"}, {"codigo": "3368", "codigoExibido": "3368", "nome": "Pneu Michelin Racing Line Dh 16 29 X 2.40 Preto"}, {"codigo": "3544", "codigoExibido": "3544", "nome": "Pneu Michelin Wild Enduro Competition Line 29x2.40 Traseiro - Preto"}, {"codigo": "2526", "codigoExibido": "2526", "nome": "Pneu Michelin Wild Enduro Competition Line Front 27.5 X 2.60"}, {"codigo": "2422", "codigoExibido": "2422", "nome": "Pneu Michelin Wild Enduro Competition Line Front 29 X 2.40"}, {"codigo": "3542", "codigoExibido": "3542", "nome": "Pneu Michelin Wild Enduro Front 29 X 2.40 Preto", "duplicados": ["3543"]}, {"codigo": "2574", "codigoExibido": "2574", "nome": "Pneu Michelin Wild Enduro Front Racing Line 29 X 2.40 E-bike", "duplicados": ["2596", "3061"]}, {"codigo": "2531", "codigoExibido": "2531", "nome": "Pneu Michelin Wild Enduro Rear Racing Line 29 X 2.40", "duplicados": ["2575"]}, {"codigo": "2286", "codigoExibido": "2286", "nome": "PNEU 29X240 WILD ENDURO RACING LINE 4X55TPI TRAS KEVLAR TLR", "marca": "MICHELIN FR"}, {"codigo": "2912", "codigoExibido": "2912", "nome": "PNEU MOTO TORNADO 120/80-18 VIPER MAGGION"}, {"codigo": "1774", "codigoExibido": "1774", "nome": "KIT REPARADOR DE PNEUS TUBELESS PUNCTURE PLUG - MUC-OFF"}, {"codigo": "2888", "codigoExibido": "2888", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 10 Macarrões", "duplicados": ["2919"]}, {"codigo": "2711", "codigoExibido": "2711", "nome": "Refil Muc-off Para Reparos De Pneu Tubeless 15 Macarrão"}, {"codigo": "1586", "codigoExibido": "1586", "nome": "Fita P/ Kit Reparo Pneu Bicicleta - Nomad"}, {"codigo": "1138", "codigoExibido": "1138", "nome": "PRE SELANTE S-VULCAN PARA PNEU TUBELESS - S-TRES 30ML"}, {"codigo": "3243", "codigoExibido": "3243", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR CARBON35 800MM - RISE 30MM - FATBAR 35M"}, {"codigo": "2930", "codigoExibido": "2930", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 30MM - FATBAR 35MM - ALU"}, {"codigo": "2914", "codigoExibido": "2914", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 800MM - RISE 40MM - FATBAR 35MM - ALU"}, {"codigo": "1699", "codigoExibido": "1699", "nome": "Guidão Renthal Fatbar 35mm - rise 20mm - al - Black"}, {"codigo": "1694", "codigoExibido": "1694", "nome": "Guidão Renthal Fatbar 35mm - rise 30mm - al - Black"}, {"codigo": "3153", "codigoExibido": "3153", "nome": "Guidão Renthal Fatbar 35mm Clamprise 20mm Preto"}, {"codigo": "3150", "codigoExibido": "3150", "nome": "Guidão Renthal Fatnar V2 Aluminium Black 800mm X 35mm X 30mm"}, {"codigo": "2929", "codigoExibido": "2929", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 33MM - FATBAR 35MM - 136 GRAMAS"}, {"codigo": "2138", "codigoExibido": "2138", "nome": "Espatula Para Pneus Sentec - 3unidades"}, {"codigo": "2097", "codigoExibido": "2097", "nome": "SUP GUIDAO ALUM 35X0X35MM ENDURO RS TRAIL FACTORY PTO BRI", "marca": "SENTEC"}, {"codigo": "1", "codigoExibido": "1", "nome": "GUIDAO TITLE AH1 CROMADO 31.8X25mm"}, {"codigo": "1704", "codigoExibido": "1704", "nome": "GUIDAO TITLE AH1 CROMADO 35X25", "duplicados": ["1706"]}, {"codigo": "1705", "codigoExibido": "1705", "nome": "GUIDAO TITLE AH1 PRETO 31.8x50"}, {"codigo": "2", "codigoExibido": "2", "nome": "GUIDAO TITLE AH1 PRETO 35X25mm"}, {"codigo": "67", "codigoExibido": "67", "nome": "GUIDÃO TITLE AH1 BLACK 31.8x25"}, {"codigo": "68", "codigoExibido": "68", "nome": "GUIDÃO TITLEA AH1BLACK 35x25"}]
     }
   };
-  const SECOES = [SECAO_LM, SECAO_PRECIFICACAO, SECAO_CONTAGEM, SECAO_HIPRESS];
+  const SECAO_ARSTOP = {
+    id: "arstop", tipo: "preco_sugerido", bloco: "bling",
+    titulo: "Válvulas tubeless ArStop",
+    sub: "13 itens ativos, com saldo no Bling — as 3 NFs da ArStop já foram lançadas e os SKUs existem, o problema não é cadastro faltando. Renomeie o que precisar e defina o preço de venda. Saldo/custo/preço em " + RETRATO_ARSTOP_GUIDOES + ".",
+    perguntaSecao: PERGUNTA_ARSTOP,
+    headerMsg: "[BLING] ARSTOP/VÁLVULAS",
+    itens: [{"codigo": "3689", "codigoExibido": "3689", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) - VERMELHO", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3690", "codigoExibido": "3690", "nome": "BICO TUBELESS PRESTA 55MM 2.0 (PAR) - VERDE", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3691", "codigoExibido": "3691", "nome": "BICO TUBELESS PRESTA 55MM 2.0 (PAR) - ROXO", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3692", "codigoExibido": "3692", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) ROSA", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3693", "codigoExibido": "3693", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) PRETO", "saldo": 8, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3694", "codigoExibido": "3694", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) - PRATA", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3695", "codigoExibido": "3695", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) - LARANJA", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3696", "codigoExibido": "3696", "nome": "BICO TUBELESS PRESTA 55 MM 2.0 (PAR) - AZUL", "saldo": 1, "custo": 37.2, "precoAtual": 37.2, "semValvula": true, "margemZero": true}, {"codigo": "3174", "codigoExibido": "3174", "nome": "BICO TUBELESS PRESTA 43 MM 2.0 (PAR) PRETO", "saldo": 1, "custo": 31.8, "precoAtual": 95.0, "semValvula": true, "margemZero": false}, {"codigo": "3441", "codigoExibido": "3441", "nome": "BICO / VALVULA TUBELESS PRESTA 45 MM (PAR) PRETO", "saldo": 3, "custo": 34.16, "precoAtual": 75.0, "semValvula": false, "margemZero": false}, {"codigo": "3442", "codigoExibido": "3442", "nome": "BICO TUBELESS PRESTA 48 MM - FURO HORIZONTAL (PAR)", "saldo": 1, "custo": 41, "precoAtual": 85.0, "semValvula": true, "margemZero": false}, {"codigo": "3443", "codigoExibido": "3443", "nome": "BICO/VALVULA PRESTA DE 85MM PRETO", "saldo": 0, "custo": 55, "precoAtual": 115.0, "semValvula": false, "margemZero": false}, {"codigo": "3444", "codigoExibido": "3444", "nome": "BICO/ VALVULA DE 75MM PRETO", "saldo": -1, "custo": 51, "precoAtual": 110.0, "semValvula": false, "margemZero": false}]
+  };
+  const SECAO_GUIDOES = {
+    id: "guidoes", tipo: "preco_sugerido", bloco: "bling",
+    titulo: "Guidões e mesas com preço igual ao custo",
+    sub: "5 itens ativos em que o preço de venda está IGUAL ao custo (margem zero hoje) — achado a partir do seu aviso de que \"os pretos\" continuam errados. Saldo/custo/preço em " + RETRATO_ARSTOP_GUIDOES + ".",
+    headerMsg: "[BLING] GUIDÕES PREÇO=CUSTO",
+    itens: [{"codigo": "GD-3641", "codigoExibido": "3641", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 30MM - FATBAR 35MM -", "saldo": 0, "custo": 629.605, "precoAtual": 629.61}, {"codigo": "GD-3642", "codigoExibido": "3642", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR35 V3 800MM - RISE 40MM - FATBAR 35MM -", "saldo": -1, "custo": 629.605, "precoAtual": 629.61}, {"codigo": "GD-2610", "codigoExibido": "2610", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 30MM - FATBAR 31.8MM -", "saldo": 0, "custo": 469.44, "precoAtual": 469.44}, {"codigo": "GD-2611", "codigoExibido": "2611", "nome": "GUIDAO RENTHAL BIKE MTB FATBAR V2 800MM - RISE 20MM - FATBAR 31.8MM -", "saldo": 0, "custo": 469.44, "precoAtual": 469.44}, {"codigo": "GD-3656", "codigoExibido": "3656", "nome": "MESA DE GUIDAO RENTHAL BIKE APEX35 40MM - FATBAR 35MM - 136 GRAMAS", "saldo": 1, "custo": 787.03, "precoAtual": 787.03}]
+  };
+  const SECOES = [SECAO_LM, SECAO_PRECIFICACAO, SECAO_CONTAGEM, SECAO_ARSTOP, SECAO_GUIDOES, SECAO_HIPRESS];
 
   function itensDaSecao(secao) {
     return secao.tipo === "qtd" ? secao.grupos.flatMap(g => g.itens) : secao.itens;
@@ -395,6 +428,14 @@
     // tinha estado salvo sem eles, nunca sobrescreve quem ja tinha valor.
     if (state[it.codigo].qtdRevenda === undefined) state[it.codigo].qtdRevenda = "";
     if (state[it.codigo].qtdConsumo === undefined) state[it.codigo].qtdConsumo = "";
+  });
+  // pergunta(s) de cabecalho de secao (hoje so a ARSTOP) — chave separada
+  // por prefixo "_pergunta_", nunca colide com codigo Bling numerico.
+  SECOES.forEach(s => {
+    if (s.perguntaSecao) {
+      const chave = "_pergunta_" + s.perguntaSecao.chave;
+      if (state[chave] === undefined) state[chave] = { v: "" };
+    }
   });
   saveState();
 
@@ -718,7 +759,7 @@
 
   function renderItemPreco(container, it, secao) {
     const row = document.createElement("div");
-    row.className = "item";
+    row.className = "item" + (it.margemZero ? " item-prioridade" : "");
     row.dataset.codigo = it.codigo;
     row.dataset.busca = normalizarBusca([it.codigoExibido, it.nome].join(" "));
 
@@ -726,10 +767,15 @@
     // referencia pro aviso de soma do misto: saldo do Bling (precificacao)
     // ou qtd que entra pela nota (hipress).
     const refQtd = semMargem ? it.qtd : it.saldo;
+    const saldoNeg = !semMargem && typeof it.saldo === "number" && it.saldo < 0;
+    const saldoZero = !semMargem && it.saldo === 0;
     const metaBits = [`<span>Cód. ${semMargem ? "fornecedor" : "Bling"}: <b>${it.codigoExibido}</b></span>`];
-    if (!semMargem) metaBits.push(`<span>Saldo no Bling: <b>${it.saldo}</b></span>`);
+    if (!semMargem) metaBits.push(`<span>Saldo no Bling: <b class="${saldoNeg ? "saldo-neg" : ""}">${it.saldo}</b></span>`);
     if (it.custo != null) metaBits.push(`<span>${semMargem ? "Custo de compra (referência)" : "Custo"}: <b>${fmtBRL(it.custo)}</b></span>`);
     if (it.custoRef != null) metaBits.push(`<span>Custo de compra (referência): <b>${fmtBRL(it.custoRef)}</b></span>`);
+    // preco de venda ATUAL no sistema — fato puro (nao e sugestao/referencia
+    // nossa), so aparece quando o gerador manda o campo (ARSTOP/GUIDOES).
+    if (it.precoAtual != null) metaBits.push(`<span>Preço de venda atual: <b>${fmtBRL(it.precoAtual)}</b></span>`);
     if (it.ncm) metaBits.push(`<span>NCM: <b>${it.ncm}</b></span>`);
     if (it.dataEntrada !== undefined) {
       metaBits.push(it.dataEntrada
@@ -739,6 +785,23 @@
 
     const semCustoHtml = (!semMargem && it.custo == null)
       ? `<div class="sem-custo">⚠️ sem custo no sistema — não dá pra sugerir preço nem calcular margem, defina livremente</div>`
+      : "";
+    // notas GENERICAS derivadas so do saldo fresco (nunca hardcoded por
+    // codigo) — servem pra qualquer item de qualquer secao que caia nessas
+    // condicoes, hoje usadas pela ARSTOP (3444 negativo, 3443 zero) e
+    // GUIDOES (3642 negativo).
+    const notaSaldoHtml = saldoNeg
+      ? `<div class="nota-negativo">saldo negativo no Bling — erro antigo conhecido, não impede de definir o preço.</div>`
+      : (saldoZero ? `<div class="nota-saldo-zero">saldo zerado no Bling hoje.</div>` : "");
+    // MARGEM ZERO hoje: fato derivado de preco atual == custo (2 numeros
+    // que ja sao do sistema, ver it.precoAtual/it.custo acima) — nao e
+    // sugestao de preco nenhuma, so prioriza visualmente o que responder
+    // primeiro (ver CORRECAO 07/08 no topo do arquivo).
+    const prioridadeHtml = it.margemZero
+      ? `<div class="selo-prioridade">preço = custo hoje — responda primeiro</div>`
+      : "";
+    const semValvulaHtml = it.semValvula
+      ? `<div class="sem-custo">⚠️ nome sem a palavra "VÁLVULA" — é por isso que a busca não encontra este item</div>`
       : "";
 
     // 3 saldos lado a lado, so nos itens da NF (secao hipress): o que o
@@ -757,8 +820,11 @@
       <div class="item-info">
         <div class="item-cod">${it.codigoExibido}</div>
         <div class="item-nome">${it.nome}</div>
+        ${prioridadeHtml}
         <div class="item-meta">${metaBits.join("")}</div>
+        ${notaSaldoHtml}
         ${semCustoHtml}
+        ${semValvulaHtml}
         ${saldo3Html}
       </div>
       <div class="row">
@@ -835,18 +901,42 @@
     return `- ${it.codigoExibido} ${nomeParte}${sufixo}: ${fmtBRL(parsePreco(s.v))}`;
   }
 
+  // Resposta da pergunta de cabecalho (mecanismo `perguntaSecao`, hoje so
+  // ARSTOP) — devolve null pra qualquer secao sem `perguntaSecao` (as 4
+  // antigas), o que preserva o comportamento anterior de montarMensagensPreco
+  // byte a byte quando essa peca nao existe.
+  function respostaPerguntaTexto(secao) {
+    if (!secao.perguntaSecao) return null;
+    const chave = "_pergunta_" + secao.perguntaSecao.chave;
+    const val = state[chave] && state[chave].v;
+    if (!val) return null;
+    const opcao = secao.perguntaSecao.opcoes.find(o => o.chave === val);
+    return `PERGUNTA — ${secao.perguntaSecao.titulo}: ${opcao ? opcao.label : val}`;
+  }
+
   function montarMensagensPreco(secao) {
     const itens = itensDaSecao(secao);
     const preenchidos = itens.filter(it => estaPreenchido(it.codigo));
-    if (preenchidos.length === 0) return [];
+    const perguntaTxt = respostaPerguntaTexto(secao);
+    if (preenchidos.length === 0 && !perguntaTxt) return [];
     const headerBase = (parte, partes) => partes > 1
       ? `${secao.headerMsg} ${DATA_HOJE} (parte ${parte}/${partes})`
       : `${secao.headerMsg} ${DATA_HOJE}`;
     const linhas = preenchidos.map(linhaPreco);
-    const textoUnico = `${headerBase(1, 1)}\n\nPreços definidos (${linhas.length} de ${itens.length}):\n${linhas.join("\n")}`;
+    const blocoPrecos = linhas.length
+      ? `Preços definidos (${linhas.length} de ${itens.length}):\n${linhas.join("\n")}`
+      : null;
+    const corpoUnico = [perguntaTxt, blocoPrecos].filter(Boolean).join("\n\n");
+    const textoUnico = `${headerBase(1, 1)}\n\n${corpoUnico}`;
     if (!limiteExcedido(textoUnico)) return [{ texto: textoUnico, count: linhas.length }];
 
+    // fatiamento: a resposta da pergunta de cabecalho (se houver) entra
+    // como 1a unidade da 1a parte (nunca solta sozinha sem contexto);
+    // cada linha de preco cabe sozinha — mesmo empacotamento guloso de
+    // sempre. Quando perguntaTxt e null (secoes antigas), o comportamento
+    // e IDENTICO ao de antes (partes[0] nasce vazio, so linhas entram).
     const partes = [[]];
+    if (perguntaTxt) partes[0].push(perguntaTxt);
     linhas.forEach(linha => {
       const atual = partes[partes.length - 1];
       const tentativo = [...atual, linha];
@@ -858,7 +948,7 @@
     const totalPartes = partes.length;
     return partes.map((p, i) => ({
       texto: `${headerBase(i + 1, totalPartes)}\n\n${p.join("\n")}`,
-      count: p.length,
+      count: p.filter(l => l !== perguntaTxt).length,
     }));
   }
 
@@ -1262,6 +1352,49 @@
       det.appendChild(aviso);
     }
 
+    // Pergunta de cabecalho da secao inteira (mecanismo `perguntaSecao`,
+    // hoje so ARSTOP) — destacada, clicavel, resposta entra na 1a linha da
+    // mensagem de WhatsApp (ver respostaPerguntaTexto/montarMensagensPreco).
+    if (secao.perguntaSecao) {
+      const pq = secao.perguntaSecao;
+      const chaveState = "_pergunta_" + pq.chave;
+      const bloco = document.createElement("div");
+      bloco.className = "pergunta-secao";
+      const opcoesHtml = pq.opcoes.map(o => `<button type="button" class="pergunta-btn" data-pergunta-opcao="${o.chave}">${o.label}</button>`).join("");
+      bloco.innerHTML = `
+        <div class="pergunta-secao-titulo">⚠️ ${pq.titulo}</div>
+        <div class="pergunta-secao-texto">${pq.texto}</div>
+        <div class="pergunta-secao-btns">${opcoesHtml}</div>
+        <div class="pergunta-secao-resp"></div>
+      `;
+      det.appendChild(bloco);
+      const btns = [...bloco.querySelectorAll(".pergunta-btn")];
+      const respEl = bloco.querySelector(".pergunta-secao-resp");
+      function pintarPergunta() {
+        const val = (state[chaveState] && state[chaveState].v) || "";
+        btns.forEach(b => b.classList.toggle("on", b.dataset.perguntaOpcao === val));
+        if (!val) {
+          respEl.textContent = "ainda não respondida — ninguém mexe no cadastro até você responder.";
+          respEl.style.color = "var(--bad)";
+        } else {
+          const opc = pq.opcoes.find(o => o.chave === val);
+          respEl.textContent = "Respondido: " + (opc ? opc.label : val);
+          respEl.style.color = "var(--good)";
+        }
+      }
+      btns.forEach(b => {
+        b.addEventListener("click", () => {
+          const chave = b.dataset.perguntaOpcao;
+          const atual = state[chaveState] || (state[chaveState] = { v: "" });
+          atual.v = (atual.v === chave) ? "" : chave;
+          saveState();
+          pintarPergunta();
+          refresh();
+        });
+      });
+      pintarPergunta();
+    }
+
     const body = document.createElement("div");
     body.dataset.corpo = secao.id;
 
@@ -1330,11 +1463,14 @@
   }
 
   // Ordem visual: BLOCO A (Bling) = NF LM 389622 -> precificação -> contagem
-  // (a nota vem primeiro: é o que o Matheus procura e são só 3 itens, ver
-  // CORRECAO 04/08); BLOCO B (NF) = hipress.
+  // -> arstop -> guidões (as 2 novas de 07/08 entram no FIM do bloco A, pra
+  // não reordenar o que o Matheus já estava vendo, ver CORRECAO 07/08);
+  // BLOCO B (NF) = hipress.
   renderSecao(SECAO_LM, true, secoesBlingEl);
   renderSecao(SECAO_PRECIFICACAO, true, secoesBlingEl);
   renderSecao(SECAO_CONTAGEM, false, secoesBlingEl);
+  renderSecao(SECAO_ARSTOP, true, secoesBlingEl);
+  renderSecao(SECAO_GUIDOES, true, secoesBlingEl);
   renderSecao(SECAO_HIPRESS, false, secoesNfEl);
 
   function refreshSecaoProg(secao) {
